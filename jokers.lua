@@ -21,8 +21,15 @@
             [3] = "remaining"
         }
     }
+    local loc_limitless = {
+        ["name"] = "Limitless",
+        ["text"] = {
+            [1] = "The Limit has been {C:red}broken{}",
+            [2] = "{s:0.6} (This joker is for a free debug win)"
+        }
+    }
 
--- Seeker Start
+-- region Seeker 
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
     local joker_seeker = SMODS.Joker:new("Seeker", "seeker", {} , {
@@ -32,13 +39,10 @@
     
     joker_seeker:register()
 
-    SMODS.Jokers.j_seeker.set_ability = function(self, context)
-        sendDebugMessage("Hello !", 'MyLogger')
-    end
 
-SMODS.Jokers.j_seeker.tooltip = function(self, info_queue)
-  info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
-end
+    SMODS.Jokers.j_seeker.tooltip = function(self, info_queue)
+    info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+    end
 
 SMODS.Jokers.j_seeker.calculate = function(self, context)
         if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
@@ -62,7 +66,8 @@ SMODS.Jokers.j_seeker.calculate = function(self, context)
         end
     end
 
--- Feather Start
+-- endregion Seeker
+-- region Feather
 
     local joker_feather = SMODS.Joker:new("Feather", "feather", { atlas="b_cccjokers" }, {
         x = 0,
@@ -71,9 +76,6 @@ SMODS.Jokers.j_seeker.calculate = function(self, context)
 
     joker_feather:register()
 
-    SMODS.Jokers.j_feather.set_ability = function(self, context)
-        sendDebugMessage("Hello !", 'MyLogger')
-    end
 
 SMODS.Jokers.j_feather.calculate = function(self, context)
         if SMODS.end_calculate_context(context) then
@@ -86,6 +88,48 @@ SMODS.Jokers.j_feather.calculate = function(self, context)
         end
 end
 
+-- endregion Feather
+-- region Limitless (debug instant win joker)
+
+local joker_limitless = SMODS.Joker:new("Limitless", "limitless", {} , {
+    x = 0,
+    y = 1
+}, loc_limitless, 3, 9999, false, false, false, true, "", "b_cccjokers")
+
+joker_limitless:register()
+function SMODS.Jokers.j_limitless.loc_def(card)
+    return {card.ability.chips}
+end
+
+function SMODS.Jokers.j_limitless.set_ability(card, initial, delay_sprites)
+    card.ability.chips = 0
+    card.ability.extra = 1
+end
+
+function SMODS.Jokers.j_limitless.calculate(self, context)
+    if context.setting_blind and not self.getting_sliced then
+        G.E_MANAGER:add_event(Event({func = function()
+            self.ability.extra = self.ability.extra*2
+
+            --G.GAME.blind.chips = G.GAME.blind.chips*self.ability.extra
+            --G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+
+            card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Blind Increased!"})
+        return true end }))
+    elseif context.end_of_round then 
+        self.ability.chips = 10000000 -- G.GAME.chips
+    elseif context.cardarea == G.jokers and not context.before and not context.after then
+        return {
+            message = localize{type='variable',key='a_chips',vars={self.ability.chips or 0}},
+            chip_mod = self.ability.chips or 10000000
+        }
+    end
+end
+
+function SMODS.Jokers.j_limitless.set_badges(card, badges)
+    badges[#badges+1] = create_badge('Good luck', HEX('000000'), HEX('FFFFFF'), 1.2)
+end
+-- endregion Limitless  
 sendDebugMessage("[CCC] Jokers loaded")
 ----------------------------------------------
 ------------MOD CODE END----------------------

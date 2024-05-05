@@ -2,7 +2,7 @@
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
 --- MOD_AUTHOR: [AuroraAquir, toneblock]
---- MOD_DESCRIPTION: Virus Deck, Summit Deck, 3 Jokers
+--- MOD_DESCRIPTION: Virus Deck, Summit Deck, 3 Jokers, 2 Vouchers
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
@@ -24,6 +24,11 @@ function SMODS.INIT.CCC()
     sprite_card:register()
 
 	assert(load(love.filesystem.read(ccc_mod.path .. "jokers.lua")))()
+
+    local sprite_card = SMODS.Sprite:new("b_cccvouchers", ccc_mod.path, "vouchers.png", 71, 95, "asset_atli")
+    sprite_card:register()
+
+	assert(load(love.filesystem.read(ccc_mod.path .. "vouchers.lua")))()
 end
 
 
