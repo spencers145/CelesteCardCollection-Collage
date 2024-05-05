@@ -65,7 +65,7 @@ local virus_def = {
 	},
 }
 
-local virus = SMODS.Deck:new("Virus Deck", "virus", {virus = true, atlas= "b_decks"}, {x = 0, y = 0}, virus_def)
+local virus = SMODS.Deck:new("Virus Deck", "virus", {virus = true, atlas= "b_cccdecks"}, {x = 0, y = 0}, virus_def)
 virus:register()
 
 ----------- VIRUS DECK END -----------------------

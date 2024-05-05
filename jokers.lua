@@ -4,6 +4,7 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+--- Descriptions ---
     local loc_seeker = {
         ["name"] = "Seeker",
         ["text"] = {
@@ -24,13 +25,11 @@
 -- Seeker Start
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
-    local joker_seeker = SMODS.Joker:new("Seeker", "seeker", {}, {
-        x = 0,
+    local joker_seeker = SMODS.Joker:new("Seeker", "seeker", {} , {
+        x = 1,
         y = 0
-    }, loc_seeker, 2, 6, true, true, true, true)
-
-    SMODS.Sprite:new("j_seeker", SMODS.findModByID("CelesteCardCollection").path, "j_seeker.png", 71, 95, "asset_atli"):register();
-
+    }, loc_seeker, 2, 6, true, true, true, true, "", "b_cccjokers")
+    
     joker_seeker:register()
 
     SMODS.Jokers.j_seeker.set_ability = function(self, context)
@@ -65,12 +64,10 @@ SMODS.Jokers.j_seeker.calculate = function(self, context)
 
 -- Feather Start
 
-    local joker_feather = SMODS.Joker:new("Feather", "feather", {}, {
+    local joker_feather = SMODS.Joker:new("Feather", "feather", { atlas="b_cccjokers" }, {
         x = 0,
         y = 0
-    }, loc_feather, 2, 6, true, true, true, true)
-
-    SMODS.Sprite:new("j_feather", SMODS.findModByID("CelesteCardCollection").path, "j_feather.png", 71, 95, "asset_atli"):register();
+    }, loc_feather, 2, 6, true, true, true, true, "", "b_cccjokers")
 
     joker_feather:register()
 
