@@ -97,7 +97,7 @@ end
     local joker_bird = SMODS.Joker:new("Bird", "bird", { atlas="b_cccjokers" }, {
         x = 2,
         y = 0
-    }, loc_feather, 3, 8, true, true, true, true, "", "b_cccjokers")
+    }, loc_bird, 3, 8, true, true, true, true, "", "b_cccjokers")
 
     joker_bird:register()
 
