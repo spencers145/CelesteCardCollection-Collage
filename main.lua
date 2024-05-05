@@ -2,7 +2,7 @@
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
 --- MOD_AUTHOR: [AuroraAquir, toneblock]
---- MOD_DESCRIPTION: Virus Deck, Summit Deck, 3 Jokers, 2 Vouchers
+--- MOD_DESCRIPTION: Virus Deck, Summit Deck, 4 Jokers, 2 Vouchers. Also features ideas by: Fytos
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff

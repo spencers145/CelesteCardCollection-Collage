@@ -156,22 +156,21 @@ local joker_bird = SMODS.Joker:new("Bird", "bird", { atlas="b_cccjokers" }, {
 
 joker_bird:register()
 
-SMODS.Jokers.j_bird.set_ability = function(self, context)
-    sendDebugMessage("Hello !", 'MyLogger')
-end
+
 
 SMODS.Jokers.j_bird.calculate = function(self, context)
     if context.using_consumeable then
-    if context.consumeable.ability.set == 'Planet'  then
-    if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
-        return {
-    G.E_MANAGER:add_event(Event({
-                        func = function() 
-            card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+3 Cards", colour = G.C.FILTER})
-            G.FUNCS.draw_from_deck_to_hand(3)          
-                            return true
-            end}))}
-    end
+        if context.consumeable.ability.set == 'Planet'  then
+            if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
+                return {
+                        G.E_MANAGER:add_event(Event({
+                                            func = function() 
+                                card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+3 Cards", colour = G.C.FILTER})
+                                G.FUNCS.draw_from_deck_to_hand(3)          
+                                                return true
+                                end}))
+                        }
+            end
         end
     end
 end
