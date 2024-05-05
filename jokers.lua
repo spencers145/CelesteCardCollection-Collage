@@ -21,7 +21,13 @@
             [3] = "remaining"
         }
     }
-
+    local loc_bird = {
+        ["name"] = "Bird",
+        ["text"] = {
+            [1] = "Whenever a {C:planet}Planet{} card",
+            [2] = "is used, draw {C:attention}3{} cards",
+        }
+    }
 -- Seeker Start
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
@@ -85,6 +91,35 @@ SMODS.Jokers.j_feather.calculate = function(self, context)
 		end
         end
 end
+
+-- Bird Start
+
+    local joker_bird = SMODS.Joker:new("Bird", "bird", { atlas="b_cccjokers" }, {
+        x = 2,
+        y = 0
+    }, loc_feather, 3, 8, true, true, true, true, "", "b_cccjokers")
+
+    joker_bird:register()
+
+    SMODS.Jokers.j_bird.set_ability = function(self, context)
+        sendDebugMessage("Hello !", 'MyLogger')
+    end
+
+SMODS.Jokers.j_bird.calculate = function(self, context)
+        if context.using_consumeable then
+	 	if context.consumeable.ability.set == 'Planet'  then
+		if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATES.DRAW_TO_HAND then
+            return {
+ 		G.E_MANAGER:add_event(Event({
+                            func = function() 
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+3 Cards", colour = G.C.FILTER})
+ 				G.FUNCS.draw_from_deck_to_hand(3)          
+                                return true
+				end}))}
+		end
+        	end
+		end
+		end
 
 sendDebugMessage("[CCC] Jokers loaded")
 ----------------------------------------------
