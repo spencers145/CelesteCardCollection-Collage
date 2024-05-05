@@ -108,7 +108,7 @@ end
 SMODS.Jokers.j_bird.calculate = function(self, context)
         if context.using_consumeable then
 	 	if context.consumeable.ability.set == 'Planet'  then
-		if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATES.DRAW_TO_HAND then
+		if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
             return {
  		G.E_MANAGER:add_event(Event({
                             func = function() 
