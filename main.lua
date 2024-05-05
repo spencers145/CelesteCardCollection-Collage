@@ -1,8 +1,8 @@
 --- STEAMODDED HEADER
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
---- MOD_AUTHOR: [AuroraAquir]
---- MOD_DESCRIPTION: nothing for now
+--- MOD_AUTHOR: [AuroraAquir, toneblock]
+--- MOD_DESCRIPTION: Virus Deck + 2 Jokers
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
