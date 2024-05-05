@@ -29,7 +29,6 @@
         }
     }
 
--- region Seeker 
     local loc_bird = {
         ["name"] = "Bird",
         ["text"] = {
@@ -37,7 +36,7 @@
             [2] = "is used, draw {C:attention}3{} cards",
         }
     }
--- Seeker Start
+-- region Seeker 
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
     local joker_seeker = SMODS.Joker:new("Seeker", "seeker", {} , {
