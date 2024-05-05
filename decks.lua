@@ -59,7 +59,7 @@ end
 local virus_def = {
 	["name"]="Virus Deck",
 	["text"]={
-		[1]="Each scored card is retriggered",
+		[1]="Each played card is retriggered",
 		[2]="then {C:attention}debuffed{}",
 		[3]="until the end of the ante",
 	},
