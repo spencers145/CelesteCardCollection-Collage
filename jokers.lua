@@ -4,7 +4,6 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
-function SMODS.INIT.CelesteCardCollection()
     local loc_seeker = {
         ["name"] = "Seeker",
         ["text"] = {
@@ -21,18 +20,6 @@ function SMODS.INIT.CelesteCardCollection()
             [3] = "remaining"
         }
     }
-    local loc_bird = {
-        ["name"] = "Bird",
-        ["text"] = {
-            [1] = "Birdie",
-            [2] = "Birdie",
-            [3] = ":)"
-        }
-    }
-
--- Loc End
-
--- Spaghetti from now on :)
 
 -- Seeker Start
 
@@ -102,6 +89,6 @@ SMODS.Jokers.j_feather.calculate = function(self, context)
         end
 end
 
-end
+sendDebugMessage("[CCC] Jokers loaded")
 ----------------------------------------------
 ------------MOD CODE END----------------------
