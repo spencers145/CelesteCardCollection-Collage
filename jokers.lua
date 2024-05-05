@@ -101,5 +101,7 @@ SMODS.Jokers.j_feather.calculate = function(self, context)
 		end
         end
 end
+
+end
 ----------------------------------------------
 ------------MOD CODE END----------------------
