@@ -46,6 +46,14 @@
 	    [6] = "{C:inactive}(e.g. King & Ace, Jack & 3, 6 & 8){}",
         }
     }
+    local loc_zipper = {
+        ['name'] = 'Zipper',
+        ['text'] = {
+            [1] = 'Gains {C:chips}+30{} Chips for each',
+            [2] = '{C:attention}Blind{} skipped this run',
+            [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
+        }
+    }
 -- region Seeker 
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
@@ -254,13 +262,13 @@ SMODS.Jokers.j_partofyou.calculate = function(self, context)
     local joker_zipper = SMODS.Joker:new("Zipper", "zipper", {} , {
         x = 1,
         y = 0
-    }, loc_zipper, 1, 4, true, true, true, true, "", "b_cccjokers")
+    }, loc_zipper, 1, 5, true, true, true, true, "", "b_cccjokers")
 
     joker_zipper:register()
 
 SMODS.Jokers.j_zipper.set_ability = function(self, center, initial, delay_sprites)
         if self.ability.name == 'Zipper' then
-            self.ability.chips = G.GAME.skips*45
+            self.ability.chips = G.GAME.skips*30
 end
 end
 
