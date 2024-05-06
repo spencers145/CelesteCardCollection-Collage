@@ -46,6 +46,14 @@
 	    [6] = "{C:inactive}(e.g. King & Ace, Jack & 3, 6 & 8){}",
         }
     }
+    local loc_zipper = {
+        ['name'] = 'Zipper',
+        ['text'] = {
+            [1] = 'Gains {C:chips}+30{} Chips for each',
+            [2] = '{C:attention}Blind{} skipped this run',
+            [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
+        }
+    }
 -- region Seeker 
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
@@ -247,7 +255,123 @@ SMODS.Jokers.j_partofyou.calculate = function(self, context)
              end
 	  end
        end
+-- endregion Part Of You
+-- region Zipper
+
+    -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
+    local joker_zipper = SMODS.Joker:new("Zipper", "zipper", {} , {
+        x = 4,
+        y = 0
+    }, loc_zipper, 1, 5, true, true, true, true, "", "b_cccjokers")
+
+    joker_zipper:register()
+
+SMODS.Jokers.j_zipper.set_ability = function(self, center, initial, delay_sprites)
+        if self.ability.name == 'Zipper' then
+            self.ability.chips = G.GAME.skips*30
+end
+end
+
+    SMODS.Jokers.j_zipper.calculate = function(self, context)
+        if self.ability.name == 'Zipper' then
+            self.ability.chips = G.GAME.skips*30
+	end
+        if context.skip_blind then
+            if not context.blueprint then
+                G.E_MANAGER:add_event(Event({
+                    func = function() 
+                        card_eval_status_text(self, 'extra', nil, nil, nil, {
+                            message = localize{type = 'variable', key = 'a_chips', vars = {self.ability.chips}},
+                                colour = G.C.CHIPS,
+                            card = self
+                        }) 
+                        return true
+                    end}))
+            end
+	if SMODS.end_calculate_context(context) then
+            if self.ability.chips ~= 0 then
+                return {
+                    message = localize {
+                        type = 'variable',
+                        key = 'a_chips',
+                        vars = { self.ability.chips }
+                    },
+                    chip_mod = self.ability.chips,
+                    card = self
+                }
+end
+end
+end
+end
+
+-- endregion Zipper
+
+-- region uiBox (KEEP AT END)
+-- uibox code copied from betmma which was copied from lushmod idfk we kinda just need this shit for some stuff
+-- could maybe put this in a separate lua?
+
+local generate_UIBox_ability_tableref = Card.generate_UIBox_ability_table
+function Card.generate_UIBox_ability_table(self)
+    local card_type, hide_desc = self.ability.set or "None", nil
+    local loc_vars = nil
+    local main_start, main_end = nil, nil
+    local no_badge = nil
+
+    if self.config.center.unlocked == false and not self.bypass_lock then -- For everyting that is locked
+    elseif card_type == 'Undiscovered' and not self.bypass_discovery_ui then -- Any Joker or tarot/planet/voucher that is not yet discovered
+    elseif self.debuff then
+    elseif card_type == 'Default' or card_type == 'Enhanced' then
+    elseif self.ability.set == 'Joker' then
+        local customJoker = true
+
+        if self.ability.name == 'Feather' then
+        elseif self.ability.name == 'Seeker' then
+        elseif self.ability.name == 'Limitless' then
+        elseif self.ability.name == 'Bird' then
+        elseif self.ability.name == 'Part Of You' then
+        elseif self.ability.name == 'Zipper' then loc_vars = {self.ability.chips}
+        else
+            customJoker = false
+        end
+
+        if customJoker then
+            local badges = {}
+            if (card_type ~= 'Locked' and card_type ~= 'Undiscovered' and card_type ~= 'Default') or self.debuff then
+                badges.card_type = card_type
+            end
+            if self.ability.set == 'Joker' and self.bypass_discovery_ui and (not no_badge) then
+                badges.force_rarity = true
+            end
+            if self.edition then
+                if self.edition.type == 'negative' and self.ability.consumeable then
+                    badges[#badges + 1] = 'negative_consumable'
+                else
+                    badges[#badges + 1] = (self.edition.type == 'holo' and 'holographic' or self.edition.type)
+                end
+            end
+            if self.seal then
+                badges[#badges + 1] = string.lower(self.seal) .. '_seal'
+            end
+            if self.ability.eternal then
+                badges[#badges + 1] = 'eternal'
+            end
+            if self.pinned then
+                badges[#badges + 1] = 'pinned_left'
+            end
+
+            if self.sticker then
+                loc_vars = loc_vars or {};
+                loc_vars.sticker = self.sticker
+            end
+
+            return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start,
+                main_end)
+        end
+    end
+
+    return generate_UIBox_ability_tableref(self)
+end
+
 sendDebugMessage("[CCC] Jokers loaded")
--- endregion
 ----------------------------------------------
 ------------MOD CODE END----------------------
