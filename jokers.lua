@@ -260,7 +260,7 @@ SMODS.Jokers.j_partofyou.calculate = function(self, context)
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
     local joker_zipper = SMODS.Joker:new("Zipper", "zipper", {} , {
-        x = 1,
+        x = 4,
         y = 0
     }, loc_zipper, 1, 5, true, true, true, true, "", "b_cccjokers")
 
