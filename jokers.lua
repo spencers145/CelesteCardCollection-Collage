@@ -5,8 +5,8 @@
 ------------MOD CODE -------------------------
 
 --- Descriptions ---
-    local loc_seeker = {
-        ["name"] = "Seeker",
+    local loc_templeeyes = {
+        ["name"] = "Temple Eyes",
         ["text"] = {
             [1] = "If {C:attention}Blind{} is selected with",
             [2] = "{C:money}$4{} or less, create a",
@@ -38,12 +38,10 @@
     local loc_partofyou = {
         ["name"] = "Part Of You",
         ["text"] = {
-            [1] = "If {C:attention}first hand{} of round contains {C:attention}2{}",
-            [2] = "cards, convert the {C:attention}left{} card into",
-            [3] = "the {C:attention}right{} card, but turn the {C:attention}rank{}",
-            [4] = "into the {C:attention}right{} card's {C:attention}complement{}",
-            [5] = "",
-	    [6] = "{C:inactive}(e.g. King & Ace, Jack & 3, 6 & 8){}",
+            [1] = "If {C:attention}first hand{} of round contains exactly",
+            [2] = "{C:attention}2{} cards, convert both of their {C:attention}ranks{}",
+            [3] = "into their {C:attention}complements{}",
+	    [4] = "{C:inactive}(e.g. King <-> Ace, Jack <-> 3, 6 <-> 8){}",
         }
     }
     local loc_zipper = {
@@ -54,22 +52,22 @@
             [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
         }
     }
--- region Seeker 
+-- region Temple Eyes
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
-    local joker_seeker = SMODS.Joker:new("Seeker", "seeker", {} , {
+    local joker_templeeyes = SMODS.Joker:new("Temple Eyes", "templeeyes", {} , {
         x = 1,
         y = 0
-    }, loc_seeker, 2, 6, true, true, true, true, "", "b_cccjokers")
+    }, loc_templeeyes, 2, 7, true, true, true, true, "", "b_cccjokers")
     
-    joker_seeker:register()
+    joker_templeeyes:register()
 
 
-    SMODS.Jokers.j_seeker.tooltip = function(self, info_queue)
+    SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
     info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
     end
 
-SMODS.Jokers.j_seeker.calculate = function(self, context)
+SMODS.Jokers.j_templeeyes.calculate = function(self, context)
         if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 	if G.GAME.dollars <= 4 then
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
@@ -91,7 +89,7 @@ SMODS.Jokers.j_seeker.calculate = function(self, context)
         end
     end
 
--- endregion Seeker
+-- endregion Temple Eyes
 -- region Feather
 
     local joker_feather = SMODS.Joker:new("Feather", "feather", { atlas="b_cccjokers" }, {
@@ -190,7 +188,7 @@ end
     local joker_partofyou = SMODS.Joker:new("Part Of You", "partofyou", { atlas="b_cccjokers" }, {
         x = 3,
         y = 0
-    }, loc_partofyou, 3, 9, true, true, false, true, "", "b_cccjokers")
+    }, loc_partofyou, 3, 7, true, true, false, true, "", "b_cccjokers")
 
     joker_partofyou:register()
 
@@ -203,54 +201,96 @@ SMODS.Jokers.j_partofyou.calculate = function(self, context)
      	  if G.GAME.current_round.hands_played == 0 then
             if #context.full_hand == 2 then
                 G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[1]:flip();play_sound('card1', 1);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('card1', 1);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
  		G.E_MANAGER:add_event(Event({trigger = 'before',
                             func = function() 
 				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Mirrored!", colour = G.C.FILTER})   
                                 return true
 				end}))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.6,func = function()  copy_card(context.full_hand[2], context.full_hand[1]);return true end }))
-                        local suit = string.sub(context.full_hand[2].config.card.suit, 1, 1) .. "_"
-		if context.full_hand[2]:get_id() == 14 then
+                        local suit = string.sub(context.full_hand[1].config.card.suit, 1, 1) .. "_"
+		if context.full_hand[1]:get_id() == 14 then
                         local rank = "K"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 13 then
+		elseif context.full_hand[1]:get_id() == 13 then
                         local rank = "A"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 12 then
+		elseif context.full_hand[1]:get_id() == 12 then
                         local rank = "2"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 11 then
+		elseif context.full_hand[1]:get_id() == 11 then
                         local rank = "3"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 10 then
+		elseif context.full_hand[1]:get_id() == 10 then
                         local rank = "4"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 9 then
+		elseif context.full_hand[1]:get_id() == 9 then
                         local rank = "5"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 8 then
+		elseif context.full_hand[1]:get_id() == 8 then
                         local rank = "6"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 7 then
+		elseif context.full_hand[1]:get_id() == 7 then
                         local rank = "7"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 6 then
+		elseif context.full_hand[1]:get_id() == 6 then
                         local rank = "8"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 5 then
+		elseif context.full_hand[1]:get_id() == 5 then
                         local rank = "9"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 4 then
+		elseif context.full_hand[1]:get_id() == 4 then
                         local rank = "T"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 3 then
+		elseif context.full_hand[1]:get_id() == 3 then
                         local rank = "J"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 2 then
+		elseif context.full_hand[1]:get_id() == 2 then
                         local rank = "Q"
                 G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
 		end
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.45,func = function() context.full_hand[1]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
+                        local suit = string.sub(context.full_hand[2].config.card.suit, 1, 1) .. "_"
+		if context.full_hand[2]:get_id() == 14 then
+                        local rank = "K"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 13 then
+                        local rank = "A"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 12 then
+                        local rank = "2"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 11 then
+                        local rank = "3"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 10 then
+                        local rank = "4"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 9 then
+                        local rank = "5"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 8 then
+                        local rank = "6"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 7 then
+                        local rank = "7"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 6 then
+                        local rank = "8"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 5 then
+                        local rank = "9"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 4 then
+                        local rank = "T"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 3 then
+                        local rank = "J"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		elseif context.full_hand[2]:get_id() == 2 then
+                        local rank = "Q"
+                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+		end
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() context.full_hand[1]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
                 end
              end
 	  end
