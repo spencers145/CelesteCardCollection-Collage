@@ -18,7 +18,7 @@ local virus_def = {
 local summit_def = {
 	["name"]="Summit Deck",
 	["text"]={
-		[1]="Start with {C:attention}1{} Joker Slot",
+		[1]="Start with {C:attention}0{} Joker Slots",
 		[2]="{C:attention}+1{} Joker slot each Ante",
 		[3]="{s:0.75}(if Ante has not been reached before){}"
 	},
@@ -101,12 +101,31 @@ function summit_effect(self, args)
                         
 			end
 			return true end }))
-    end
+	end
 end
+
+local ease_anteRef = ease_ante
+function ease_ante(mod)
+	ease_anteRef(mod)
+	if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.selected_back.effect.config.add_slot_each_ante then
+		G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+		G.GAME.selected_back.effect.config.add_slot_each_ante = G.GAME.selected_back.effect.config.add_slot_each_ante + 1
+
+		attention_text({
+			text = "+1 Joker",
+			scale = 0.5, 
+			hold = 3.3,
+			cover = G.jokers.children.area_uibox,
+			cover_colour = G.C.CLEAR,
+			offset = {x=-3.25,y=1.25}
+		})
+	end
+end
+
 
 table.insert(trigger_effect_callbacks, summit_effect)
 
-local summit = SMODS.Deck:new("Summit Deck", "summit", {joker_slot = -4, add_slot_each_ante = 1, atlas= "b_cccdecks"}, {x = 1, y = 0}, summit_def)
+local summit = SMODS.Deck:new("Summit Deck", "summit", {joker_slot = -5, add_slot_each_ante = 1, atlas= "b_cccdecks"}, {x = 1, y = 0}, summit_def)
 summit:register()
 
 -- endregion summit deck-----------------------
