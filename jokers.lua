@@ -57,6 +57,7 @@
         ['text'] = {
             [1] = '{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}',
             [2] = 'edition to scored cards',
+            [3] = '{C:inactive}(Unaffected by retriggers){}'
         }
     }
 -- region Temple Eyes
