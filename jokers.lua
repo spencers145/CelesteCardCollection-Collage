@@ -52,6 +52,13 @@
             [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
         }
     }
+    local loc_miniheart = {
+        ['name'] = 'Mini Heart',
+        ['text'] = {
+            [1] = '{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}',
+            [2] = 'edition to scored cards',
+        }
+    }
 -- region Temple Eyes
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
@@ -63,9 +70,9 @@
     joker_templeeyes:register()
 
 
-    SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
-    info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
-    end
+SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
+  info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+end
 
 SMODS.Jokers.j_templeeyes.calculate = function(self, context)
         if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
@@ -345,6 +352,44 @@ end
 end
 
 -- endregion Zipper
+-- region Mini Heart
+
+    local joker_miniheart = SMODS.Joker:new("Mini Heart", "miniheart", { atlas="b_cccjokers" }, {
+        x = 5,
+        y = 0		
+    }, loc_miniheart, 1, 4, true, true, false, true, "", "b_cccjokers")
+
+    joker_miniheart:register()
+
+-- tooltip overrides edition, e.g. if you have a holographic/polychrome miniheart, it will override it and only say "Foil: +50 chips", unsure how to make it stack (like wheel of fortune) so tooltip removed for now
+
+-- SMODS.Jokers.j_miniheart.tooltip = function(self, info_queue)
+--  info_queue[#info_queue+1] = G.P_CENTERS.e_foil
+-- end
+
+SMODS.Jokers.j_miniheart.calculate = function(self, context)
+            if context.cardarea == G.jokers then
+       		 if SMODS.end_calculate_context(context) then
+                    if not context.blueprint then
+			local miniheartsuccess = false
+                        local crystal = {0}
+                        for k, v in ipairs(context.scoring_hand) do
+                         crystal[#crystal+1] = v
+			if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+       			 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+         		   local over = false
+			   local miniheartsuccess = true
+           		   v:set_edition({foil = true}, true)
+                           self:juice_up()
+                           v:juice_up()
+       		           return true end}))
+                            end
+			end
+			end
+			end
+end
+end
+-- endregion Mini Heart
 
 -- region uiBox (KEEP AT END)
 -- uibox code copied from betmma which was copied from lushmod idfk we kinda just need this shit for some stuff
@@ -370,6 +415,7 @@ function Card.generate_UIBox_ability_table(self)
         elseif self.ability.name == 'Bird' then
         elseif self.ability.name == 'Part Of You' then
         elseif self.ability.name == 'Zipper' then loc_vars = {self.ability.chips}
+        elseif self.ability.name == 'Mini Heart' then loc_vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
         else
             customJoker = false
         end
