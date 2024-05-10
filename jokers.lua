@@ -16,9 +16,10 @@
     local loc_feather = {
         ["name"] = "Feather",
         ["text"] = {
-            [1] = "{X:mult,C:white} X2 {} Mult when",
-            [2] = "{C:attention}0{} discards",
-            [3] = "remaining"
+            [1] = "Gains {X:mult,C:white} X0.05 {} Mult for",
+            [2] = "each card {C:attention}drawn{}",
+            [3] = "during the round",
+            [4] = "{C:inactive}(Currently {X:mult,C:white} X#2# {} Mult){}"
         }
     }
     local loc_limitless = {
@@ -52,6 +53,44 @@
             [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
         }
     }
+    local loc_miniheart = {
+        ['name'] = 'Mini Heart',
+        ['text'] = {
+            [1] = '{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}',
+            [2] = 'edition to scored cards',
+            [3] = '{C:inactive}(Unaffected by retriggers){}'
+        }
+    }
+    local loc_towels = {
+        ['name'] = 'Huge Mess: Towels',
+        ['text'] = {
+            [1] = 'When played hand contains a',
+            [2] = '{C:attention}Flush{}, gains {C:chips}+5{} Chips for',
+            [3] = 'each card held in hand that',
+            [4] = 'shares the same {C:attention}suit{}',
+            [5] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
+        }
+    }
+    local loc_boxes = {
+        ['name'] = 'Huge Mess: Boxes',
+        ['text'] = {
+            [1] = 'When played hand contains',
+            [2] = '{C:attention}Three of a Kind{}, gains',
+            [3] = '{C:mult}+1{} Mult for each possible',
+            [4] = '{C:attention}Pair{} held in hand',
+            [5] = '{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)'
+        }
+    }
+    local loc_books = {
+        ['name'] = 'Huge Mess: Books',
+        ['text'] = {
+            [1] = 'When played hand contains a',
+            [2] = '{C:attention}Straight{}, gains {X:mult,C:white} X0.07 {} Mult',
+            [3] = 'for each additional card in',
+            [4] = 'the {C:attention}sequence{} held in hand',
+            [5] = '{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}',
+        }
+    }
 -- region Temple Eyes
 
     -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
@@ -63,9 +102,9 @@
     joker_templeeyes:register()
 
 
-    SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
-    info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
-    end
+SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
+  info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+end
 
 SMODS.Jokers.j_templeeyes.calculate = function(self, context)
         if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
@@ -102,12 +141,11 @@ SMODS.Jokers.j_templeeyes.calculate = function(self, context)
 
 SMODS.Jokers.j_feather.calculate = function(self, context)
         if SMODS.end_calculate_context(context) then
-		if G.GAME.current_round.discards_left == 0 then
-            return {
-		message = localize{type='variable',key='a_xmult',vars={2}},
-		Xmult_mod = 2
-			}
-		end
+                            return {
+                                message = localize{type='variable',key='a_xmult',vars={1+(0.05*(#G.playing_cards - #G.deck.cards))}},
+                                Xmult_mod = 1+(0.05*(#G.playing_cards - #G.deck.cards)), 
+                                colour = G.C.MULT
+                            }
         end
 end
 
@@ -345,6 +383,534 @@ end
 end
 
 -- endregion Zipper
+-- region Mini Heart
+
+    local joker_miniheart = SMODS.Joker:new("Mini Heart", "miniheart", { atlas="b_cccjokers" }, {
+        x = 5,
+        y = 0		
+    }, loc_miniheart, 1, 4, true, true, false, true, "", "b_cccjokers")
+
+    joker_miniheart:register()
+
+-- tooltip overrides edition, e.g. if you have a holographic/polychrome miniheart, it will override it and only say "Foil: +50 chips", unsure how to make it stack (like wheel of fortune) so tooltip removed for now
+
+-- SMODS.Jokers.j_miniheart.tooltip = function(self, info_queue)
+--  info_queue[#info_queue+1] = G.P_CENTERS.e_foil
+-- end
+
+SMODS.Jokers.j_miniheart.calculate = function(self, context)
+            if context.cardarea == G.jokers then
+       		 if SMODS.end_calculate_context(context) then
+                    if not context.blueprint then
+			local miniheartsuccess = false
+                        local crystal = {}
+                        for k, v in ipairs(context.scoring_hand) do
+                         crystal[#crystal+1] = v
+			if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+       			 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+         		   local over = false
+			   local miniheartsuccess = true
+           		   v:set_edition({foil = true}, true)
+                           self:juice_up()
+                           v:juice_up()
+       		           return true end}))
+                            end
+			end
+			end
+			end
+end
+end
+-- endregion Mini Heart
+-- region Towels
+    local joker_towels = SMODS.Joker:new("Huge Mess: Towels", "towels", {extra = {chips = 0}, atlas="b_cccjokers" }, {
+        x = 0,
+        y = 0
+    }, loc_towels, 2, 7, true, true, true, true, "", "b_cccjokers")
+
+    joker_towels:register()
+
+SMODS.Jokers.j_towels.set_ability = function(self, center, initial, delay_sprites)
+  self.ability.extra.chips = 0
+end
+
+SMODS.Jokers.j_towels.calculate = function(self, context)
+	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
+
+                            local suits = {
+                                ['Hearts'] = 0,
+                                ['Diamonds'] = 0,
+                                ['Spades'] = 0,
+                                ['Clubs'] = 0
+                            }
+			    towels_flush_suit = 'None'
+                            for i = 1, #context.scoring_hand do
+                                if context.scoring_hand[i].ability.name ~= 'Wild Card' then
+                                    if context.scoring_hand[i]:is_suit('Hearts', true) then suits["Hearts"] = suits["Hearts"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Diamonds', true) then suits["Diamonds"] = suits["Diamonds"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Spades', true) then suits["Spades"] = suits["Spades"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Clubs', true) then suits["Clubs"] = suits["Clubs"] + 1 end
+                            end
+			    end
+                            if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
+			    towels_flush_suit = 'Hearts'
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
+                            elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
+			    towels_flush_suit = 'Diamonds'
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
+                            elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
+			    towels_flush_suit = 'Spades'
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
+                            elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
+			    towels_flush_suit = 'Clubs'
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
+			    else bredcard_flush_suit = 'Wild'
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
+			    end
+	end
+
+	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
+        	if context.cardarea == G.hand then
+	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
+                 	       if context.other_card.debuff then
+                           	 return {
+                          	      message = localize('k_debuffed'),
+                          	      colour = G.C.RED,
+                          	      card = self,
+                         	   }
+                     	   else
+                        self.ability.extra.chips = self.ability.extra.chips + 5
+                        	    return {
+                            message = localize('k_upgrade_ex'),
+                            colour = G.C.CHIPS,
+                            card = self
+                        }
+                        	end
+        		end
+	        end
+	end
+	if SMODS.end_calculate_context(context) then
+            if self.ability.extra.chips ~= 0 then
+                return {
+                    message = localize {
+                        type = 'variable',
+                        key = 'a_chips',
+                        vars = { self.ability.extra.chips }
+                    },
+                    chip_mod = self.ability.extra.chips,
+                    card = self
+                }
+	end
+end
+end
+
+-- endregion Towels
+-- region Boxes
+
+    local joker_boxes = SMODS.Joker:new("Huge Mess: Boxes", "boxes", {extra = {chips = 0}, atlas="b_cccjokers" }, {
+        x = 0,
+        y = 0
+    }, loc_boxes, 2, 7, true, true, true, true, "", "b_cccjokers")
+
+    joker_boxes:register()
+
+SMODS.Jokers.j_boxes.set_ability = function(self, center, initial, delay_sprites)
+  self.ability.extra.mult = 0
+end
+
+SMODS.Jokers.j_boxes.calculate = function(self, context)
+
+	if context.before and not context.blueprint then
+	boxes_rank_array = {}
+	boxes_card_array_length = 0
+	boxes_pair_amounts = 0
+	boxes_card_pair_candidate = 0
+	end
+
+	if context.individual and context.poker_hands ~= nil and ((next(context.poker_hands['Three of a Kind']) or next(context.poker_hands['Full House']) or next(context.poker_hands['Four of a Kind']) or next(context.poker_hands['Five of a Kind']) or next(context.poker_hands['Flush Five']))) and not context.blueprint then
+       		if context.cardarea == G.hand then
+			boxes_card_array_length = boxes_card_array_length + 1
+			boxes_rank_array[boxes_card_array_length] = context.other_card:get_id()
+		end
+	end
+
+	if SMODS.end_calculate_context(context) and not context.blueprint then
+		for v = 1, 13 do
+			boxes_card_pair_candidate = 0
+			for i = 1, boxes_card_array_length do
+				if boxes_rank_array[i] == v + 1 then
+					boxes_card_pair_candidate = boxes_card_pair_candidate + 1
+				end
+			end
+			boxes_pair_amounts = boxes_pair_amounts + ((boxes_card_pair_candidate - 1)*(boxes_card_pair_candidate)) / 2
+		end
+		if boxes_pair_amounts > 0 then
+			self.ability.extra.mult = self.ability.extra.mult + (boxes_pair_amounts)
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
+		end
+	end
+	if SMODS.end_calculate_context(context) then
+		if self.ability.extra.mult ~= 0 then
+                	return {
+                   	message = localize {
+                  		type = 'variable',
+                   		key = 'a_mult',
+                  		vars = { self.ability.extra.mult }
+                		},
+                	mult_mod = self.ability.extra.mult,
+                	card = self
+                	}
+		end
+	end
+end
+
+
+-- endregion Boxes
+-- region Books
+
+    local joker_books = SMODS.Joker:new("Huge Mess: Books", "books", {extra = {chips = 0}, atlas="b_cccjokers" }, {
+        x = 0,
+        y = 0
+    }, loc_books, 2, 7, true, true, true, true, "", "b_cccjokers")
+
+    joker_books:register()
+
+SMODS.Jokers.j_books.set_ability = function(self, center, initial, delay_sprites)
+  self.ability.extra.xmult = 1
+end
+
+SMODS.Jokers.j_books.calculate = function(self, context)
+
+	if context.before and not context.blueprint then
+	books_rank_array = {}
+	books_card_array_length = 0
+	books_pair_amounts = 0
+	books_card_pair_candidate = 0
+	books_scoring_straight_array = {}
+	books_scoring_pair = false
+	books_highest_rank_found = false
+	books_lowest_rank_found = false
+	books_additional_sequence_cards = 0
+	books_straight_border_high = 0
+	books_straight_border_low = 0
+	books_ace_high_scored = false
+	books_ace_high_scored_in_hand = false
+	books_ace_low_scored = false
+	books_skipped_ranks = false
+	books_allowed_skipped_ranks = {}
+	books_repeat_non_shortcut = true
+	debugging_score_sequence = "n"
+	debugging_hand_sequence = "n"
+	end
+
+	if context.individual and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
+       		if context.cardarea == G.hand then
+			books_card_array_length = books_card_array_length + 1
+			books_rank_array[books_card_array_length] = context.other_card:get_id()
+			table.sort(books_rank_array)
+		end
+	end
+
+	if SMODS.end_calculate_context(context) and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
+		for i = 1, #context.scoring_hand do
+			books_scoring_straight_array[i] = context.scoring_hand[i]:get_id()
+		end
+		table.sort(books_scoring_straight_array)
+
+		if not next(find_joker('Four Fingers')) then
+			if not next(find_joker('Shortcut')) then
+				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+					if books_scoring_straight_array[1] == 2 then
+						books_ace_low_scored = true
+						books_scoring_straight_array[#books_scoring_straight_array] = 1
+						table.sort(books_scoring_straight_array)
+					else
+						books_ace_high_scored = true
+					end
+				end
+			else
+				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+					if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
+						books_ace_low_scored = true
+						books_scoring_straight_array[#books_scoring_straight_array] = 1
+						table.sort(books_scoring_straight_array)
+					else
+						books_ace_high_scored = true
+					end
+				end
+			end
+		end
+
+		if next(find_joker('Four Fingers')) then 	-- things get a whole lot more complicated, that's what :(
+			for i = 1, (#books_scoring_straight_array - 1) do
+				if books_scoring_straight_array[i] == books_scoring_straight_array[i + 1] then
+					books_scoring_pair = true	
+				end
+			end
+			if books_scoring_pair ~= true then
+				if not next(find_joker('Shortcut')) then
+					if books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 1 then
+						table.remove(books_scoring_straight_array, 1)
+					end
+					if books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1 then
+						if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+							if books_scoring_straight_array[1] == 2 then
+								books_ace_low_scored = true
+								books_scoring_straight_array[#books_scoring_straight_array] = 1
+								table.sort(books_scoring_straight_array)
+								if books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1 then
+									books_scoring_straight_array[#books_scoring_straight_array] = nil
+								end
+							else
+								books_scoring_straight_array[#books_scoring_straight_array] = nil
+							end
+						else
+							books_scoring_straight_array[#books_scoring_straight_array] = nil
+						end
+					end
+					if books_ace_low_scored == false and books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+						books_ace_high_scored = true
+					end
+				else
+					if (books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 1) and (books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 2) then
+						table.remove(books_scoring_straight_array, 1)
+					end
+					if (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1) and (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 2) then
+						if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+							if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
+								books_ace_low_scored = true
+								books_scoring_straight_array[#books_scoring_straight_array] = 1
+								table.sort(books_scoring_straight_array)
+								if (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1) and (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 2) then
+									books_scoring_straight_array[#books_scoring_straight_array] = nil
+								end
+							else
+								books_scoring_straight_array[#books_scoring_straight_array] = nil
+							end
+						else
+							books_scoring_straight_array[#books_scoring_straight_array] = nil
+						end
+					end
+					if books_ace_low_scored == false and books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+						books_ace_high_scored = true
+					end
+				end
+			else
+				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+					if books_scoring_straight_array[1] == 2 then
+						books_ace_low_scored = true
+						books_scoring_straight_array[#books_scoring_straight_array] = 1
+						table.sort(books_scoring_straight_array)
+					else
+						books_ace_high_scored = true
+					end
+				end
+				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
+					if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
+						books_ace_low_scored = true
+						books_scoring_straight_array[#books_scoring_straight_array] = 1
+						table.sort(books_scoring_straight_array)
+					else
+						books_ace_high_scored = true
+					end
+				end
+			end			
+			if books_scoring_straight_array[#books_scoring_straight_array] == 14 and books_ace_low_scored == true then 	-- have to check if the player played another fucking ace in a low ace straight for whatever reason
+				books_scoring_straight_array[#books_scoring_straight_array] = nil
+			end
+		end
+		
+		-- now we have an accurate books_scoring_straight_array! woo i sure hope there aren't any other problems!
+		
+		if next(find_joker('Shortcut')) then
+			if (books_scoring_straight_array[#books_scoring_straight_array] - books_scoring_straight_array[1]) > (#books_scoring_straight_array - 1) then
+				books_skipped_ranks = true
+				for i = 1, (#books_scoring_straight_array - 1) do
+					if books_scoring_straight_array[i] == (books_scoring_straight_array[i + 1] - 2) then
+						books_allowed_skipped_ranks[#books_allowed_skipped_ranks + 1] = books_scoring_straight_array[i] + 1
+					end
+				end
+			end
+		end
+		
+		books_straight_border_low = books_scoring_straight_array[1]
+		books_straight_border_high = books_scoring_straight_array[#books_scoring_straight_array]
+		
+		if not next(find_joker('Shortcut')) then
+			while books_highest_rank_found == false do
+				books_highest_rank_found = true
+				for i = 1, books_card_array_length do
+					if books_rank_array[i] == books_straight_border_high + 1 then
+						if books_rank_array[i] == 14 and books_ace_high_scored == false then
+							books_ace_high_scored = true
+							books_ace_high_scored_in_hand = true
+							books_straight_border_high = books_rank_array[i]
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						end
+						if books_rank_array[i] ~= 14 then
+							books_highest_rank_found = false
+							books_straight_border_high = books_rank_array[i]
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						end
+					end
+				end
+			end
+			while books_lowest_rank_found == false do
+				books_lowest_rank_found = true
+				for i = 1, books_card_array_length do
+					if books_rank_array[i] == books_straight_border_low - 1 then
+						if books_rank_array[i] ~= 14 then
+							books_lowest_rank_found = false
+							books_straight_border_low = books_rank_array[i]
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						end
+					end
+				end
+				if books_straight_border_low - 1 == 1 then
+					if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
+						if books_ace_high_scored_in_hand == true then
+							if books_rank_array[#books_rank_array - 1] == 14 then
+								books_ace_low_scored = true
+								books_straight_border_low = 1
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						else
+							books_ace_low_scored = true
+							books_straight_border_low = 1
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						end
+					end	
+				end		
+			end
+		else
+			while books_highest_rank_found == false do
+				books_highest_rank_found = true
+				while books_repeat_non_shortcut == true do
+					books_repeat_non_shortcut = false
+					for i = 1, books_card_array_length do
+						if books_rank_array[i] == books_straight_border_high + 1 then
+							if books_rank_array[i] == 14 and books_ace_high_scored == false then
+								books_ace_high_scored = true
+								books_ace_high_scored_in_hand = true
+								books_straight_border_high = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+							if books_rank_array[i] ~= 14 then
+								books_highest_rank_found = false
+								books_repeat_non_shortcut = true
+								books_straight_border_high = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						end
+					end
+				end
+				for i = 1, books_card_array_length do
+					if books_repeat_non_shortcut == false then
+						if books_rank_array[i] == (books_straight_border_high + 2) then
+							if books_rank_array[i] == 14 and books_ace_high_scored == false then
+								books_ace_high_scored = true
+								books_ace_high_scored_in_hand = true
+								books_straight_border_high = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+							if books_rank_array[i] ~= 14 then
+								books_highest_rank_found = false
+								books_repeat_non_shortcut = true
+								books_straight_border_high = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end				
+						end
+					end
+				end
+			end
+			books_repeat_non_shortcut = true
+			while books_lowest_rank_found == false do
+				books_lowest_rank_found = true
+				while books_repeat_non_shortcut == true do
+					books_repeat_non_shortcut = false
+					for i = 1, books_card_array_length do
+						if books_rank_array[i] == books_straight_border_low - 1 then
+							if books_rank_array[i] ~= 14 then
+								books_lowest_rank_found = false
+								books_repeat_non_shortcut = true
+								books_straight_border_low = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						end
+					end
+					if books_straight_border_low - 1 == 1 then
+						if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
+							if books_ace_high_scored_in_hand == true then
+								if books_rank_array[#books_rank_array - 1] == 14 then
+									books_ace_low_scored = true
+									books_straight_border_low = 1
+									books_additional_sequence_cards = books_additional_sequence_cards + 1
+								end
+							else
+								books_ace_low_scored = true
+								books_straight_border_low = 1
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						end
+					end
+				end
+				for i = 1, books_card_array_length do
+					if books_repeat_non_shortcut == false then
+						if books_rank_array[i] == books_straight_border_low - 2 then
+							if books_rank_array[i] ~= 14 then
+								books_lowest_rank_found = false
+								books_repeat_non_shortcut = true
+								books_straight_border_low = books_rank_array[i]
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						end				
+					end
+				end
+				if books_straight_border_low - 1 == 1 then
+					if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
+						if books_ace_high_scored_in_hand == true then
+							if books_rank_array[#books_rank_array - 1] == 14 then
+								books_ace_low_scored = true
+								books_straight_border_low = 1
+								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							end
+						else
+							books_ace_low_scored = true
+							books_straight_border_low = 1
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						end
+					end
+				end
+			end
+			if books_skipped_ranks == true then
+				for i = 1, #books_allowed_skipped_ranks do
+					for v = 1, #books_rank_array do
+						if books_rank_array[v] == books_allowed_skipped_ranks[i] then
+							books_additional_sequence_cards = books_additional_sequence_cards + 1
+							books_allowed_skipped_ranks[i] = 0
+						end
+					end
+				end
+			end
+		end
+		if books_additional_sequence_cards > 0 then
+			self.ability.extra.xmult = self.ability.extra.xmult + (0.07*(books_additional_sequence_cards))
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
+		end
+	end
+	if SMODS.end_calculate_context(context) then
+		if self.ability.extra.xmult ~= 1 then
+                	return {
+                   	message = localize {
+                  		type = 'variable',
+                   		key = 'a_xmult',
+                  		vars = { self.ability.extra.xmult }
+                		},
+                	mult_mod = self.ability.extra.xmult,
+                	card = self
+                	}
+		end
+	end
+end
 
 -- region uiBox (KEEP AT END)
 -- uibox code copied from betmma which was copied from lushmod idfk we kinda just need this shit for some stuff
@@ -364,12 +930,17 @@ function Card.generate_UIBox_ability_table(self)
     elseif self.ability.set == 'Joker' then
         local customJoker = true
 
-        if self.ability.name == 'Feather' then
+        if self.ability.name == 'Feather' then loc_vars = {self.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}
         elseif self.ability.name == 'Seeker' then
         elseif self.ability.name == 'Limitless' then
         elseif self.ability.name == 'Bird' then
         elseif self.ability.name == 'Part Of You' then
         elseif self.ability.name == 'Zipper' then loc_vars = {self.ability.chips}
+        elseif self.ability.name == 'Mini Heart' then loc_vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
+	elseif self.ability.name == 'Huge Mess: Towels' then loc_vars = {self.ability.extra.chips}
+	elseif self.ability.name == 'Huge Mess: Boxes' then loc_vars = {self.ability.extra.mult}
+	elseif self.ability.name == 'Huge Mess: Books' then loc_vars = {self.ability.extra.xmult}
+
         else
             customJoker = false
         end
