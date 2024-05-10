@@ -86,9 +86,6 @@ function summit_effect(self, args)
 	if self.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > self.effect.config.add_slot_each_ante and args.context == 'eval' and G.GAME.last_blind and G.GAME.last_blind.boss then
 		G.E_MANAGER:add_event(Event({func = function()
 			if G.jokers then
-				G.jokers.config.card_limit = G.jokers.config.card_limit + 1
-				self.effect.config.add_slot_each_ante = self.effect.config.add_slot_each_ante + 1
-
 				local width = G.round_eval.T.w - 0.51
 				local slotAdded = {n=G.UIT.R, config={align = "cm", minw = width}, nodes={
 					{n=G.UIT.O, config={object = DynaText({string = {'+1 Joker Slot!'}, colours = {G.C.ORANGE},shadow = true, float = false, y_offset = 0, scale = 0.66, spacing = 0, font = G.LANGUAGES['en-us'].font, pop_in = 0})}}
