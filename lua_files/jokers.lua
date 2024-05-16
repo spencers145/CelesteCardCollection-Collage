@@ -16,7 +16,8 @@ local templeeyes = SMODS.Joker({
 	rarity = 2,
 	cost = 7,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
 
 templeeyes.calculate = function(self, context)
@@ -62,7 +63,8 @@ local feather = SMODS.Joker({
 	rarity = 2,
 	cost = 6,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
 
 feather.calculate = function(self, context)
@@ -98,7 +100,8 @@ local bird = SMODS.Joker({
 	rarity = 3,
 	cost = 8,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
 
 bird.calculate = function(self, context)
@@ -141,7 +144,7 @@ local partofyou = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "b_ccc_jokers"
+	atlas = "j_ccc_jokers"
 })
 
 partofyou.calculate = function(self, context)
@@ -264,8 +267,15 @@ local zipper = SMODS.Joker({
 	rarity = 1,
 	cost = 5,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
+
+zipper.set_ability = function(self, context)
+        if self.ability.name == 'Zipper' then
+            self.ability.extra.chips = G.GAME.skips*30
+	end
+end
 
 zipper.calculate = function(self, context)
         if self.ability.name == 'Zipper' then
@@ -323,7 +333,8 @@ local miniheart = SMODS.Joker({
 	rarity = 1,
 	cost = 5,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
 })
 
 miniheart.calculate = function(self, context)
@@ -375,7 +386,8 @@ local towels = SMODS.Joker({
 	rarity = 2,
 	cost = 7,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
 
 towels.calculate = function(self, context)
@@ -466,7 +478,8 @@ local chests = SMODS.Joker({
 	rarity = 2,
 	cost = 7,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
 
 chests.calculate = function(self, context)
@@ -541,12 +554,9 @@ local books = SMODS.Joker({
 	rarity = 2,
 	cost = 7,
 	discovered = true,
-	atlas = "b_ccc_jokers"
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
 })
-
-books.set_ability = function(self, center, initial, delay_sprites)
-  self.ability.xmult = 1
-end
 
 books.calculate = function(self, context)
 
@@ -910,7 +920,7 @@ local ominousmirror = SMODS.Joker({
 	cost = 10,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "b_ccc_jokers"
+	atlas = "j_ccc_jokers"
 })
 
 ominousmirror.calculate = function(self, context)
@@ -941,3 +951,315 @@ end
 function ominousmirror.loc_def(self)
 	return {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
 end
+
+-- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
+
+-- region ALL BERRIES
+
+-- region Strawberry
+
+local strawberry = SMODS.Joker({
+	name = "Strawberry",
+	key = "strawberry",
+    config = {extra = {money = 8}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Strawberry',
+        text = {
+	"Earn {C:money}$#1#{} at end of round,",
+	"reduces by {C:money}$1{} at start",
+	"of each round"
+        }
+    },
+	rarity = 1,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+-- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
+
+strawberry.calculate = function(self, context)
+	if context.end_of_round then
+		the_strawberry_start_of_round_fucking_finished = false
+	end
+	if context.setting_blind and the_strawberry_start_of_round_fucking_finished ~= true then
+		if not context.blueprint then
+			if self.ability.extra.money > 1 then
+				self.ability.extra.money = self.ability.extra.money - 1
+				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
+			else
+				G.E_MANAGER:add_event(Event({
+					func = function()
+					card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
+					play_sound('tarot1')
+					self.T.r = -0.2
+					self:juice_up(0.3, 0.4)
+					self.states.drag.is = true
+					self.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(self)
+							self:remove()
+							self = nil
+						return true; end})) 
+					return true
+				end
+                       		}))
+			end 
+			the_strawberry_start_of_round_fucking_finished = true
+		end
+	end
+end
+
+function strawberry.loc_def(center)
+	return {center.ability.extra.money}
+end
+
+
+-- endregion Strawberry
+
+-- region Winged Strawberry
+
+local wingedstrawberry = SMODS.Joker({
+	name = "Winged Strawberry",
+	key = "wingedstrawberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize both winged berries to pair. i don't like this but idfk how to change it and pair is fine
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Winged Strawberry',
+        text = {
+	"Earn {C:money}$3{} if {C:attention}poker hand{} does",
+	"not contain a {C:attention}#1#{},",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+wingedstrawberry.calculate = function(self, context)
+	if context.end_of_round and the_winged_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_winged_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_winged_berry_end_of_round_fucking_finished = false
+			if not next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				ease_dollars(2)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 2
+				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+				return {
+					message = localize('$')..2,
+					dollars = 2,
+					colour = G.C.MONEY
+					}
+			end
+		end
+	end
+end
+		
+	
+
+function wingedstrawberry.loc_def(center)
+	return {(center.ability.extra.winged_poker_hand)}
+end
+
+-- endregion Winged Strawberry
+
+-- region Golden Strawberry
+
+local goldenstrawberry = SMODS.Joker({
+	name = "Golden Strawberry",
+	key = "goldenstrawberry",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Golden Strawberry',
+        text = {
+	"Earn {C:money}$15{} at end of",
+	"{C:attention}Boss Blind{}"
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+-- literally the simplest code in the entire mod lmao
+
+goldenstrawberry.calculate = function(self, context)
+	if context.setting_blind then
+		if context.blind.boss then
+			golden_strawberry_after_boss_blind = true
+		else
+			golden_strawberry_after_boss_blind = false
+		end
+	end
+end
+
+-- endregion Golden Strawberry
+
+-- region Winged Golden Strawberry
+
+local wingedgoldenstrawberry = SMODS.Joker({
+	name = "Winged Golden Strawberry",
+	key = "wingedgoldenstrawberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Winged Golden Strawberry',
+        text = {
+	"Earn {C:money}$25{} at end of {C:attention}Boss Blind{} if",
+	"beaten without playing a hand",
+	"that contains a {C:attention}#1#{},",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+wingedgoldenstrawberry.calculate = function(self, context)
+	if context.end_of_round and the_winged_GOLDEN_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_winged_GOLDEN_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_winged_GOLDEN_berry_end_of_round_fucking_finished = false
+			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				winged_golden_strawberry_condition_satisfied = false
+			end
+		end
+	end
+	if context.setting_blind then
+		winged_golden_strawberry_condition_satisfied = true
+		if context.blind.boss then
+			golden_strawberry_after_boss_blind = true	-- redundant variable switching if you have both... idc
+		else
+			golden_strawberry_after_boss_blind = false
+		end
+	end
+end
+
+function wingedgoldenstrawberry.loc_def(center)
+	return {center.ability.extra.winged_poker_hand}
+end
+
+-- endregion Winged Golden Strawberry
+
+-- region Moon Berry
+
+local moonberry = SMODS.Joker({
+	name = "Moon Berry",
+	key = "moonberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Moon Berry',
+        text = {
+	"If round ends without playing",
+	"hand that contains a {C:attention}#1#{},",
+	"create its {C:planet}Planet{} card with",
+	"with added {C:dark_edition}Negative{} edition,",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+moonberry.calculate = function(self, context)
+	if context.end_of_round and the_SPACE_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+			if space_berry_condition_satisfied == true then
+				local card_type = 'Planet'
+				G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.0,
+				func = (function()
+					if self.ability.extra.winged_poker_hand then
+						local _planet = 0
+						for k, v in pairs(G.P_CENTER_POOLS.Planet) do
+						if v.config.hand_type == old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk then
+							_planet = v.key
+                        			end
+                   			end
+                    			local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')
+					card:set_edition({negative = true}, true)
+                    			card:add_to_deck()
+                    			G.consumeables:emplace(card)
+                			end
+                			return true
+            				end)}))
+        			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.PLANET})
+    			end
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+		    old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk = self.ability.extra.winged_poker_hand
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_SPACE_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_SPACE_berry_end_of_round_fucking_finished = false
+			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				space_berry_condition_satisfied = false
+			end
+		end
+	end
+	if context.setting_blind then
+		space_berry_condition_satisfied = true
+	end
+end
+
+function moonberry.loc_def(center)
+	return {center.ability.extra.winged_poker_hand}
+end
+
+-- endregion Moon Berry
+
+return {name = "Jokers", 
+        items = {sprite_sheet}}

@@ -17,7 +17,7 @@ local v_gondola = SMODS.Voucher({
 	unlocked = true,
 	available = true,
 	requires = {},
-	atlas = "b_ccc_vouchers"
+	atlas = "v_ccc_vouchers"
 })
 
 v_gondola:register()
@@ -71,7 +71,7 @@ local v_feather = SMODS.Voucher({
 	unlocked = true,
 	available = true,
 	requires = {'v_ccc_gondola'},
-	atlas = "b_ccc_vouchers"
+	atlas = "v_ccc_vouchers"
 })
 
 

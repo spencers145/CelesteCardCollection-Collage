@@ -1,12 +1,3 @@
-local summit_def = {
-	["name"]="Summit Deck",
-	["text"]={
-		[1]="Start with {C:attention}0{} Joker Slots",
-		[2]="{C:attention}+1{} Joker slot each Ante",
-		[3]="{s:0.75}(if Ante has not been reached before){}"
-	},
-}
-
 local trigger_effect_callbacks = {}
 
 -- region virus deck -----------------------
