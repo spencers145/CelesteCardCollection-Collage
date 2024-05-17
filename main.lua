@@ -2,8 +2,8 @@
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
 --- PREFIX: ccc
---- MOD_AUTHOR: [AuroraAquir, toneblock]
---- MOD_DESCRIPTION: 2 Decks, 9 Jokers, 2 Vouchers. Features ideas by: Fytos
+--- MOD_AUTHOR: [AuroraAquir, toneblock, Gappie]
+--- MOD_DESCRIPTION: 2 Decks, 9 Jokers, 2 Vouchers. Features ideas by: Fytos, Gappie
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
