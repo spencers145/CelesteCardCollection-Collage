@@ -1,105 +1,26 @@
---- STEAMODDED HEADER
---- SECONDARY MOD FILE
+--region Temple Eyes
 
-----------------------------------------------
-------------MOD CODE -------------------------
+local templeeyes = SMODS.Joker({
+	name = "Temple Eyes",
+	key = "templeeyes",
+    config = {},
+	pos = {x = 1, y = 0},
+	loc_txt = {
+        name = 'Temple Eyes',
+        text = {
+	"If {C:attention}Blind{} is selected with",
+	"{C:money}$4{} or less, create a",
+	"{C:tarot}Hanged Man{}"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
 
---- Descriptions ---
-    local loc_templeeyes = {
-        ["name"] = "Temple Eyes",
-        ["text"] = {
-            [1] = "If {C:attention}Blind{} is selected with",
-            [2] = "{C:money}$4{} or less, create a",
-            [3] = "{C:tarot}Hanged Man{}"
-        }
-    }
-    local loc_feather = {
-        ["name"] = "Feather",
-        ["text"] = {
-            [1] = "Gains {X:mult,C:white} X0.05 {} Mult for",
-            [2] = "each card {C:attention}drawn{}",
-            [3] = "during the round",
-            [4] = "{C:inactive}(Currently {X:mult,C:white} X#2# {} Mult){}"
-        }
-    }
-    local loc_bird = {
-        ["name"] = "Bird",
-        ["text"] = {
-            [1] = "Whenever a {C:planet}Planet{} card",
-            [2] = "is used, draw {C:attention}3{} cards",
-        }
-    }
-    local loc_partofyou = {
-        ["name"] = "Part Of You",
-        ["text"] = {
-            [1] = "If {C:attention}first hand{} of round contains exactly",
-            [2] = "{C:attention}2{} cards, convert both of their {C:attention}ranks{}",
-            [3] = "into their {C:attention}complements{}",
-	    [4] = "{C:inactive}(e.g. King <-> Ace, Jack <-> 3, 6 <-> 8){}",
-        }
-    }
-    local loc_zipper = {
-        ['name'] = 'Zipper',
-        ['text'] = {
-            [1] = 'Gains {C:chips}+30{} Chips for each',
-            [2] = '{C:attention}Blind{} skipped this run',
-            [3] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
-        }
-    }
-    local loc_miniheart = {
-        ['name'] = 'Mini Heart',
-        ['text'] = {
-            [1] = '{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}',
-            [2] = 'edition to scored cards',
-            [3] = '{C:inactive}(Unaffected by retriggers){}'
-        }
-    }
-    local loc_towels = {
-        ['name'] = 'Huge Mess: Towels',
-        ['text'] = {
-            [1] = 'When played hand contains a',
-            [2] = '{C:attention}Flush{}, gains {C:chips}+5{} Chips for',
-            [3] = 'each card held in hand that',
-            [4] = 'shares the same {C:attention}suit{}',
-            [5] = '{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)'
-        }
-    }
-    local loc_boxes = {
-        ['name'] = 'Huge Mess: Boxes',
-        ['text'] = {
-            [1] = 'When played hand contains',
-            [2] = '{C:attention}Three of a Kind{}, gains',
-            [3] = '{C:mult}+1{} Mult for each possible',
-            [4] = '{C:attention}Pair{} held in hand',
-            [5] = '{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)'
-        }
-    }
-    local loc_books = {
-        ['name'] = 'Huge Mess: Books',
-        ['text'] = {
-            [1] = 'When played hand contains a',
-            [2] = '{C:attention}Straight{}, gains {X:mult,C:white} X0.07 {} Mult',
-            [3] = 'for each additional card in',
-            [4] = 'the {C:attention}sequence{} held in hand',
-            [5] = '{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}',
-        }
-    }
--- region Temple Eyes
-
-    -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
-    local joker_templeeyes = SMODS.Joker:new("Temple Eyes", "templeeyes", {} , {
-        x = 1,
-        y = 0
-    }, loc_templeeyes, 2, 7, true, true, true, true, "", "b_cccjokers")
-    
-    joker_templeeyes:register()
-
-
-SMODS.Jokers.j_templeeyes.tooltip = function(self, info_queue)
-  info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
-end
-
-SMODS.Jokers.j_templeeyes.calculate = function(self, context)
+templeeyes.calculate = function(self, context)
         if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 	if G.GAME.dollars <= 4 then
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
@@ -122,17 +43,31 @@ SMODS.Jokers.j_templeeyes.calculate = function(self, context)
     end
 
 -- endregion Temple Eyes
+
 -- region Feather
 
-    local joker_feather = SMODS.Joker:new("Feather", "feather", { atlas="b_cccjokers" }, {
-        x = 0,
-        y = 0
-    }, loc_feather, 2, 6, true, true, true, true, "", "b_cccjokers")
+local feather = SMODS.Joker({
+	name = "Feather",
+	key = "feather",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Feather',
+        text = {
+	"Gains {X:mult,C:white} X0.05 {} Mult for",
+	"each card {C:attention}drawn{}",
+	"during the round",
+	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
 
-    joker_feather:register()
-
-
-SMODS.Jokers.j_feather.calculate = function(self, context)
+feather.calculate = function(self, context)
         if SMODS.end_calculate_context(context) then
                             return {
                                 message = localize{type='variable',key='a_xmult',vars={1+(0.05*(#G.playing_cards - #G.deck.cards))}},
@@ -142,60 +77,34 @@ SMODS.Jokers.j_feather.calculate = function(self, context)
         end
 end
 
--- endregion Feather
--- region Limitless (debug instant win joker)
+function feather.loc_def(self)
+	return {self.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}
+end
 
--- local joker_limitless = SMODS.Joker:new("Limitless", "limitless", {} , {
---     x = 0,
---     y = 1
--- }, loc_limitless, 3, 9999, false, false, false, true, "", "b_cccjokers")
+--endregion Feather
 
--- joker_limitless:register()
--- function SMODS.Jokers.j_limitless.loc_def(card)
---     return {card.ability.chips}
--- end
+--region Bird
 
--- function SMODS.Jokers.j_limitless.set_ability(card, initial, delay_sprites)
---     card.ability.chips = 0
---     card.ability.extra = 1
--- end
+local bird = SMODS.Joker({
+	name = "Bird",
+	key = "bird",
+    config = {},
+	pos = {x = 2, y = 0},
+	loc_txt = {
+        name = 'Bird',
+        text = {
+	"Whenever a {C:planet}Planet{} card",
+	"is used, draw {C:attention}3{} cards"
+        }
+    },
+	rarity = 3,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
 
--- function SMODS.Jokers.j_limitless.calculate(self, context)
---     if context.setting_blind and not self.getting_sliced then
---         G.E_MANAGER:add_event(Event({func = function()
---             self.ability.extra = self.ability.extra*2
-
---             --G.GAME.blind.chips = G.GAME.blind.chips*self.ability.extra
---             --G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-
---             card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Blind Increased!"})
---         return true end }))
---     elseif context.end_of_round then 
---         self.ability.chips = 10000000 -- G.GAME.chips
---     elseif context.cardarea == G.jokers and not context.before and not context.after then
---         return {
---             message = localize{type='variable',key='a_chips',vars={self.ability.chips or 0}},
---             chip_mod = self.ability.chips or 10000000
---         }
---     end
--- end
-
--- function SMODS.Jokers.j_limitless.set_badges(card, badges)
---     badges[#badges+1] = create_badge('Good luck', HEX('000000'), HEX('FFFFFF'), 1.2)
--- end
--- endregion Limitless  
--- region Bird
-
-local joker_bird = SMODS.Joker:new("Bird", "bird", { atlas="b_cccjokers" }, {
-    x = 2,
-    y = 0
-}, loc_bird, 3, 8, true, true, true, true, "", "b_cccjokers")
-
-joker_bird:register()
-
-
-
-SMODS.Jokers.j_bird.calculate = function(self, context)
+bird.calculate = function(self, context)
     if context.using_consumeable then
         if context.consumeable.ability.set == 'Planet'  then
             if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
@@ -212,22 +121,33 @@ SMODS.Jokers.j_bird.calculate = function(self, context)
     end
 end
 
-
 -- endregion Bird
+
 -- region Part Of You
 
-    local joker_partofyou = SMODS.Joker:new("Part Of You", "partofyou", { atlas="b_cccjokers" }, {
-        x = 3,
-        y = 0
-    }, loc_partofyou, 3, 7, true, true, false, true, "", "b_cccjokers")
+local partofyou = SMODS.Joker({
+	name = "Part Of You",
+	key = "partofyou",
+    config = {},
+	pos = {x = 3, y = 0},
+	loc_txt = {
+        name = 'Part Of You',
+        text = {
+	"If {C:attention}first hand{} of round contains exactly",
+	"{C:attention}2{} cards, convert both of their {C:attention}ranks{}",
+	"into their {C:attention}complements{}",
+	"{C:inactive}(e.g. King <-> Ace, Jack <-> 3, 6 <-> 8){}"
+        }
+    },
+	rarity = 
+3,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
 
-    joker_partofyou:register()
-
-    SMODS.Jokers.j_partofyou.set_ability = function(self, context)
-        sendDebugMessage("Hello !", 'MyLogger')
-    end
-
-SMODS.Jokers.j_partofyou.calculate = function(self, context)
+partofyou.calculate = function(self, context)
 	if SMODS.end_calculate_context(context) then
      	  if G.GAME.current_round.hands_played == 0 then
             if #context.full_hand == 2 then
@@ -326,72 +246,98 @@ SMODS.Jokers.j_partofyou.calculate = function(self, context)
              end
 	  end
        end
+
 -- endregion Part Of You
+
 -- region Zipper
 
-    -- SMODS.Joker:new(name, slug, config, spritePos, loc_txt, rarity, cost, unlocked, discovered, blueprint_compat, eternal_compat)
-    local joker_zipper = SMODS.Joker:new("Zipper", "zipper", {} , {
-        x = 4,
-        y = 0
-    }, loc_zipper, 1, 5, true, true, true, true, "", "b_cccjokers")
+local zipper = SMODS.Joker({
+	name = "Zipper",
+	key = "zipper",
+    config = {extra = {chips = 0}},
+	pos = {x = 4, y = 0},
+	loc_txt = {
+        name = 'Zipper',
+        text = {
+	"Gains {C:chips}+30{} Chips for each",
+	"{C:attention}Blind{} skipped this run",
+	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
 
-    joker_zipper:register()
-
-SMODS.Jokers.j_zipper.set_ability = function(self, center, initial, delay_sprites)
+zipper.set_ability = function(self, context)
         if self.ability.name == 'Zipper' then
-            self.ability.chips = G.GAME.skips*30
-end
+            self.ability.extra.chips = G.GAME.skips*30
+	end
 end
 
-    SMODS.Jokers.j_zipper.calculate = function(self, context)
+zipper.calculate = function(self, context)
         if self.ability.name == 'Zipper' then
-            self.ability.chips = G.GAME.skips*30
+            self.ability.extra.chips = G.GAME.skips*30
 	end
         if context.skip_blind then
             if not context.blueprint then
                 G.E_MANAGER:add_event(Event({
                     func = function() 
                         card_eval_status_text(self, 'extra', nil, nil, nil, {
-                            message = localize{type = 'variable', key = 'a_chips', vars = {self.ability.chips}},
+                            message = localize{type = 'variable', key = 'a_chips', vars = {self.ability.extra.chips}},
                                 colour = G.C.CHIPS,
                             card = self
                         }) 
                         return true
                     end}))
             end
+	end
 	if SMODS.end_calculate_context(context) then
-            if self.ability.chips ~= 0 then
+		if self.ability.extra.chips ~= 0 then
                 return {
                     message = localize {
                         type = 'variable',
                         key = 'a_chips',
-                        vars = { self.ability.chips }
+                        vars = { self.ability.extra.chips }
                     },
-                    chip_mod = self.ability.chips,
+                    chip_mod = self.ability.extra.chips,
                     card = self
                 }
 end
 end
 end
+
+function zipper.loc_def(center)
+	return {center.ability.extra.chips}
 end
 
 -- endregion Zipper
+
 -- region Mini Heart
 
-    local joker_miniheart = SMODS.Joker:new("Mini Heart", "miniheart", { atlas="b_cccjokers" }, {
-        x = 5,
-        y = 0		
-    }, loc_miniheart, 1, 4, true, true, false, true, "", "b_cccjokers")
+local miniheart = SMODS.Joker({
+	name = "Mini Heart",
+	key = "miniheart",
+    config = {},
+	pos = {x = 5, y = 0},
+	loc_txt = {
+        name = 'Mini Heart',
+        text = {
+	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
+	"edition to scored cards",
+	"{C:inactive}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
 
-    joker_miniheart:register()
-
--- tooltip overrides edition, e.g. if you have a holographic/polychrome miniheart, it will override it and only say "Foil: +50 chips", unsure how to make it stack (like wheel of fortune) so tooltip removed for now
-
--- SMODS.Jokers.j_miniheart.tooltip = function(self, info_queue)
---  info_queue[#info_queue+1] = G.P_CENTERS.e_foil
--- end
-
-SMODS.Jokers.j_miniheart.calculate = function(self, context)
+miniheart.calculate = function(self, context)
             if context.cardarea == G.jokers then
        		 if SMODS.end_calculate_context(context) then
                     if not context.blueprint then
@@ -413,20 +359,38 @@ SMODS.Jokers.j_miniheart.calculate = function(self, context)
 			end
 end
 end
--- endregion Mini Heart
--- region Towels
-    local joker_towels = SMODS.Joker:new("Huge Mess: Towels", "towels", {extra = {chips = 0}, atlas="b_cccjokers" }, {
-        x = 0,
-        y = 0
-    }, loc_towels, 2, 7, true, true, true, true, "", "b_cccjokers")
 
-    joker_towels:register()
-
-SMODS.Jokers.j_towels.set_ability = function(self, center, initial, delay_sprites)
-  self.ability.extra.chips = 0
+function miniheart.loc_def(self)
+	return {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
 end
 
-SMODS.Jokers.j_towels.calculate = function(self, context)
+-- endregion Mini Heart
+
+-- region Huge Mess: Towels
+
+local towels = SMODS.Joker({
+	name = "Huge Mess: Towels",
+	key = "towels",
+    config = {extra = {chips = 0}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Huge Mess: Towels',
+        text = {
+	"When played hand contains a",
+	"{C:attention}Flush{}, gains {C:chips}+5{} Chips for",
+	"each card held in hand that",
+	"shares the same {C:attention}suit{}",
+	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+towels.calculate = function(self, context)
 	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
 
                             local suits = {
@@ -464,20 +428,12 @@ SMODS.Jokers.j_towels.calculate = function(self, context)
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
-                 	       if context.other_card.debuff then
-                           	 return {
-                          	      message = localize('k_debuffed'),
-                          	      colour = G.C.RED,
-                          	      card = self,
-                         	   }
-                     	   else
                         self.ability.extra.chips = self.ability.extra.chips + 5
                         	    return {
                             message = localize('k_upgrade_ex'),
                             colour = G.C.CHIPS,
                             card = self
                         }
-                        	end
         		end
 	        end
 	end
@@ -496,21 +452,37 @@ SMODS.Jokers.j_towels.calculate = function(self, context)
 end
 end
 
--- endregion Towels
--- region Boxes
-
-    local joker_boxes = SMODS.Joker:new("Huge Mess: Boxes", "boxes", {extra = {chips = 0}, atlas="b_cccjokers" }, {
-        x = 0,
-        y = 0
-    }, loc_boxes, 2, 7, true, true, true, true, "", "b_cccjokers")
-
-    joker_boxes:register()
-
-SMODS.Jokers.j_boxes.set_ability = function(self, center, initial, delay_sprites)
-  self.ability.extra.mult = 0
+function towels.loc_def(center)
+	return {center.ability.extra.chips}
 end
 
-SMODS.Jokers.j_boxes.calculate = function(self, context)
+-- endregion Huge Mess: Towels
+
+-- region Huge Mess: Chests
+
+local chests = SMODS.Joker({
+	name = "Huge Mess: Chests",
+	key = "chests",
+    config = {extra = {mult = 0}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Huge Mess: Chests',
+        text = {
+	"When played hand contains a",
+	"{C:attention}Three of a Kind{}, gains",
+	"{C:mult}+1{} Mult for each possible",
+	"{C:attention}Pair{} held in hand",
+	"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+chests.calculate = function(self, context)
 
 	if context.before and not context.blueprint then
 	boxes_rank_array = {}
@@ -556,22 +528,37 @@ SMODS.Jokers.j_boxes.calculate = function(self, context)
 	end
 end
 
-
--- endregion Boxes
--- region Books
-
-    local joker_books = SMODS.Joker:new("Huge Mess: Books", "books", {extra = {chips = 0}, atlas="b_cccjokers" }, {
-        x = 0,
-        y = 0
-    }, loc_books, 2, 7, true, true, true, true, "", "b_cccjokers")
-
-    joker_books:register()
-
-SMODS.Jokers.j_books.set_ability = function(self, center, initial, delay_sprites)
-  self.ability.extra.xmult = 1
+function chests.loc_def(center)
+	return {center.ability.extra.mult}
 end
 
-SMODS.Jokers.j_books.calculate = function(self, context)
+-- endregion Huge Mess: Chests
+
+-- region Huge Mess: Books
+
+local books = SMODS.Joker({
+	name = "Huge Mess: Books",
+	key = "books",
+    config = {extra = {xmult = 1}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Huge Mess: Books',
+        text = {
+	"When played hand contains a",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X0.07 {} Mult",
+	"for each additional card in",
+	"the {C:attention}sequence{} held in hand",
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+books.calculate = function(self, context)
 
 	if context.before and not context.blueprint then
 	books_rank_array = {}
@@ -905,77 +892,374 @@ SMODS.Jokers.j_books.calculate = function(self, context)
 	end
 end
 
--- region uiBox (KEEP AT END)
--- uibox code copied from betmma which was copied from lushmod idfk we kinda just need this shit for some stuff
--- could maybe put this in a separate lua?
-
-local generate_UIBox_ability_tableref = Card.generate_UIBox_ability_table
-function Card.generate_UIBox_ability_table(self)
-    local card_type, hide_desc = self.ability.set or "None", nil
-    local loc_vars = nil
-    local main_start, main_end = nil, nil
-    local no_badge = nil
-
-    if self.config.center.unlocked == false and not self.bypass_lock then -- For everyting that is locked
-    elseif card_type == 'Undiscovered' and not self.bypass_discovery_ui then -- Any Joker or tarot/planet/voucher that is not yet discovered
-    elseif self.debuff then
-    elseif card_type == 'Default' or card_type == 'Enhanced' then
-    elseif self.ability.set == 'Joker' then
-        local customJoker = true
-
-        if self.ability.name == 'Feather' then loc_vars = {self.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}
-        elseif self.ability.name == 'Seeker' then
-        elseif self.ability.name == 'Limitless' then
-        elseif self.ability.name == 'Bird' then
-        elseif self.ability.name == 'Part Of You' then
-        elseif self.ability.name == 'Zipper' then loc_vars = {self.ability.chips}
-        elseif self.ability.name == 'Mini Heart' then loc_vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
-	elseif self.ability.name == 'Huge Mess: Towels' then loc_vars = {self.ability.extra.chips}
-	elseif self.ability.name == 'Huge Mess: Boxes' then loc_vars = {self.ability.extra.mult}
-	elseif self.ability.name == 'Huge Mess: Books' then loc_vars = {self.ability.extra.xmult}
-
-        else
-            customJoker = false
-        end
-
-        if customJoker then
-            local badges = {}
-            if (card_type ~= 'Locked' and card_type ~= 'Undiscovered' and card_type ~= 'Default') or self.debuff then
-                badges.card_type = card_type
-            end
-            if self.ability.set == 'Joker' and self.bypass_discovery_ui and (not no_badge) then
-                badges.force_rarity = true
-            end
-            if self.edition then
-                if self.edition.type == 'negative' and self.ability.consumeable then
-                    badges[#badges + 1] = 'negative_consumable'
-                else
-                    badges[#badges + 1] = (self.edition.type == 'holo' and 'holographic' or self.edition.type)
-                end
-            end
-            if self.seal then
-                badges[#badges + 1] = string.lower(self.seal) .. '_seal'
-            end
-            if self.ability.eternal then
-                badges[#badges + 1] = 'eternal'
-            end
-            if self.pinned then
-                badges[#badges + 1] = 'pinned_left'
-            end
-
-            if self.sticker then
-                loc_vars = loc_vars or {};
-                loc_vars.sticker = self.sticker
-            end
-
-            return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start,
-                main_end)
-        end
-    end
-
-    return generate_UIBox_ability_tableref(self)
+function books.loc_def(center)
+	return {center.ability.extra.xmult}
 end
 
-sendDebugMessage("[CCC] Jokers loaded")
-----------------------------------------------
-------------MOD CODE END----------------------
+-- endregion Huge Mess: Books
+
+-- region Ominous Mirror
+
+local ominousmirror = SMODS.Joker({
+	name = "Ominous Mirror",
+	key = "ominousmirror",
+    config = {},
+	pos = {x = 0, y = 2},
+	loc_txt = {
+        name = 'Ominous Mirror',
+        text = {
+	"{C:green}#1# in 6{} chance to copy a",
+	"scored card to your hand,",
+	"adding {C:dark_edition}Mirrored{} edition",
+	"{C:green}#1# in 6{} chance to {C:inactive}break{}",
+	"at end of round, leaving",
+	"a {C:attention}Broken Mirror{}"
+        }
+    },
+	rarity = 3,
+	cost = 10,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+ominousmirror.calculate = function(self, context)
+	if context.before then
+		if not context.blueprint then
+			for k, v in ipairs(context.scoring_hand) do
+				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
+						self:juice_up()
+						v:juice_up()
+						local _card = copy_card(v, nil, nil, G.playing_card)
+						_card:add_to_deck()
+						_card:set_edition({mirrored = true}, true)
+						G.deck.config.card_limit = G.deck.config.card_limit + 1
+						table.insert(G.playing_cards, _card)
+						G.hand:emplace(_card)
+						return {
+						playing_cards_created = {true}
+						}
+					end}))
+				end
+			end
+		end
+	end
+end
+
+
+function ominousmirror.loc_def(self)
+	return {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
+end
+
+-- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
+
+-- region ALL BERRIES
+
+-- region Strawberry
+
+local strawberry = SMODS.Joker({
+	name = "Strawberry",
+	key = "strawberry",
+    config = {extra = {money = 8}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Strawberry',
+        text = {
+	"Earn {C:money}$#1#{} at end of round,",
+	"reduces by {C:money}$1{} at start",
+	"of each round"
+        }
+    },
+	rarity = 1,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+-- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
+
+strawberry.calculate = function(self, context)
+	if context.end_of_round then
+		the_strawberry_start_of_round_fucking_finished = false
+	end
+	if context.setting_blind and the_strawberry_start_of_round_fucking_finished ~= true then
+		if not context.blueprint then
+			if self.ability.extra.money > 1 then
+				self.ability.extra.money = self.ability.extra.money - 1
+				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
+			else
+				G.E_MANAGER:add_event(Event({
+					func = function()
+					card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
+					play_sound('tarot1')
+					self.T.r = -0.2
+					self:juice_up(0.3, 0.4)
+					self.states.drag.is = true
+					self.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(self)
+							self:remove()
+							self = nil
+						return true; end})) 
+					return true
+				end
+                       		}))
+			end 
+			the_strawberry_start_of_round_fucking_finished = true
+		end
+	end
+end
+
+function strawberry.loc_def(center)
+	return {center.ability.extra.money}
+end
+
+
+-- endregion Strawberry
+
+-- region Winged Strawberry
+
+local wingedstrawberry = SMODS.Joker({
+	name = "Winged Strawberry",
+	key = "wingedstrawberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize both winged berries to pair. i don't like this but idfk how to change it and pair is fine
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Winged Strawberry',
+        text = {
+	"Earn {C:money}$3{} if {C:attention}poker hand{} does",
+	"not contain a {C:attention}#1#{},",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+wingedstrawberry.calculate = function(self, context)
+	if context.end_of_round and the_winged_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_winged_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_winged_berry_end_of_round_fucking_finished = false
+			if not next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				ease_dollars(2)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 2
+				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+				return {
+					message = localize('$')..2,
+					dollars = 2,
+					colour = G.C.MONEY
+					}
+			end
+		end
+	end
+end
+		
+	
+
+function wingedstrawberry.loc_def(center)
+	return {(center.ability.extra.winged_poker_hand)}
+end
+
+-- endregion Winged Strawberry
+
+-- region Golden Strawberry
+
+local goldenstrawberry = SMODS.Joker({
+	name = "Golden Strawberry",
+	key = "goldenstrawberry",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Golden Strawberry',
+        text = {
+	"Earn {C:money}$15{} at end of",
+	"{C:attention}Boss Blind{}"
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+-- literally the simplest code in the entire mod lmao
+
+goldenstrawberry.calculate = function(self, context)
+	if context.setting_blind then
+		if context.blind.boss then
+			golden_strawberry_after_boss_blind = true
+		else
+			golden_strawberry_after_boss_blind = false
+		end
+	end
+end
+
+-- endregion Golden Strawberry
+
+-- region Winged Golden Strawberry
+
+local wingedgoldenstrawberry = SMODS.Joker({
+	name = "Winged Golden Strawberry",
+	key = "wingedgoldenstrawberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Winged Golden Strawberry',
+        text = {
+	"Earn {C:money}$25{} at end of {C:attention}Boss Blind{} if",
+	"beaten without playing a hand",
+	"that contains a {C:attention}#1#{},",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+wingedgoldenstrawberry.calculate = function(self, context)
+	if context.end_of_round and the_winged_GOLDEN_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_winged_GOLDEN_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_winged_GOLDEN_berry_end_of_round_fucking_finished = false
+			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				winged_golden_strawberry_condition_satisfied = false
+			end
+		end
+	end
+	if context.setting_blind then
+		winged_golden_strawberry_condition_satisfied = true
+		if context.blind.boss then
+			golden_strawberry_after_boss_blind = true	-- redundant variable switching if you have both... idc
+		else
+			golden_strawberry_after_boss_blind = false
+		end
+	end
+end
+
+function wingedgoldenstrawberry.loc_def(center)
+	return {center.ability.extra.winged_poker_hand}
+end
+
+-- endregion Winged Golden Strawberry
+
+-- region Moon Berry
+
+local moonberry = SMODS.Joker({
+	name = "Moon Berry",
+	key = "moonberry",
+    config = {extra = {winged_poker_hand = 'Pair'}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Moon Berry',
+        text = {
+	"If round ends without playing",
+	"hand that contains a {C:attention}#1#{},",
+	"create its {C:planet}Planet{} card with",
+	"with added {C:dark_edition}Negative{} edition,",
+	"poker hand changes",
+	"at end of round"
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+moonberry.calculate = function(self, context)
+	if context.end_of_round and the_SPACE_berry_end_of_round_fucking_finished == false then
+		if not context.blueprint then
+			if space_berry_condition_satisfied == true then
+				local card_type = 'Planet'
+				G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.0,
+				func = (function()
+					if self.ability.extra.winged_poker_hand then
+						local _planet = 0
+						for k, v in pairs(G.P_CENTER_POOLS.Planet) do
+						if v.config.hand_type == old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk then
+							_planet = v.key
+                        			end
+                   			end
+                    			local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')
+					card:set_edition({negative = true}, true)
+                    			card:add_to_deck()
+                    			G.consumeables:emplace(card)
+                			end
+                			return true
+            				end)}))
+        			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.PLANET})
+    			end
+                    local _poker_hands = {}
+                    for k, v in pairs(G.GAME.hands) do
+                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+				_poker_hands[#_poker_hands+1] = k 
+			end
+                    end
+		    old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk = self.ability.extra.winged_poker_hand
+                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+		end
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		the_SPACE_berry_end_of_round_fucking_finished = true
+	end
+        if context.cardarea == G.jokers then
+		if context.before and not context.end_of_round then
+			the_SPACE_berry_end_of_round_fucking_finished = false
+			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+				space_berry_condition_satisfied = false
+			end
+		end
+	end
+	if context.setting_blind then
+		space_berry_condition_satisfied = true
+	end
+end
+
+function moonberry.loc_def(center)
+	return {center.ability.extra.winged_poker_hand}
+end
+
+-- endregion Moon Berry
+
+return {name = "Jokers", 
+        items = {sprite_sheet}}

@@ -1,29 +1,3 @@
---- STEAMODDED HEADER
---- SECONDARY MOD FILE
-
-----------------------------------------------
-------------MOD CODE--------------------------
-
------------ Definitions ----------------------
-
-local virus_def = {
-	["name"]="Virus Deck",
-	["text"]={
-		[1]="Each played card is retriggered",
-		[2]="then {C:red}debuffed{}",
-		[3]="until the end of the ante",
-	},
-}
-
-local summit_def = {
-	["name"]="Summit Deck",
-	["text"]={
-		[1]="Start with {C:attention}0{} Joker Slots",
-		[2]="{C:attention}+1{} Joker slot each Ante",
-		[3]="{s:0.75}(if Ante has not been reached before){}"
-	},
-}
-
 local trigger_effect_callbacks = {}
 
 -- region virus deck -----------------------
@@ -76,8 +50,21 @@ end
 
 table.insert(trigger_effect_callbacks, virus_effect)
 
-local virus = SMODS.Deck:new("Virus Deck", "virus", {virus = true, atlas= "b_cccdecks"}, {x = 0, y = 0}, virus_def)
-virus:register()
+local virus = SMODS.Back({
+    name = "Virus Deck",
+    key = "virus",
+	config = {virus = true},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = "Virus Deck",
+        text = {
+            "Each played card is retriggered",
+            "then {C:red}debuffed{}",
+	    "until the end of the ante"
+        }
+    },
+    atlas= "b_ccc_decks"
+})
 
 -- endregion virus deck-----------------------
 -- region summit deck -----------------------
@@ -122,8 +109,21 @@ end
 
 table.insert(trigger_effect_callbacks, summit_effect)
 
-local summit = SMODS.Deck:new("Summit Deck", "summit", {joker_slot = -5, add_slot_each_ante = 1, atlas= "b_cccdecks"}, {x = 1, y = 0}, summit_def)
-summit:register()
+local summit = SMODS.Back({
+    name = "Summit Deck",
+    key = "summit",
+	config = {joker_slot = -5, add_slot_each_ante = 1},
+	pos = {x = 1, y = 0},
+	loc_txt = {
+        name = "Summit Deck",
+        text = {
+            "Start with {C:attention}0{} Joker Slots",
+            "{C:attention}+1{} Joker slot each Ante",
+	    "{s:0.75}(if Ante has not been reached before){}"
+        }
+    },
+    atlas= "b_ccc_decks"
+})
 
 -- endregion summit deck-----------------------
 

@@ -1,49 +1,35 @@
 --- STEAMODDED HEADER
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
+--- PREFIX: ccc
 --- MOD_AUTHOR: [AuroraAquir, toneblock]
---- MOD_DESCRIPTION: Virus Deck, Summit Deck, 4 Jokers, 2 Vouchers. Also features ideas by: Fytos
+--- MOD_DESCRIPTION: 2 Decks, 9 Jokers, 2 Vouchers. Features ideas by: Fytos
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
+--- ICON_ATLAS: ccc_icon
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+SMODS.Sprite({key = "j_ccc_jokers", path = "j_ccc_jokers.png", px = 71, py = 95, atlas = "asset_atlas"})
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/jokers.lua")))()
 
-function SMODS.INIT.CCC()
-	local ccc_mod = SMODS.findModByID("CelesteCardCollection")
-	assert(load(love.filesystem.read(ccc_mod.path .. "blinds.lua")))()
-	
-    local sprite_card = SMODS.Sprite:new("b_cccdecks", ccc_mod.path, "decks.png", 71, 95, "asset_atli")
-    sprite_card:register()
+SMODS.Sprite({key = "b_ccc_decks", path = "b_ccc_decks.png", px = 71, py = 95, atlas = "asset_atlas"})
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/decks.lua")))()
 
-	assert(load(love.filesystem.read(ccc_mod.path .. "decks.lua")))()
-	
-    local sprite_card = SMODS.Sprite:new("b_cccjokers", ccc_mod.path, "jokers.png", 71, 95, "asset_atli")
-    sprite_card:register()
+SMODS.Sprite({key = "v_ccc_vouchers", path = "v_ccc_vouchers.png", px = 71, py = 95, atlas = "asset_atlas"})
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/vouchers.lua")))()
 
-	assert(load(love.filesystem.read(ccc_mod.path .. "jokers.lua")))()
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/editions.lua")))()
 
-    local sprite_card = SMODS.Sprite:new("b_cccvouchers", ccc_mod.path, "vouchers.png", 71, 95, "asset_atli")
-    sprite_card:register()
-
-	assert(load(love.filesystem.read(ccc_mod.path .. "vouchers.lua")))()
-end
-
-
-function dump(o)
-	if type(o) == 'table' then
-	   local s = '{ '
-	   for k,v in pairs(o) do
-		  if type(k) ~= 'number' then k = '"'..k..'"' end
-		  s = s .. '['..k..'] = ' .. dump(v) .. ','
-	   end
-	   return s .. '} '
-	else
-	   return tostring(o)
-	end
- end
+SMODS.Sprite({
+    key = "ccc_icon",
+    atlas = "ASSET_ATLAS",
+    path = "ccc_icon.png",
+    px = 34,
+    py = 34
+})
 
 ----------------------------------------------
 ------------MOD CODE END----------------------

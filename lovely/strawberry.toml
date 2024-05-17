@@ -1,0 +1,31 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+
+# yes this is an entire lovely injection just for strawberries... you have a problem with that?
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.name == 'Golden Joker' then"
+position = "before"
+payload = '''
+if self.ability.name == 'Strawberry' then
+	return self.ability.extra.money
+end
+if self.ability.name == 'Golden Strawberry' then
+	if golden_strawberry_after_boss_blind == true then 
+		return 15
+	end
+end
+if self.ability.name == 'Winged Golden Strawberry' then
+	if golden_strawberry_after_boss_blind == true then
+		if winged_golden_strawberry_condition_satisfied == true then
+			return 25
+		end
+	end
+end
+'''
+match_indent = true
+overwrite = false
