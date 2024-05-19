@@ -9,17 +9,13 @@ function Card.set_edition(self, edition, immediate, silent)
             self.edition.mirrored = true
             self.edition.type = 'mirrored'
 	end
-	if not edition.mirrored then
-        if not self.edition then self.edition = {} end
-	self.edition.mirror_bound = false
-	end
     end
 
     if self.edition and not silent and edition.mirrored then
         G.CONTROLLER.locks.edition = true
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
-            delay = not immediate and 0.2 or 0,
+            delay = 0,
             blockable = not immediate,
             func = function()
                 self:juice_up(1, 0.5)
@@ -29,7 +25,7 @@ function Card.set_edition(self, edition, immediate, silent)
           }))
           G.E_MANAGER:add_event(Event({
             trigger = 'after',
-            delay = 0.1,
+            delay = 0,
             func = function()
                 G.CONTROLLER.locks.edition = false
                return true
@@ -72,10 +68,9 @@ function Card.draw(self, layer)
             end
         end
     end
-
-    
 end
 
+function SMODS.current_mod.process_loc_text()
     G.localization.descriptions.Other.e_mirrored = {
         name = "Mirrored",
         text = {
@@ -84,12 +79,12 @@ end
 	    "at end of round"
         }
     }
-
-    G.localization.misc.labels.e_mirrored = 'Mirrored'
+    G.localization.misc.labels.mirrored = 'Mirrored'
+end
 
     G.SHADERS['mirrored'] = love.graphics.newShader(SMODS.current_mod.path.."/assets/shaders/mirrored.fs")
 
-    local e_mirrored = {order = 6,  key = 'e_mirrored', unlocked = true, discovered = true, name = "Mirrored", pos = {x=0,y=0}, atlas = 'Joker', set = "Edition", config = {}}
+    local e_mirrored = {order = 6, key = "e_mirrored", unlocked = true, discovered = true, name = "Mirrored", pos = {x=0,y=0}, atlas = 'Joker', set = "Edition", config = {mirror_bound = true}}
 
     G.P_CENTERS['e_mirrored'] = e_mirrored
     table.insert(G.P_CENTER_POOLS['Edition'], e_mirrored)

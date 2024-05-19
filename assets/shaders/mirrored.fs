@@ -103,13 +103,16 @@ vec4 HSL(vec4 c)
 // this is what actually changes the look of card
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
 {
+
+	texture_coords.x = texture_coords.x + sin(texture_coords.y * 50 + time * 1.0) * .05  * 0.05;
+
     // turns the texture into pixels
     vec4 tex = Texel(texture, texture_coords);
 	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
 
     // generic shimmer copied straight from negative_shine.fs
-    number low = max(tex.r, min(tex.g, tex.b));
-    number high = min(tex.r, max(tex.g, tex.b));
+    number low = max(tex.b, min(tex.r, tex.g));
+    number high = min(tex.b, max(tex.r, tex.g));
 	number delta = high-low -0.1;
 
     number fac = 1.1 + 0.9*sin(11.*uv.x+4.32*uv.y + mirrored.r*12. + cos(mirrored.r*5.3 + uv.y*4.2 - uv.x*4.));
@@ -126,17 +129,14 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 	tex.g = tex.g-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1;
 	tex.b = tex.b-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1;
 
-    // make the red channel really bright and **SLIGHTLY** dependant on the height of the card
-	tex.r = tex.r*0.7 + (0.0001*mirrored.r);
-    // reduce the green channel and **SLIGHTLY** dependant on the rotation of the card
-    tex.g = tex.g*0.9 + (0.0001*mirrored.r);
-    // greatly reduce the blue channel
-	tex.b = tex.b*1.0 + (0.0001*mirrored.r);
+	tex.r = tex.r*0.8 + (0.0001*mirrored.r);
+	tex.g = tex.g*1.0 + (0.0001*mirrored.r);
+	tex.b = tex.b*1.1 + (0.0001*mirrored.r);
+	tex.a = tex.a*1.0;
 
     // required
 	return dissolve_mask(tex*colour, texture_coords, uv);
 }
-
 
 
 // for transforming the card while your mouse is on it

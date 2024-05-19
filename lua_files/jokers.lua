@@ -77,8 +77,8 @@ feather.calculate = function(self, context)
         end
 end
 
-function feather.loc_def(self)
-	return {self.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}
+function feather.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}}
 end
 
 --endregion Feather
@@ -149,6 +149,7 @@ local partofyou = SMODS.Joker({
 
 partofyou.calculate = function(self, context)
 	if SMODS.end_calculate_context(context) then
+	if not context.blueprint then
      	  if G.GAME.current_round.hands_played == 0 then
             if #context.full_hand == 2 then
                 G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[1]:flip();play_sound('card1', 1);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
@@ -246,6 +247,7 @@ partofyou.calculate = function(self, context)
              end
 	  end
        end
+end
 
 -- endregion Part Of You
 
@@ -309,8 +311,8 @@ end
 end
 end
 
-function zipper.loc_def(center)
-	return {center.ability.extra.chips}
+function zipper.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.chips}}
 end
 
 -- endregion Zipper
@@ -360,8 +362,8 @@ miniheart.calculate = function(self, context)
 end
 end
 
-function miniheart.loc_def(self)
-	return {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
+function miniheart.loc_vars(self, infoqueue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
 
 -- endregion Mini Heart
@@ -372,7 +374,7 @@ local towels = SMODS.Joker({
 	name = "Huge Mess: Towels",
 	key = "towels",
     config = {extra = {chips = 0}},
-	pos = {x = 0, y = 0},
+	pos = {x = 0, y = 3},
 	loc_txt = {
         name = 'Huge Mess: Towels',
         text = {
@@ -452,8 +454,8 @@ towels.calculate = function(self, context)
 end
 end
 
-function towels.loc_def(center)
-	return {center.ability.extra.chips}
+function towels.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.chips}}
 end
 
 -- endregion Huge Mess: Towels
@@ -464,7 +466,7 @@ local chests = SMODS.Joker({
 	name = "Huge Mess: Chests",
 	key = "chests",
     config = {extra = {mult = 0}},
-	pos = {x = 0, y = 0},
+	pos = {x = 1, y = 3},
 	loc_txt = {
         name = 'Huge Mess: Chests',
         text = {
@@ -528,8 +530,8 @@ chests.calculate = function(self, context)
 	end
 end
 
-function chests.loc_def(center)
-	return {center.ability.extra.mult}
+function chests.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.mult}}
 end
 
 -- endregion Huge Mess: Chests
@@ -892,8 +894,8 @@ books.calculate = function(self, context)
 	end
 end
 
-function books.loc_def(center)
-	return {center.ability.extra.xmult}
+function books.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.xmult}}
 end
 
 -- endregion Huge Mess: Books
@@ -903,10 +905,10 @@ end
 local ominousmirror = SMODS.Joker({
 	name = "Ominous Mirror",
 	key = "ominousmirror",
-    config = {},
+    config = {extra = {broken = false, pos_override = {x = 0, y = 2}}},
 	pos = {x = 0, y = 2},
 	loc_txt = {
-        name = 'Ominous Mirror',
+        name = ('Ominous Mirror'),
         text = {
 	"{C:green}#1# in 6{} chance to copy a",
 	"scored card to your hand,",
@@ -923,12 +925,21 @@ local ominousmirror = SMODS.Joker({
 	atlas = "j_ccc_jokers"
 })
 
+
+
+ominousmirror.set_ability = function(self, context)
+	self.children.center:set_sprite_pos(self.ability.extra.pos_override)
+end
+
+
 ominousmirror.calculate = function(self, context)
-	if context.before then
-		if not context.blueprint then
+	self.children.center:set_sprite_pos(self.ability.extra.pos_override)
+	if context.before and self.ability.extra.broken == false then
+		if not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
+			the_fucking_mirror_shatter_end_of_round_finished = false
 			for k, v in ipairs(context.scoring_hand) do
 				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 						self:juice_up()
 						v:juice_up()
 						local _card = copy_card(v, nil, nil, G.playing_card)
@@ -945,11 +956,52 @@ ominousmirror.calculate = function(self, context)
 			end
 		end
 	end
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
+		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/2 then 
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, 
+				func = function()
+				play_sound('glass'..math.random(1, 6), math.random()*0.2 + 0.9,0.5)
+
+-- messy particle code copied from glass shatter function
+
+
+   local childParts = Particles(0, 0, 0,0, {
+        timer_type = 'TOTAL',
+        timer = 0.007*1,
+        scale = 0.3,
+        speed = 4,
+        lifespan = 0.5*1,
+        attach = self,
+        colours = {G.C.MULT},
+        fill = true
+    })
+    G.E_MANAGER:add_event(Event({
+        trigger = 'after',
+        blockable = false,
+        delay =  0.5*1,
+        func = (function() childParts:fade(0.30*1) return true end)
+    }))
+
+-- i cannot be bothered to re-indent this
+
+				self.T.r = -0.2
+				self:juice_up(0.3, 0.4)
+				self.ability.extra.broken = true
+				self.ability.extra.pos_override.x = 1
+				self.ability.extra.pos_override.y = 2
+				return true
+				end
+			}))
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Broken", colour = G.C.MULT})
+		else
+			the_fucking_mirror_shatter_end_of_round_finished = true
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Safe..?", colour = G.C.FILTER})
+		end
+	end
 end
 
-
-function ominousmirror.loc_def(self)
-	return {''..(G.GAME and G.GAME.probabilities.normal or 1), self.ability.extra}
+function ominousmirror.loc_vars(self, infoqueue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
 end
 
 -- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
@@ -982,10 +1034,7 @@ local strawberry = SMODS.Joker({
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
 
 strawberry.calculate = function(self, context)
-	if context.end_of_round then
-		the_strawberry_start_of_round_fucking_finished = false
-	end
-	if context.setting_blind and the_strawberry_start_of_round_fucking_finished ~= true then
+	if context.setting_blind and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
 			if self.ability.extra.money > 1 then
 				self.ability.extra.money = self.ability.extra.money - 1
@@ -1009,13 +1058,12 @@ strawberry.calculate = function(self, context)
 				end
                        		}))
 			end 
-			the_strawberry_start_of_round_fucking_finished = true
 		end
 	end
 end
 
-function strawberry.loc_def(center)
-	return {center.ability.extra.money}
+function strawberry.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.money}}
 end
 
 
@@ -1026,7 +1074,7 @@ end
 local wingedstrawberry = SMODS.Joker({
 	name = "Winged Strawberry",
 	key = "wingedstrawberry",
-    config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize both winged berries to pair. i don't like this but idfk how to change it and pair is fine
+    config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize all winged berries to pair. i don't like this but idfk how to change it and pair is fine
 	pos = {x = 0, y = 0},
 	loc_txt = {
         name = 'Winged Strawberry',
@@ -1045,7 +1093,7 @@ local wingedstrawberry = SMODS.Joker({
 })
 
 wingedstrawberry.calculate = function(self, context)
-	if context.end_of_round and the_winged_berry_end_of_round_fucking_finished == false then
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
@@ -1056,11 +1104,9 @@ wingedstrawberry.calculate = function(self, context)
                     self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
 		end
 		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
-		the_winged_berry_end_of_round_fucking_finished = true
 	end
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
-			the_winged_berry_end_of_round_fucking_finished = false
 			if not next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
 				ease_dollars(2)
 				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 2
@@ -1077,8 +1123,8 @@ end
 		
 	
 
-function wingedstrawberry.loc_def(center)
-	return {(center.ability.extra.winged_poker_hand)}
+function wingedstrawberry.loc_vars(self, infoqueue, card)
+	return {vars = {(card.ability.extra.winged_poker_hand)}}
 end
 
 -- endregion Winged Strawberry
@@ -1143,7 +1189,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 })
 
 wingedgoldenstrawberry.calculate = function(self, context)
-	if context.end_of_round and the_winged_GOLDEN_berry_end_of_round_fucking_finished == false then
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
@@ -1154,11 +1200,9 @@ wingedgoldenstrawberry.calculate = function(self, context)
                     self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
 		end
 		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
-		the_winged_GOLDEN_berry_end_of_round_fucking_finished = true
 	end
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
-			the_winged_GOLDEN_berry_end_of_round_fucking_finished = false
 			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
 				winged_golden_strawberry_condition_satisfied = false
 			end
@@ -1174,8 +1218,8 @@ wingedgoldenstrawberry.calculate = function(self, context)
 	end
 end
 
-function wingedgoldenstrawberry.loc_def(center)
-	return {center.ability.extra.winged_poker_hand}
+function wingedgoldenstrawberry.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.winged_poker_hand}}
 end
 
 -- endregion Winged Golden Strawberry
@@ -1206,7 +1250,7 @@ local moonberry = SMODS.Joker({
 })
 
 moonberry.calculate = function(self, context)
-	if context.end_of_round and the_SPACE_berry_end_of_round_fucking_finished == false then
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
 			if space_berry_condition_satisfied == true then
 				local card_type = 'Planet'
@@ -1255,11 +1299,72 @@ moonberry.calculate = function(self, context)
 	end
 end
 
-function moonberry.loc_def(center)
-	return {center.ability.extra.winged_poker_hand}
+function moonberry.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.winged_poker_hand}}
 end
 
 -- endregion Moon Berry
 
-return {name = "Jokers", 
-        items = {sprite_sheet}}
+-- endregion ALL BERRIES
+
+-- region To The Summit
+
+local tothesummit = SMODS.Joker({
+	name = "To The Summit",
+	key = "tothesummit",
+    config = {extra = {xmult = 1}},
+	pos = {x = 0, y = 1},
+	loc_txt = {
+        name = 'To The Summit',
+        text = {
+	"Gains {X:mult,C:white} X0.25 {} Mult for each",
+	"{C:attention}consecutive Blind{} selected",
+	"with more {C:money}money{} than",
+	"the {C:attention}previous Blind{}",
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+tothesummit.calculate = function(self, context)
+	if context.setting_blind and not context.blueprint then
+		if ccc_tothesummit_min_money == nil then
+			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
+			self.ability.extra.xmult = self.ability.extra.xmult + 0.25
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {self.ability.extra.xmult}}})
+		elseif ccc_tothesummit_min_money >= math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
+			local last_xmult = self.ability.extra.xmult
+			self.ability.extra.xmult = 1
+			if last_xmult > 1 then
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+			end
+			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
+		elseif ccc_tothesummit_min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
+			self.ability.extra.xmult = self.ability.extra.xmult + 0.25
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {self.ability.extra.xmult}}})
+			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
+		end
+	end		
+	if SMODS.end_calculate_context(context) then
+            	if self.ability.extra.xmult ~= 1 then
+                	return {
+                    	message = localize {
+                        	type = 'variable',
+                        	key = 'a_xmult',
+                        	vars = { self.ability.extra.xmult }
+                    	},
+			Xmult_mod = self.ability.extra.xmult,
+               	    	card = self
+                	}
+		end
+	end
+end
+
+function tothesummit.loc_vars(self, infoqueue, card)
+	return {vars = {card.ability.extra.xmult}}
+end

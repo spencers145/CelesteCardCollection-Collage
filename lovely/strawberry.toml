@@ -28,4 +28,3 @@ if self.ability.name == 'Winged Golden Strawberry' then
 end
 '''
 match_indent = true
-overwrite = false
