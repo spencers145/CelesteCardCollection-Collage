@@ -95,23 +95,18 @@ function ease_ante(mod)
 	G.E_MANAGER:add_event(Event({
 		trigger = 'immediate',
 		func = function () 
-			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.selected_back.effect.config.add_slot_each_ante then
-			
-				
+			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.highest_ante then
 						G.jokers.config.card_limit = G.jokers.config.card_limit + 1
-						G.GAME.selected_back.effect.config.add_slot_each_ante = G.GAME.selected_back.effect.config.add_slot_each_ante + 1
-						
+						G.GAME.highest_ante = G.GAME.round_resets.ante
 						attention_text({
 							text = "+1 Joker Slot",
 							scale = 0.5, 
 							hold = 3.3,
 							cover = G.jokers.children.area_uibox,
 							cover_colour = G.C.CLEAR,
-							offset = {x=-3.25,y=1.25}
+							offset = {x=-2.75,y=1.25}
 						})
 			end
-
-			play_sound('generic1')
 			return true
 		end
 	}))
@@ -150,6 +145,12 @@ function Back.trigger_effect(self, args)
 	return trigger_effectRef(self, args)
 end
 
+
+local start_runRef = Game.start_run
+function Game.start_run(self, args)
+	start_runRef(self, args)
+	self.GAME.highest_ante = self.GAME.highest_ante or 1
+end
 -- endregion HOOKS
 
 sendDebugMessage("[CCC] Decks loaded")
