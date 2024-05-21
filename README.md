@@ -33,3 +33,4 @@ None
 Changes since last version v0.11:
 1. removed drawing of card behind mirrored enhancement
 2. fixed summit deck not giving a joker slot after ante 1
+3. Fast track voucher can no longer spawn in winning ante (so you can't skip winning the game lol)
