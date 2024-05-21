@@ -55,8 +55,8 @@ local feather = SMODS.Joker({
         name = 'Feather',
         text = {
 	"Gains {X:mult,C:white} X0.05 {} Mult for",
-	"each card {C:attention}drawn{}",
-	"during the round",
+	"each card {C:attention}drawn{} from",
+	"deck during round",
 	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
         }
     },
@@ -94,7 +94,7 @@ local bird = SMODS.Joker({
         name = 'Bird',
         text = {
 	"Whenever a {C:planet}Planet{} card",
-	"is used, draw {C:attention}3{} cards"
+	"is used, draw {C:attention}4{} cards"
         }
     },
 	rarity = 3,
@@ -111,8 +111,8 @@ bird.calculate = function(self, context)
                 return {
                         G.E_MANAGER:add_event(Event({
                                             func = function() 
-                                card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+3 Cards", colour = G.C.FILTER})
-                                G.FUNCS.draw_from_deck_to_hand(3)          
+                                card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+4 Cards", colour = G.C.FILTER})
+                                G.FUNCS.draw_from_deck_to_hand(4)          
                                                 return true
                                 end}))
                         }
@@ -133,14 +133,14 @@ local partofyou = SMODS.Joker({
 	loc_txt = {
         name = 'Part Of You',
         text = {
-	"If {C:attention}first hand{} of round contains exactly",
-	"{C:attention}2{} cards, convert both of their {C:attention}ranks{}",
+	"If {C:attention}first hand{} of round",
+	"contains exactly {C:attention}2{} cards,",
+	"convert both their {C:attention}ranks{}",
 	"into their {C:attention}complements{}",
-	"{C:inactive}(e.g. King <-> Ace, Jack <-> 3, 6 <-> 8){}"
+	"{s:0.78}({C:attention,s:0.78}e.g.{s:0.78} King <> Ace, 10 <> 4, 6 <> 8){}"
         }
     },
-	rarity = 
-3,
+	rarity = 3,
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
@@ -329,7 +329,7 @@ local miniheart = SMODS.Joker({
         text = {
 	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
 	"edition to scored cards",
-	"{C:inactive}(Unaffected by retriggers){}"
+	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
     },
 	rarity = 1,
@@ -379,7 +379,7 @@ local towels = SMODS.Joker({
         name = 'Huge Mess: Towels',
         text = {
 	"When played hand contains a",
-	"{C:attention}Flush{}, gains {C:chips}+5{} Chips for",
+	"{C:attention}Flush{}, gains {C:chips}+6{} Chips for",
 	"each card held in hand that",
 	"shares the same {C:attention}suit{}",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
@@ -430,7 +430,7 @@ towels.calculate = function(self, context)
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
-                        self.ability.extra.chips = self.ability.extra.chips + 5
+                        self.ability.extra.chips = self.ability.extra.chips + 6
                         	    return {
                             message = localize('k_upgrade_ex'),
                             colour = G.C.CHIPS,
@@ -472,7 +472,7 @@ local chests = SMODS.Joker({
         text = {
 	"When played hand contains a",
 	"{C:attention}Three of a Kind{}, gains",
-	"{C:mult}+1{} Mult for each possible",
+	"{C:mult}+2{} Mult for each possible",
 	"{C:attention}Pair{} held in hand",
 	"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
         }
@@ -511,7 +511,7 @@ chests.calculate = function(self, context)
 			boxes_pair_amounts = boxes_pair_amounts + ((boxes_card_pair_candidate - 1)*(boxes_card_pair_candidate)) / 2
 		end
 		if boxes_pair_amounts > 0 then
-			self.ability.extra.mult = self.ability.extra.mult + (boxes_pair_amounts)
+			self.ability.extra.mult = self.ability.extra.mult + (boxes_pair_amounts)*2
 			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -547,7 +547,7 @@ local books = SMODS.Joker({
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X0.07 {} Mult",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X0.11 {} Mult",
 	"for each additional card in",
 	"the {C:attention}sequence{} held in hand",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
@@ -580,8 +580,6 @@ books.calculate = function(self, context)
 	books_skipped_ranks = false
 	books_allowed_skipped_ranks = {}
 	books_repeat_non_shortcut = true
-	debugging_score_sequence = "n"
-	debugging_hand_sequence = "n"
 	end
 
 	if context.individual and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
@@ -875,7 +873,7 @@ books.calculate = function(self, context)
 			end
 		end
 		if books_additional_sequence_cards > 0 then
-			self.ability.extra.xmult = self.ability.extra.xmult + (0.07*(books_additional_sequence_cards))
+			self.ability.extra.xmult = self.ability.extra.xmult + (0.11*(books_additional_sequence_cards))
 			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -936,9 +934,8 @@ ominousmirror.calculate = function(self, context)
 	self.children.center:set_sprite_pos(self.ability.extra.pos_override)
 	if context.before and self.ability.extra.broken == false then
 		if not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
-			the_fucking_mirror_shatter_end_of_round_finished = false
 			for k, v in ipairs(context.scoring_hand) do
-				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
+				if pseudorandom('ominous') < G.GAME.probabilities.normal/6 then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 						self:juice_up()
 						v:juice_up()
@@ -957,7 +954,7 @@ ominousmirror.calculate = function(self, context)
 		end
 	end
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
-		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/2 then 
+		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/6 then 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, 
 				func = function()
 				play_sound('glass'..math.random(1, 6), math.random()*0.2 + 0.9,0.5)
@@ -994,7 +991,6 @@ ominousmirror.calculate = function(self, context)
 			}))
 			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Broken", colour = G.C.MULT})
 		else
-			the_fucking_mirror_shatter_end_of_round_finished = true
 			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Safe..?", colour = G.C.FILTER})
 		end
 	end
@@ -1014,17 +1010,17 @@ local strawberry = SMODS.Joker({
 	name = "Strawberry",
 	key = "strawberry",
     config = {extra = {money = 8}},
-	pos = {x = 0, y = 0},
+	pos = {x = 1, y = 1},
 	loc_txt = {
         name = 'Strawberry',
         text = {
-	"Earn {C:money}$#1#{} at end of round,",
-	"reduces by {C:money}$1{} at start",
-	"of each round"
+	"Earn {C:money}$#1#{} at end of",
+	"round, reduces by {C:money}$1{}",
+	"at end of shop"
         }
     },
 	rarity = 1,
-	cost = 6,
+	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = false,
@@ -1034,31 +1030,29 @@ local strawberry = SMODS.Joker({
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
 
 strawberry.calculate = function(self, context)
-	if context.setting_blind and not context.blueprint and not context.repetition and not context.individual then
-		if not context.blueprint then
-			if self.ability.extra.money > 1 then
-				self.ability.extra.money = self.ability.extra.money - 1
-				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
-			else
-				G.E_MANAGER:add_event(Event({
+	if context.ending_shop and not context.blueprint then
+		if self.ability.extra.money > 1 then
+			self.ability.extra.money = self.ability.extra.money - 1
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
+		else
+			G.E_MANAGER:add_event(Event({
+				func = function()
+				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
+				play_sound('tarot1')
+				self.T.r = -0.2
+				self:juice_up(0.3, 0.4)
+				self.states.drag.is = true
+				self.children.center.pinch.x = true
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
 					func = function()
-					card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
-					play_sound('tarot1')
-					self.T.r = -0.2
-					self:juice_up(0.3, 0.4)
-					self.states.drag.is = true
-					self.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(self)
-							self:remove()
-							self = nil
-						return true; end})) 
-					return true
-				end
-                       		}))
-			end 
-		end
+						G.jokers:remove_card(self)
+						self:remove()
+						self = nil
+					return true; end})) 
+				return true
+			end
+                       	}))
+		end 
 	end
 end
 
@@ -1075,7 +1069,7 @@ local wingedstrawberry = SMODS.Joker({
 	name = "Winged Strawberry",
 	key = "wingedstrawberry",
     config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize all winged berries to pair. i don't like this but idfk how to change it and pair is fine
-	pos = {x = 0, y = 0},
+	pos = {x = 2, y = 1},
 	loc_txt = {
         name = 'Winged Strawberry',
         text = {
@@ -1135,11 +1129,11 @@ local goldenstrawberry = SMODS.Joker({
 	name = "Golden Strawberry",
 	key = "goldenstrawberry",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 3, y = 1},
 	loc_txt = {
         name = 'Golden Strawberry',
         text = {
-	"Earn {C:money}$15{} at end of",
+	"Earn {C:money}$18{} at end of",
 	"{C:attention}Boss Blind{}"
         }
     },
@@ -1170,11 +1164,11 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	name = "Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
     config = {extra = {winged_poker_hand = 'Pair'}},
-	pos = {x = 0, y = 0},
+	pos = {x = 4, y = 1},
 	loc_txt = {
         name = 'Winged Golden Strawberry',
         text = {
-	"Earn {C:money}$25{} at end of {C:attention}Boss Blind{} if",
+	"Earn {C:money}$24{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
 	"poker hand changes",
@@ -1230,7 +1224,7 @@ local moonberry = SMODS.Joker({
 	name = "Moon Berry",
 	key = "moonberry",
     config = {extra = {winged_poker_hand = 'Pair'}},
-	pos = {x = 0, y = 0},
+	pos = {x = 5, y = 1},
 	loc_txt = {
         name = 'Moon Berry',
         text = {
@@ -1368,3 +1362,530 @@ end
 function tothesummit.loc_vars(self, infoqueue, card)
 	return {vars = {card.ability.extra.xmult}}
 end
+
+-- endregion To The Summit
+
+-- region Core Switch
+
+local coreswitch = SMODS.Joker({
+	name = "Core Switch",
+	key = "coreswitch",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Core Switch',
+        text = {
+	"Swap {C:blue}hands{} and {C:red}discards{}",
+	"at start of round",
+	"{C:red}+1{} discard after swap"
+        }
+    },
+	rarity = 1,
+	cost = 3,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+coreswitch.calculate = function(self, context)
+	if context.first_hand_drawn and not self.getting_sliced and not context.blueprint and not context.individual then
+		G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
+			coreswitch_hand_juggle = G.GAME.current_round.discards_left
+			ease_discard(1 + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
+			ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
+			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
+			if coreswitch_hand_juggle == 0 then  -- you're a dumbass lol
+				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
+					G.STATE = G.STATES.GAME_OVER
+                			if not G.GAME.won and not G.GAME.seeded and not G.GAME.challenge then 
+						G.PROFILES[G.SETTINGS.profile].high_scores.current_streak.amt = 0
+					end
+					G:save_settings()
+					G.FILE_HANDLER.force = true
+					G.STATE_COMPLETE = false
+				return true end }))
+			end
+		return true end }))
+	end
+end
+
+-- endregion Core Switch
+
+-- region Temple Rock
+
+local templerock = SMODS.Joker({
+	name = "Temple Rock",
+	key = "templerock",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Temple Rock',
+        text = {
+	"Each {C:attention}Stone Card{} held",
+	"in hand gives {C:chips}+50{} chips"
+        }
+    },
+	rarity = 1,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+templerock.calculate = function(self, context)
+	if context.individual and context.poker_hands ~= nil then
+        	if context.cardarea == G.hand then
+	         	if context.other_card.ability.name == 'Stone Card' then
+				hand_chips = mod_chips(hand_chips + 50)
+                        	update_hand_text({delay = 0}, {chips = hand_chips})
+                        	return {
+                    			message = localize {
+                        			type = 'variable',
+                        			key = 'a_chips',
+                        			vars = { 50 }
+                    				},
+					chip_mod = 50,
+                    			card = self
+				}
+			end
+        	end
+	end
+end
+
+-- endregion Temple Rock
+
+-- region Strong Winds
+
+local strongwinds = SMODS.Joker({
+	name = "Strong Winds",
+	key = "strongwinds",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Strong Winds',
+        text = {
+	"{X:mult,C:white} X2.22 {} Mult",
+	"Card of the highest {C:attention}rank{} in",
+	"scoring hand is {C:red}destroyed{}"
+        }
+    },
+	rarity = 3,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+strongwinds.calculate = function(self, context)
+	if context.cardarea == G.jokers then
+		if SMODS.end_calculate_context(context) then
+			if not context.blueprint then
+				local cards_destroyed = {}
+				YOU_CANNOT_STOP_THE_WIND_BITCH = context.scoring_hand[1]
+				for k = 1, #context.scoring_hand do
+					if context.scoring_hand[k].ability.name ~= 'Stone Card' then
+						if context.scoring_hand[k]:get_id() > YOU_CANNOT_STOP_THE_WIND_BITCH:get_id() then
+							YOU_CANNOT_STOP_THE_WIND_BITCH = context.scoring_hand[k]
+						end
+					end
+				end
+            			local cards_destroyed = {}
+            			highlight_card(YOU_CANNOT_STOP_THE_WIND_BITCH,(1-0.999)/(#context.scoring_hand-0.998),'down') -- i copied literally the entire goddamn card destruction code to fix this stupid bug... it's probably just this line that i was missing but oh my god i don't care at this point
+				if YOU_CANNOT_STOP_THE_WIND_BITCH.ability.name == 'Glass Card' then 
+					YOU_CANNOT_STOP_THE_WIND_BITCH.shattered = true
+				else 
+					YOU_CANNOT_STOP_THE_WIND_BITCH.destroyed = true
+				end 
+				cards_destroyed[#cards_destroyed+1] = YOU_CANNOT_STOP_THE_WIND_BITCH
+       				for j=1, #G.jokers.cards do
+					eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
+				end
+				for i=1, #cards_destroyed do
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							if cards_destroyed[i].ability.name == 'Glass Card' then 
+								cards_destroyed[i]:shatter()
+							else
+								cards_destroyed[i]:start_dissolve()
+							end
+						return true
+						end
+					}))
+				end
+			end
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_xmult',
+					vars = { 2.22 }
+				},
+				Xmult_mod = 2.22,
+				card = self
+			}
+		end
+	end
+end
+			
+-- endregion Strong Winds
+
+-- region Coyote Jump
+
+local coyotejump = SMODS.Joker({
+	name = "Coyote Jump",
+	key = "coyotejump",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Coyote Jump',
+        text = {
+	"If cards held in hand",
+	"do not form a {C:attention}Pair{},",
+	"{C:attention}Straight{}, or {C:attention}Flush{},",
+	"gain {C:red}+1{} discard"
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+coyotejump.calculate = function(self, context) -- thank you bred?????
+
+	if context.before and not context.blueprint then
+	coyotejump_card_array = {}
+	end
+
+	if context.individual and context.poker_hands ~= nil and not context.blueprint then
+       		if context.cardarea == G.hand then
+			coyotejump_card_array[#coyotejump_card_array + 1] = context.other_card
+		end
+	end
+	
+	if SMODS.end_calculate_context(context) and context.poker_hands ~= nil then
+		  local parts = {
+			_2 = get_X_same(2, coyotejump_card_array),
+			_flush = get_flush(coyotejump_card_array),
+			_straight = get_straight(coyotejump_card_array)
+		}
+		if next(parts._straight) then
+			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Straight", colour = G.C.RED})
+		elseif next(parts._flush) then
+			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Flush", colour = G.C.RED})
+		elseif next(parts._2) then
+			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Pair", colour = G.C.RED})
+		else
+			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
+				ease_discard(1, nil, true)
+				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
+			return true end }))
+		end
+	end
+end
+
+-- endregion Coyote Jump
+
+-- region Climbing Gear
+
+local climbinggear = SMODS.Joker({
+	name = "Climbing Gear",
+	key = "climbinggear",
+    config = {d_size = 2},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Climbing Gear',
+        text = {
+	"{C:red}+2{} discards",
+	"Discarded cards are",
+	"reshuffled into deck"
+        }
+    },
+	rarity = 2,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+-- this may be the easiest joker so far... literally NO code needs to be here, it's all done in lovely patches
+
+-- endregion Climbing Gear
+
+-- all 3 spinners have basically the same code lol
+
+-- region Blue Spinner
+
+local bluespinner = SMODS.Joker({
+	name = "Blue Spinner",
+	key = "bluespinner",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Blue Spinner',
+        text = {
+	"When a card with a {C:planet}Blue Seal{}",
+	"is scored, {C:green}#1# in 6{} chance",
+	"to add a {C:planet}Blue Seal{} to each",
+	"{C:attention}adjacent{} card in scored hand",
+	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+bluespinner.calculate = function(self, context)
+
+	if context.before and not context.blueprint then
+		if next(find_joker('Rainbow Spinner')) then
+			rainbow_spinner_seal_override = true
+		else
+			rainbow_spinner_seal_override = false
+		end
+		bluespinner_seal_candidates = {}
+		for k = 1, #context.scoring_hand do
+			if k == 1 then
+				if k ~= #context.scoring_hand then
+					if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
+						if pseudorandom('bloo1') < G.GAME.probabilities.normal/6 then
+							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
+						end
+					end
+				end
+			elseif k == #context.scoring_hand then
+				if k ~= 1 then
+					if context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
+						if pseudorandom('bloo2') < G.GAME.probabilities.normal/6 then
+							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
+						end
+					end
+				end
+			else
+				if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
+					if pseudorandom('bloo3') < G.GAME.probabilities.normal/6 then
+						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
+					end
+				elseif context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
+					if pseudorandom('bloo4') < G.GAME.probabilities.normal/6 then
+						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
+					end
+				end
+			end
+		end
+		if #bluespinner_seal_candidates > 0 then
+			for k = 1, #bluespinner_seal_candidates do
+				if (rainbow_spinner_seal_override == true and bluespinner_seal_candidates[k].seal ~= 'Blue' and bluespinner_seal_candidates[k].seal ~= 'Gold') or (rainbow_spinner_seal_override == false and bluespinner_seal_candidates[k].seal ~= 'Blue') then
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.0, func = function()
+           					bluespinner_seal_candidates[k]:set_seal('Blue', true, false)
+						bluespinner_seal_candidates[k]:juice_up()
+						play_sound('gold_seal', 1.2, 0.4)
+						self:juice_up()
+            				return true end }))
+					delay(0.5)
+				end
+			end
+		end
+	end
+end
+
+function bluespinner.loc_vars(self, infoqueue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+end
+
+-- endregion Blue Spinner
+
+-- region Purple Spinner
+
+local purplespinner = SMODS.Joker({
+	name = "Purple Spinner",
+	key = "purplespinner",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Purple Spinner',
+        text = {
+	"When a card with a {C:tarot}Purple Seal{}",
+	"is {C:attention}held{} in hand at end of round,",
+	"{C:green}#1# in 6{} chance to add a {C:tarot}Purple Seal{}",
+	"to each {C:attention}adjacent{} card in hand",
+	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+purplespinner.calculate = function(self, context)
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		if next(find_joker('Rainbow Spinner')) then
+			rainbow_spinner_seal_override = true
+		else
+			rainbow_spinner_seal_override = false
+		end
+		purplespinner_seal_candidates = {}
+		for k = 1, #G.hand.cards do
+			if k == 1 then
+				if k ~= #G.hand.cards then
+					if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
+						if pseudorandom('purple1') < G.GAME.probabilities.normal/6 then
+							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
+						end
+					end
+				end
+			elseif k == #G.hand.cards then
+				if k ~= 1 then
+					if G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
+						if pseudorandom('is2') < G.GAME.probabilities.normal/6 then
+							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
+						end
+					end
+				end
+			else
+				if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
+					if pseudorandom('best3') < G.GAME.probabilities.normal/6 then
+						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
+					end
+				elseif G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
+					if pseudorandom('colour4') < G.GAME.probabilities.normal/6 then
+						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
+					end
+				end
+			end
+		end
+		if #purplespinner_seal_candidates > 0 then
+			for k = 1, #purplespinner_seal_candidates do
+				if (rainbow_spinner_seal_override == true and purplespinner_seal_candidates[k].seal ~= 'Purple' and purplespinner_seal_candidates[k].seal ~= 'Gold') or (rainbow_spinner_seal_override == false and purplespinner_seal_candidates[k].seal ~= 'Purple') then
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.0, func = function()
+           					purplespinner_seal_candidates[k]:set_seal('Purple', true, false)
+						purplespinner_seal_candidates[k]:juice_up()
+						play_sound('gold_seal', 1.2, 0.4)
+						self:juice_up()
+            				return true end }))
+					delay(0.5)
+				end
+			end
+		end
+	end
+end
+
+function purplespinner.loc_vars(self, infoqueue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+end
+
+
+-- region Red Spinner
+
+local redspinner = SMODS.Joker({
+	name = "Red Spinner",
+	key = "redspinner",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Red Spinner',
+        text = {
+	"When a card with a {C:red}Red Seal{}",
+	"is {C:attention}discarded{}, {C:green}#1# in 5{} chance",
+	"to add a {C:red}Red Seal{} to each",
+	"{C:attention}adjacent{} card in discarded hand",
+	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+redspinner.calculate = function(self, context)
+
+	if context.pre_discard and not context.blueprint then
+		if next(find_joker('Rainbow Spinner')) then
+			rainbow_spinner_seal_override = true
+		else
+			rainbow_spinner_seal_override = false
+		end
+		redspinner_seal_candidates = {}
+		for k = 1, #G.hand.highlighted do
+			if k == 1 then
+				if k ~= #G.hand.highlighted then
+					if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
+						if pseudorandom('RED1') < G.GAME.probabilities.normal/5 then
+							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
+						end
+					end
+				end
+			elseif k == #G.hand.highlighted then
+				if k ~= 1 then
+					if G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
+						if pseudorandom('redge2') < G.GAME.probabilities.normal/5 then
+							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
+						end
+					end
+				end
+			else
+				if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
+					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/5 then
+						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
+					end
+				elseif G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
+					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/5 then
+						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
+					end
+				end
+			end
+		end
+		if #redspinner_seal_candidates > 0 then
+			for k = 1, #redspinner_seal_candidates do
+				if (rainbow_spinner_seal_override == true and redspinner_seal_candidates[k].seal ~= 'Red' and redspinner_seal_candidates[k].seal ~= 'Gold') or (rainbow_spinner_seal_override == false and redspinner_seal_candidates[k].seal ~= 'Red') then
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.0, func = function()
+           					redspinner_seal_candidates[k]:set_seal('Red', true, false)
+						redspinner_seal_candidates[k]:juice_up()
+						play_sound('gold_seal', 1.2, 0.4)
+						self:juice_up()
+            				return true end }))
+					delay(0.5)
+				end
+			end
+		end
+	end
+end
+
+function redspinner.loc_vars(self, infoqueue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+end
+
+-- endregion Red Spinner
+
+-- region Rainbow Spinner
+
+local rainbowspinner = SMODS.Joker({
+	name = "Rainbow Spinner",
+	key = "rainbowspinner",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Rainbow Spinner',
+        text = {
+	"{C:money}Gold Seals{} act as",
+	"{C:red,s:1.2}ev{C:tarot,s:1.2}e{C:planet,s:1.2}ry{} seal"
+        }
+    },
+	rarity = 3,
+	cost = 11,
+	discovered = true,
+	blueprint_compat = false,
+	atlas = "j_ccc_jokers"
+})
+
+-- i think i'm just gonna hardcode this using lovely? hate to do it but... whatever, no mod compat sucks though, and at least it looks clean on the user end
+
+-- endregion Rainbow Spinner
