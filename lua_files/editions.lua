@@ -70,18 +70,6 @@ function Card.draw(self, layer)
     end
 end
 
-function SMODS.current_mod.process_loc_text()
-    G.localization.descriptions.Other.e_mirrored = {
-        name = "Mirrored",
-        text = {
-            "If a {C:attention}Mirror{} is not",
-	    "present, {C:red}self-destructs{}",
-	    "at end of round"
-        }
-    }
-    G.localization.misc.labels.mirrored = 'Mirrored'
-end
-
     G.SHADERS['mirrored'] = love.graphics.newShader(SMODS.current_mod.path.."/assets/shaders/mirrored.fs")
 
     local e_mirrored = {order = 6, key = "e_mirrored", unlocked = true, discovered = true, name = "Mirrored", pos = {x=0,y=0}, atlas = 'Joker', set = "Edition", config = {mirror_bound = true}}

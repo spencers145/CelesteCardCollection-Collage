@@ -10,7 +10,8 @@ local templeeyes = SMODS.Joker({
         text = {
 	"If {C:attention}Blind{} is selected with",
 	"{C:money}$4{} or less, create a",
-	"{C:tarot}Hanged Man{}"
+	"{C:tarot}Hanged Man{}",
+	"{C:inactive}(Must have room)"
         }
     },
 	rarity = 2,
@@ -21,7 +22,7 @@ local templeeyes = SMODS.Joker({
 })
 
 templeeyes.calculate = function(self, context)
-        if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+	if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 	if G.GAME.dollars <= 4 then
         G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
             return {
@@ -40,7 +41,11 @@ templeeyes.calculate = function(self, context)
                     end)}))}
 		end
         end
-    end
+end
+
+function templeeyes.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+end
 
 -- endregion Temple Eyes
 
@@ -77,7 +82,7 @@ feather.calculate = function(self, context)
         end
 end
 
-function feather.loc_vars(self, infoqueue, card)
+function feather.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}}
 end
 
@@ -106,7 +111,7 @@ local bird = SMODS.Joker({
 
 bird.calculate = function(self, context)
     if context.using_consumeable then
-        if context.consumeable.ability.set == 'Planet'  then
+        if context.consumeable.ability.set == 'Planet' then
             if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
                 return {
                         G.E_MANAGER:add_event(Event({
@@ -136,8 +141,7 @@ local partofyou = SMODS.Joker({
 	"If {C:attention}first hand{} of round",
 	"contains exactly {C:attention}2{} cards,",
 	"convert both their {C:attention}ranks{}",
-	"into their {C:attention}complements{}",
-	"{s:0.78}({C:attention,s:0.78}e.g.{s:0.78} King <> Ace, 10 <> 4, 6 <> 8){}"
+	"into their {C:attention}complements{}"
         }
     },
 	rarity = 3,
@@ -249,6 +253,11 @@ partofyou.calculate = function(self, context)
        end
 end
 
+function partofyou.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Fytos', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'partofyou_complements', set = 'Other'}
+end
+
 -- endregion Part Of You
 
 -- region Zipper
@@ -311,7 +320,7 @@ end
 end
 end
 
-function zipper.loc_vars(self, infoqueue, card)
+function zipper.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.chips}}
 end
 
@@ -362,7 +371,8 @@ miniheart.calculate = function(self, context)
 end
 end
 
-function miniheart.loc_vars(self, infoqueue, card)
+function miniheart.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.e_foil
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
 
@@ -454,7 +464,8 @@ towels.calculate = function(self, context)
 end
 end
 
-function towels.loc_vars(self, infoqueue, card)
+function towels.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.chips}}
 end
 
@@ -530,7 +541,8 @@ chests.calculate = function(self, context)
 	end
 end
 
-function chests.loc_vars(self, infoqueue, card)
+function chests.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.mult}}
 end
 
@@ -892,7 +904,8 @@ books.calculate = function(self, context)
 	end
 end
 
-function books.loc_vars(self, infoqueue, card)
+function books.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.xmult}}
 end
 
@@ -996,7 +1009,9 @@ ominousmirror.calculate = function(self, context)
 	end
 end
 
-function ominousmirror.loc_vars(self, infoqueue, card)
+function ominousmirror.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
 end
 
@@ -1056,7 +1071,8 @@ strawberry.calculate = function(self, context)
 	end
 end
 
-function strawberry.loc_vars(self, infoqueue, card)
+function strawberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {card.ability.extra.money}}
 end
 
@@ -1117,7 +1133,8 @@ end
 		
 	
 
-function wingedstrawberry.loc_vars(self, infoqueue, card)
+function wingedstrawberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {(card.ability.extra.winged_poker_hand)}}
 end
 
@@ -1154,6 +1171,10 @@ goldenstrawberry.calculate = function(self, context)
 			golden_strawberry_after_boss_blind = false
 		end
 	end
+end
+
+function goldenstrawberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 end
 
 -- endregion Golden Strawberry
@@ -1212,7 +1233,8 @@ wingedgoldenstrawberry.calculate = function(self, context)
 	end
 end
 
-function wingedgoldenstrawberry.loc_vars(self, infoqueue, card)
+function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {card.ability.extra.winged_poker_hand}}
 end
 
@@ -1293,7 +1315,9 @@ moonberry.calculate = function(self, context)
 	end
 end
 
-function moonberry.loc_vars(self, infoqueue, card)
+function moonberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'e_negative_consumable', set = 'Edition', config = {extra = 1}}
 	return {vars = {card.ability.extra.winged_poker_hand}}
 end
 
@@ -1359,7 +1383,8 @@ tothesummit.calculate = function(self, context)
 	end
 end
 
-function tothesummit.loc_vars(self, infoqueue, card)
+function tothesummit.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Aurora', set = 'Other'}
 	return {vars = {card.ability.extra.xmult}}
 end
 
@@ -1409,6 +1434,10 @@ coreswitch.calculate = function(self, context)
 	end
 end
 
+function coreswitch.loc_vars(self, info_queue, card)	
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Aurora', set = 'Other'}
+end
+
 -- endregion Core Switch
 
 -- region Temple Rock
@@ -1450,6 +1479,11 @@ templerock.calculate = function(self, context)
 			end
         	end
 	end
+end
+
+function templerock.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
+	info_queue[#info_queue+1] = G.P_CENTERS.m_stone
 end
 
 -- endregion Temple Rock
@@ -1525,6 +1559,10 @@ strongwinds.calculate = function(self, context)
 		end
 	end
 end
+
+function strongwinds.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_goose', set = 'Other'}
+end
 			
 -- endregion Strong Winds
 
@@ -1584,6 +1622,10 @@ coyotejump.calculate = function(self, context) -- thank you bred?????
 	end
 end
 
+function coyotejump.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
+end
+
 -- endregion Coyote Jump
 
 -- region Climbing Gear
@@ -1607,6 +1649,10 @@ local climbinggear = SMODS.Joker({
 	blueprint_compat = true,
 	atlas = "j_ccc_jokers"
 })
+
+function climbinggear.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_goose', set = 'Other'}
+end
 
 -- this may be the easiest joker so far... literally NO code needs to be here, it's all done in lovely patches
 
@@ -1692,7 +1738,9 @@ bluespinner.calculate = function(self, context)
 	end
 end
 
-function bluespinner.loc_vars(self, infoqueue, card)
+function bluespinner.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'blue_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
 
@@ -1776,7 +1824,9 @@ purplespinner.calculate = function(self, context)
 	end
 end
 
-function purplespinner.loc_vars(self, infoqueue, card)
+function purplespinner.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'purple_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
 
@@ -1859,7 +1909,9 @@ redspinner.calculate = function(self, context)
 	end
 end
 
-function redspinner.loc_vars(self, infoqueue, card)
+function redspinner.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'red_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
 
@@ -1886,6 +1938,123 @@ local rainbowspinner = SMODS.Joker({
 	atlas = "j_ccc_jokers"
 })
 
+function rainbowspinner.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
+	info_queue[#info_queue+1] = {key = 'gold_seal', set = 'Other'}
+end
+
 -- i think i'm just gonna hardcode this using lovely? hate to do it but... whatever, no mod compat sucks though, and at least it looks clean on the user end
 
 -- endregion Rainbow Spinner
+
+-- region Letting Go
+
+local lettinggo = SMODS.Joker({
+	name = "Letting Go",
+	key = "lettinggo",
+    config = {extra = {mult = 0}},
+	pos = {x = 2, y = 2},
+	loc_txt = {
+        name = 'Letting Go',
+        text = {
+	"When a card is destroyed,",
+	"{C:green}#1# in 3{} chance to create",
+	"a {C:tarot}Death{}",
+	"Gain {C:mult}+2{} Mult for each",
+	"{C:tarot}Death{} used",
+	"{C:inactive}(Must have room)",
+	"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	atlas = "j_ccc_jokers"
+})
+
+lettinggo.calculate = function(self, context)
+
+	if context.cards_destroyed then
+                ccc_lettinggo_death_chances = 0
+		for k, v in ipairs(context.glass_shattered) do
+                    ccc_lettinggo_death_chances = ccc_lettinggo_death_chances + 1
+                end
+		for i = 1, ccc_lettinggo_death_chances do
+			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/3 then
+					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+					G.E_MANAGER:add_event(Event({
+                    			func = (function()
+                        			G.E_MANAGER:add_event(Event({
+                            			func = function() 
+                                			local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_death', 'lgo')
+                               				card:add_to_deck()
+                                			G.consumeables:emplace(card)
+                                			G.GAME.consumeable_buffer = 0
+                                			return true
+                            			end}))   
+                            			card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+                        		return true
+                    			end)}))
+				end
+			end
+		end
+	end
+
+	if context.remove_playing_cards then -- it's just the same thing as before, folks
+		ccc_lettinggo_death_chances = 0
+		for k, val in ipairs(context.removed) do
+                    ccc_lettinggo_death_chances = ccc_lettinggo_death_chances + 1
+                end
+		for i = 1, ccc_lettinggo_death_chances do
+			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/3 then
+					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+					G.E_MANAGER:add_event(Event({
+                    			func = (function()
+                        			G.E_MANAGER:add_event(Event({
+                            			func = function() 
+                                			local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_death', 'lgo')
+                               				card:add_to_deck()
+                                			G.consumeables:emplace(card)
+                                			G.GAME.consumeable_buffer = 0
+                                			return true
+                            			end}))   
+                            			card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+                        		return true
+                    			end)}))
+				end
+			end
+		end
+	end
+
+	if context.using_consumeable then
+		if context.consumeable.ability.name == 'Death' then
+			if not context.blueprint then
+				self.ability.extra.mult = self.ability.extra.mult + 2
+				card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {self.ability.extra.mult}}})
+			end
+		end
+	end
+
+	if SMODS.end_calculate_context(context) then
+		if self.ability.extra.mult ~= 0 then
+                	return {
+                   	message = localize {
+                  		type = 'variable',
+                   		key = 'a_mult',
+                  		vars = { self.ability.extra.mult }
+                		},
+                	mult_mod = self.ability.extra.mult,
+                	card = self
+                	}
+		end
+	end
+end
+
+function lettinggo.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'ccc_credits_art_bein_concept_Gappie', set = 'Other'}
+	info_queue[#info_queue+1] = G.P_CENTERS.c_death
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.mult}}
+end
