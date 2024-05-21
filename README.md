@@ -27,3 +27,9 @@ None
 # Vouchers
 <b>Fast Track</b>: +1 Ante, -30% blind chips <br><br>
 <b>Mindfulness</b> (Requires Fast Track): -30% blind chips (again) <br>
+
+
+
+Changes since last version v0.11:
+1. removed drawing of card behind mirrored enhancement
+2. fixed summit deck not giving a joker slot after ante 1

@@ -69,41 +69,53 @@ local virus = SMODS.Back({
 -- endregion virus deck-----------------------
 -- region summit deck -----------------------
 
-function summit_effect(self, args)
-	if self.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > self.effect.config.add_slot_each_ante and args.context == 'eval' and G.GAME.last_blind and G.GAME.last_blind.boss then
-		G.E_MANAGER:add_event(Event({func = function()
-			if G.jokers then
-				local width = G.round_eval.T.w - 0.51
-				local slotAdded = {n=G.UIT.R, config={align = "cm", minw = width}, nodes={
-					{n=G.UIT.O, config={object = DynaText({string = {'+1 Joker Slot!'}, colours = {G.C.ORANGE},shadow = true, float = false, y_offset = 0, scale = 0.66, spacing = 0, font = G.LANGUAGES['en-us'].font, pop_in = 0})}}
-				}}
-				local spacer = {n=G.UIT.R, config={align = "cm", minw = width}, nodes={
-					{n=G.UIT.O, config={object = DynaText({string = {'......................................'}, colours = {G.C.WHITE},shadow = true, float = true, y_offset = -30, scale = 0.45, spacing = 13.5, font = G.LANGUAGES['en-us'].font, pop_in = 0})}}
-				}}
-				G.round_eval:add_child(spacer,G.round_eval:get_UIE_by_ID('base_round_eval'))
-				G.round_eval:add_child(slotAdded,G.round_eval:get_UIE_by_ID('base_round_eval'))
-                        
-			end
-			return true end }))
-	end
-end
+-- now displayed in ease_ante, this was old display in case we wanna switch back (end of round)
+-- function summit_effect(self, args)
+-- 	if self.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > self.effect.config.add_slot_each_ante and args.context == 'eval' and G.GAME.last_blind and G.GAME.last_blind.boss then
+-- 		G.E_MANAGER:add_event(Event({func = function()
+-- 			if G.jokers then
+-- 				local width = G.round_eval.T.w - 0.51
+-- 				local slotAdded = {n=G.UIT.R, config={align = "cm", minw = width}, nodes={
+-- 					{n=G.UIT.O, config={object = DynaText({string = {'+1 Joker Slot!'}, colours = {G.C.ORANGE},shadow = true, float = false, y_offset = 0, scale = 0.66, spacing = 0, font = G.LANGUAGES['en-us'].font, pop_in = 0})}}
+-- 				}}
+-- 				local spacer = {n=G.UIT.R, config={align = "cm", minw = width}, nodes={
+-- 					{n=G.UIT.O, config={object = DynaText({string = {'......................................'}, colours = {G.C.WHITE},shadow = true, float = true, y_offset = -30, scale = 0.45, spacing = 13.5, font = G.LANGUAGES['en-us'].font, pop_in = 0})}}
+-- 				}}
+-- 				G.round_eval:add_child(spacer,G.round_eval:get_UIE_by_ID('base_round_eval'))
+-- 				G.round_eval:add_child(slotAdded,G.round_eval:get_UIE_by_ID('base_round_eval'))
+						
+-- 			end
+-- 			return true end }))
+-- 	end
+-- end
 
 local ease_anteRef = ease_ante
 function ease_ante(mod)
 	ease_anteRef(mod)
-	if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.selected_back.effect.config.add_slot_each_ante then
-		G.jokers.config.card_limit = G.jokers.config.card_limit + 1
-		G.GAME.selected_back.effect.config.add_slot_each_ante = G.GAME.selected_back.effect.config.add_slot_each_ante + 1
+	G.E_MANAGER:add_event(Event({
+		trigger = 'immediate',
+		func = function () 
+			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.selected_back.effect.config.add_slot_each_ante then
+			
+				
+						G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+						G.GAME.selected_back.effect.config.add_slot_each_ante = G.GAME.selected_back.effect.config.add_slot_each_ante + 1
+						
+						attention_text({
+							text = "+1 Joker Slot",
+							scale = 0.5, 
+							hold = 3.3,
+							cover = G.jokers.children.area_uibox,
+							cover_colour = G.C.CLEAR,
+							offset = {x=-3.25,y=1.25}
+						})
+			end
 
-		attention_text({
-			text = "+1 Joker",
-			scale = 0.5, 
-			hold = 3.3,
-			cover = G.jokers.children.area_uibox,
-			cover_colour = G.C.CLEAR,
-			offset = {x=-3.25,y=1.25}
-		})
-	end
+			play_sound('generic1')
+			return true
+		end
+	}))
+
 end
 
 
