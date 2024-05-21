@@ -21,6 +21,15 @@ position = "after"
 payload = "if v == 'mirrored' then info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'} end"
 match_indent = true
 
+# Do not draw front of card if mirrored
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "elseif not self.greyed then"
+position = "at"
+payload = "elseif not self.greyed and (not self.edition or not self.edition.mirrored) then"
+match_indent = true
+
 # overwrite if statement to prevent the edition eval block from triggering if no value modifier is defined (tl;dr, no ugly blank trigger on mirrored cards)
 [[patches]]
 [patches.pattern]
