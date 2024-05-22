@@ -18,7 +18,12 @@ local v_gondola = SMODS.Voucher({
 	available = true,
 	requires = {},
 	atlas = "v_ccc_vouchers",
-	no_pool_flag = "winning_ante"
+	no_pool_flag = "winning_ante",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
 })
 
 v_gondola:register()
@@ -60,7 +65,12 @@ local v_feather = SMODS.Voucher({
 	unlocked = true,
 	available = true,
 	requires = {'v_ccc_gondola'},
-	atlas = "v_ccc_vouchers"
+	atlas = "v_ccc_vouchers",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
 })
 
 

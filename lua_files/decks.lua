@@ -63,7 +63,12 @@ local virus = SMODS.Back({
 	    "until the end of the ante"
         }
     },
-    atlas= "b_ccc_decks"
+    atlas= "b_ccc_decks",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
 })
 
 -- endregion virus deck-----------------------
@@ -129,7 +134,12 @@ local summit = SMODS.Back({
 	    "{s:0.75}(if Ante has not been reached before){}"
         }
     },
-    atlas= "b_ccc_decks"
+    atlas= "b_ccc_decks",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
 })
 
 -- endregion summit deck-----------------------

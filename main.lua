@@ -33,5 +33,22 @@ SMODS.Atlas({
     py = 34
 })
 
+function dump(o, i)
+    i = i or 11
+    if i <= 0 then
+        return "..."
+    end
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v, i-1) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
+
 ----------------------------------------------
 ------------MOD CODE END----------------------

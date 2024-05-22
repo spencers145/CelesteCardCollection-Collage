@@ -1,3 +1,51 @@
+--region CREDITS
+-- Code to allow for credits
+
+local generate_UIBox_ability_table_ref = Card.generate_UIBox_ability_table
+
+function Card.generate_UIBox_ability_table(self)
+	local AUT = generate_UIBox_ability_table_ref(self)
+	AUT.mod_credit = self.config.center.credit or nil 
+	return AUT
+end
+
+-- local card_h_popup_ref = G.UIDEF.card_h_popup
+
+-- function G.UIDEF.card_h_popup(card)
+-- 	local ret = card_h_popup_ref(card)
+	
+--     if card.ability_UIBox_table and ret.nodes then
+-- 		local AUT = card.ability_UIBox_table
+-- 		if AUT.mod_credit then
+-- 			local main = ret.nodes[1]
+-- 			local thing = {n=G.UIT.ROOT,  config={align = "cm", r = 0.1, padding = 0.05, emboss = 0.05}, nodes={
+-- 				{n=G.UIT.R, config={align = "cm", colour = lighten(G.C.JOKER_GREY, 0.5), r = 0.1, padding = 0.05, emboss = 0.05}, nodes={
+-- 				{n=G.UIT.R, config={align = "cm", colour = lighten(G.C.GREY, 0.15), r = 0.1, padding=0.2}, nodes={
+-- 				{n=G.UIT.R, config={align = "cm"}, nodes={
+-- 					{n=G.UIT.O, config={object = DynaText({string = "Art by ", colours = {G.C.WHITE}, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}},
+-- 					{n=G.UIT.O, config={object = DynaText({string = AUT.mod_credit.art, colours = {G.C.CCC_COLOUR}, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}}}},
+-- 				{n=G.UIT.R, config={align = "cm"}, nodes={
+-- 					{n=G.UIT.O, config={object = DynaText({string = "Code by ", colours = {G.C.WHITE}, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}},
+-- 					{n=G.UIT.O, config={object = DynaText({string = AUT.mod_credit.code, colours = {G.C.CCC_COLOUR }, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}}}},
+-- 				{n=G.UIT.R, config={align = "cm"}, nodes={
+-- 					{n=G.UIT.O, config={object = DynaText({string = "Concept by ", colours = {G.C.WHITE}, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}},
+-- 					{n=G.UIT.O, config={object = DynaText({string = AUT.mod_credit.concept, colours = {G.C.CCC_COLOUR }, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}}}},
+-- 			}}}}}}
+
+-- 			main.children = main.children or {}
+-- 			main.children.credits = UIBox{
+-- 				definition = thing,
+-- 				config = {offset = {x=  0.03,y=0}, align = 'cr', parent = main}
+-- 			}
+-- 			main.children.credits:align_to_major()
+-- 		end
+-- 	end
+-- 	return ret 
+-- end
+
+--endregion CREDITS
+
+
 --region Temple Eyes
 
 local templeeyes = SMODS.Joker({
@@ -18,7 +66,12 @@ local templeeyes = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
 })
 
 templeeyes.calculate = function(self, context)
@@ -69,7 +122,12 @@ local feather = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
 })
 
 feather.calculate = function(self, context)
@@ -106,7 +164,12 @@ local bird = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
 })
 
 bird.calculate = function(self, context)
@@ -148,7 +211,12 @@ local partofyou = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "Fytos"
+	}
 })
 
 partofyou.calculate = function(self, context)
@@ -254,7 +322,6 @@ partofyou.calculate = function(self, context)
 end
 
 function partofyou.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Fytos', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'partofyou_complements', set = 'Other'}
 end
 
@@ -279,7 +346,12 @@ local zipper = SMODS.Joker({
 	cost = 5,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
 })
 
 zipper.set_ability = function(self, context)
@@ -345,7 +417,12 @@ local miniheart = SMODS.Joker({
 	cost = 5,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
 })
 
 miniheart.calculate = function(self, context)
@@ -399,7 +476,12 @@ local towels = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "Bred"
+	}
 })
 
 towels.calculate = function(self, context)
@@ -465,7 +547,6 @@ end
 end
 
 function towels.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.chips}}
 end
 
@@ -492,7 +573,12 @@ local chests = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "Bred"
+	}
 })
 
 chests.calculate = function(self, context)
@@ -542,7 +628,6 @@ chests.calculate = function(self, context)
 end
 
 function chests.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.mult}}
 end
 
@@ -569,7 +654,12 @@ local books = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Bred"
+	}
 })
 
 books.calculate = function(self, context)
@@ -905,7 +995,6 @@ books.calculate = function(self, context)
 end
 
 function books.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
 	return {vars = {card.ability.extra.xmult}}
 end
 
@@ -933,7 +1022,12 @@ local ominousmirror = SMODS.Joker({
 	cost = 10,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 
@@ -1010,7 +1104,6 @@ ominousmirror.calculate = function(self, context)
 end
 
 function ominousmirror.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
 end
@@ -1039,7 +1132,12 @@ local strawberry = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
@@ -1072,7 +1170,6 @@ strawberry.calculate = function(self, context)
 end
 
 function strawberry.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {card.ability.extra.money}}
 end
 
@@ -1099,7 +1196,12 @@ local wingedstrawberry = SMODS.Joker({
 	cost = 5,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 wingedstrawberry.calculate = function(self, context)
@@ -1134,7 +1236,6 @@ end
 	
 
 function wingedstrawberry.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {(card.ability.extra.winged_poker_hand)}}
 end
 
@@ -1158,7 +1259,12 @@ local goldenstrawberry = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 -- literally the simplest code in the entire mod lmao
@@ -1171,10 +1277,6 @@ goldenstrawberry.calculate = function(self, context)
 			golden_strawberry_after_boss_blind = false
 		end
 	end
-end
-
-function goldenstrawberry.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 end
 
 -- endregion Golden Strawberry
@@ -1200,7 +1302,12 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 wingedgoldenstrawberry.calculate = function(self, context)
@@ -1234,7 +1341,6 @@ wingedgoldenstrawberry.calculate = function(self, context)
 end
 
 function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	return {vars = {card.ability.extra.winged_poker_hand}}
 end
 
@@ -1262,7 +1368,12 @@ local moonberry = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 moonberry.calculate = function(self, context)
@@ -1316,7 +1427,6 @@ moonberry.calculate = function(self, context)
 end
 
 function moonberry.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Gappie', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'e_negative_consumable', set = 'Edition', config = {extra = 1}}
 	return {vars = {card.ability.extra.winged_poker_hand}}
 end
@@ -1346,7 +1456,12 @@ local tothesummit = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Aurora Aquir"
+	}
 })
 
 tothesummit.calculate = function(self, context)
@@ -1384,7 +1499,6 @@ tothesummit.calculate = function(self, context)
 end
 
 function tothesummit.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_Gappie_concept_Aurora', set = 'Other'}
 	return {vars = {card.ability.extra.xmult}}
 end
 
@@ -1409,7 +1523,12 @@ local coreswitch = SMODS.Joker({
 	cost = 3,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Aurora Aquir"
+	}
 })
 
 coreswitch.calculate = function(self, context)
@@ -1434,10 +1553,6 @@ coreswitch.calculate = function(self, context)
 	end
 end
 
-function coreswitch.loc_vars(self, info_queue, card)	
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Aurora', set = 'Other'}
-end
-
 -- endregion Core Switch
 
 -- region Temple Rock
@@ -1458,7 +1573,12 @@ local templerock = SMODS.Joker({
 	cost = 4,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
 })
 
 templerock.calculate = function(self, context)
@@ -1482,7 +1602,6 @@ templerock.calculate = function(self, context)
 end
 
 function templerock.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
 	info_queue[#info_queue+1] = G.P_CENTERS.m_stone
 end
 
@@ -1507,7 +1626,12 @@ local strongwinds = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "goose"
+	}
 })
 
 strongwinds.calculate = function(self, context)
@@ -1560,9 +1684,6 @@ strongwinds.calculate = function(self, context)
 	end
 end
 
-function strongwinds.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_goose', set = 'Other'}
-end
 			
 -- endregion Strong Winds
 
@@ -1586,7 +1707,12 @@ local coyotejump = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Bred"
+	}
 })
 
 coyotejump.calculate = function(self, context) -- thank you bred?????
@@ -1622,10 +1748,6 @@ coyotejump.calculate = function(self, context) -- thank you bred?????
 	end
 end
 
-function coyotejump.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_Bred', set = 'Other'}
-end
-
 -- endregion Coyote Jump
 
 -- region Climbing Gear
@@ -1647,13 +1769,13 @@ local climbinggear = SMODS.Joker({
 	cost = 5,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "goose"
+	}
 })
-
-function climbinggear.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_goose', set = 'Other'}
-end
-
 -- this may be the easiest joker so far... literally NO code needs to be here, it's all done in lovely patches
 
 -- endregion Climbing Gear
@@ -1681,7 +1803,12 @@ local bluespinner = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
 })
 
 bluespinner.calculate = function(self, context)
@@ -1739,7 +1866,6 @@ bluespinner.calculate = function(self, context)
 end
 
 function bluespinner.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'blue_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
@@ -1767,7 +1893,12 @@ local purplespinner = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
 })
 
 purplespinner.calculate = function(self, context)
@@ -1825,7 +1956,6 @@ purplespinner.calculate = function(self, context)
 end
 
 function purplespinner.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'purple_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
@@ -1852,7 +1982,12 @@ local redspinner = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
 })
 
 redspinner.calculate = function(self, context)
@@ -1910,7 +2045,6 @@ redspinner.calculate = function(self, context)
 end
 
 function redspinner.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'red_seal', set = 'Other'}
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
 end
@@ -1935,11 +2069,15 @@ local rainbowspinner = SMODS.Joker({
 	cost = 11,
 	discovered = true,
 	blueprint_compat = false,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
 })
 
 function rainbowspinner.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_concept_sunsetquasar', set = 'Other'}
 	info_queue[#info_queue+1] = {key = 'gold_seal', set = 'Other'}
 end
 
@@ -1970,7 +2108,12 @@ local lettinggo = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
-	atlas = "j_ccc_jokers"
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "bein",
+		code = "toneblock",
+		concept = "Gappie"
+	}
 })
 
 lettinggo.calculate = function(self, context)
@@ -2054,7 +2197,6 @@ lettinggo.calculate = function(self, context)
 end
 
 function lettinggo.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = {key = 'ccc_credits_art_bein_concept_Gappie', set = 'Other'}
 	info_queue[#info_queue+1] = G.P_CENTERS.c_death
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.mult}}
 end
