@@ -1053,10 +1053,20 @@ local ominousmirror = SMODS.Joker({
 		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
-	}
+	},
+	process_loc_text = function(self)
+		SMODS.process_loc_text(G.localization.descriptions[self.set], self.key, self.loc_txt)
+		SMODS.process_loc_text(G.localization.descriptions[self.set], "Broken Mirror", {
+				name = ('Broken Mirror'),
+				text = {
+					"Does nothing."
+				}
+		})
+	end,
+	load = function(self, card, card_table, other_card)
+		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
+	end
 })
-
-
 
 ominousmirror.set_ability = function(self, card, initial, delay_sprites)
 	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
@@ -1131,7 +1141,7 @@ end
 
 function ominousmirror.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
+	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
 end
 
 -- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
