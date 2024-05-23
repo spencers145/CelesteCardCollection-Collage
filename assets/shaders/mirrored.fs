@@ -100,15 +100,24 @@ vec4 HSL(vec4 c)
 	return hsl;
 }
 
+float EaseQuartOut(float t) 
+{
+return 1.0 - ((1.0 - t)*(1.0 - t)*(1.0 - t)*(1.0 - t));
+}
+
 // this is what actually changes the look of card
 vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords )
 {
 
-	texture_coords.x = texture_coords.x + sin(texture_coords.y * 50 + time * 1.0) * .05  * 0.05;
+	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
+
+    float value = EaseQuartOut((1.0 - abs((uv.x * 2.0) - 1.0))) * EaseQuartOut((1.0 - abs((uv.y * 2.0) - 1.0)));
+
+	texture_coords.x += sin(texture_coords.y * 50 + (mirrored.r * 3) + mirrored.g) * 0.003 * value;
+    texture_coords.y += sin(texture_coords.y * 46 + (mirrored.r * 2) + (mirrored.g * 1.141) + 1.4203) * 0.003 * value;
 
     // turns the texture into pixels
     vec4 tex = Texel(texture, texture_coords);
-	vec2 uv = (((texture_coords)*(image_details)) - texture_details.xy*texture_details.ba)/texture_details.ba;
 
     // generic shimmer copied straight from negative_shine.fs
     number low = max(tex.b, min(tex.r, tex.g));
@@ -125,15 +134,19 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
 
     // normally this would have both a tex.b and tex.r for this segement but
     // it made the card look rainbow
-	tex.r = tex.r-delta + delta*maxfac*(0.0 - fac5*0.27) - 0.1;
-	tex.g = tex.g-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1;
-	tex.b = tex.b-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1;
+    vec4 tex2 = HSL(tex);
+
+    tex.a *= 0.85 + (0.15 * (1-tex2.b));
+
+	tex.r += (-delta + delta*maxfac*(0.0 - fac5*0.27) - 0.1) * (0.2 + 0.8 * (tex2.b) * (tex2.b));
+	tex.g += (-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1) * (0.2 + 0.8 * (tex2.b) * (tex2.b));
+    tex.b += (-delta + delta*maxfac*(0.2 - fac5*0.27) - 0.1) * (0.2 + 0.8 * (tex2.b) * (tex2.b));
 
 	tex.r = tex.r*0.8 + (0.0001*mirrored.r);
 	tex.g = tex.g*1.0 + (0.0001*mirrored.r);
 	tex.b = tex.b*1.1 + (0.0001*mirrored.r);
-	tex.a = tex.a*1.0;
 
+    tex.rgb *= 1 + 0.2 * (1-tex2.b);
     // required
 	return dissolve_mask(tex*colour, texture_coords, uv);
 }
