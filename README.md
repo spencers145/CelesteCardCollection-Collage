@@ -28,7 +28,8 @@ None
 <b>Fast Track</b>: +1 Ante, -30% blind chips <br><br>
 <b>Mindfulness</b> (Requires Fast Track): -30% blind chips (again) <br>
 
-Since 0.12
+Since 0.12.1
 
 1. Make omnious mirror broken from loading run if it is so
 2. Make omnioius mirror description change if broken (name is waiting on steammodded fix)
+3. Make mirrored cards appear in collection

@@ -2,8 +2,8 @@
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
 --- PREFIX: ccc
---- MOD_AUTHOR: [AuroraAquir, toneblock, Gappie]
---- MOD_DESCRIPTION: Featuring 2 new decks, 25 new jokers, and 2 new vouchers! Special thanks to Fytos, Gappie and Bred for joker ideas
+--- MOD_AUTHOR: [AuroraAquir, toneblock, Gappie, bein, sunsetquasar]
+--- MOD_DESCRIPTION: Featuring 2 new decks, 25 new jokers, and 2 new vouchers! Special thanks to Bred, Fytos, sunsetquasar and goose for concepts!
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
