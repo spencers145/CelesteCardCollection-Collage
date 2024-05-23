@@ -87,3 +87,20 @@ payload = '''
 	end
 '''
 match_indent = true
+
+
+# Add mirrored to the collection
+[[patches]]
+[patches.regex]
+target = "functions/UI_definitions.lua"
+pattern = '''for i = 1, 5 do\n\s+local card'''
+position = "at"
+payload = '''
+	editions = {}
+	for k, v in ipairs(G.P_CENTER_POOLS['Edition']) do
+		table.insert(editions, string.sub(v.key, 3, -1))	
+	end
+	for i = 1, #editions do
+      local card
+'''
+match_indent = true
