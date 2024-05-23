@@ -23,7 +23,7 @@ assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/vouchers.l
 
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/editions.lua")))()
 
-assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/localization.lua")))()
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/localization/en-us.lua")))()
 
 SMODS.Atlas({
     key = "ccc_icon",

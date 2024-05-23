@@ -46,62 +46,6 @@ end
 --endregion CREDITS
 
 
---region Temple Eyes
-
-local templeeyes = SMODS.Joker({
-	name = "Temple Eyes",
-	key = "templeeyes",
-    config = {},
-	pos = {x = 1, y = 0},
-	loc_txt = {
-        name = 'Temple Eyes',
-        text = {
-	"If {C:attention}Blind{} is selected with",
-	"{C:money}$4{} or less, create a",
-	"{C:tarot}Hanged Man{}",
-	"{C:inactive}(Must have room)"
-        }
-    },
-	rarity = 2,
-	cost = 7,
-	discovered = true,
-	blueprint_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "toneblock",
-		code = "toneblock",
-		concept = "toneblock"
-	}
-})
-
-templeeyes.calculate = function(self, context)
-	if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-	if G.GAME.dollars <= 4 then
-        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            return {
-		G.E_MANAGER:add_event(Event({
-                    func = (function()
-                        G.E_MANAGER:add_event(Event({
-                            func = function() 
-                                local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_hanged_man', 'see')
-                                card:add_to_deck()
-                                G.consumeables:emplace(card)
-                                G.GAME.consumeable_buffer = 0
-                                return true
-                            end}))   
-                            card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
-                        return true
-                    end)}))}
-		end
-        end
-end
-
-function templeeyes.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
-end
-
--- endregion Temple Eyes
-
 -- region Feather
 
 local feather = SMODS.Joker({
@@ -122,6 +66,8 @@ local feather = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "toneblock",
@@ -130,8 +76,8 @@ local feather = SMODS.Joker({
 	}
 })
 
-feather.calculate = function(self, context)
-        if SMODS.end_calculate_context(context) then
+feather.calculate = function(self, card, context)
+        if context.joker_main then
                             return {
                                 message = localize{type='variable',key='a_xmult',vars={1+(0.05*(#G.playing_cards - #G.deck.cards))}},
                                 Xmult_mod = 1+(0.05*(#G.playing_cards - #G.deck.cards)), 
@@ -141,10 +87,198 @@ feather.calculate = function(self, context)
 end
 
 function feather.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra, 1+(0.05*((G.playing_cards and G.deck.cards) and #G.playing_cards - #G.deck.cards or 0))}}
+	return {vars = {card.ability.extra, 1+(0.05*((G.deck and G.deck.cards and G.playing_cards) and #G.playing_cards - #G.deck.cards or 0))}}
 end
 
 --endregion Feather
+
+-- region Zipper
+
+local zipper = SMODS.Joker({
+	name = "Zipper",
+	key = "zipper",
+    config = {extra = {chips = 0}},
+	pos = {x = 4, y = 0},
+	loc_txt = {
+        name = 'Zipper',
+        text = {
+	"Gains {C:chips}+30{} Chips for each",
+	"{C:attention}Blind{} skipped this run",
+	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
+})
+
+zipper.set_ability = function(self, card, initial, delay_sprites)
+        if card.ability.name == 'Zipper' then
+            card.ability.extra.chips = G.GAME.skips*30
+	end
+end
+
+zipper.calculate = function(self, card, context)
+        if card.ability.name == 'Zipper' then
+            card.ability.extra.chips = G.GAME.skips*30
+	end
+        if context.skip_blind then
+            if not context.blueprint then
+                G.E_MANAGER:add_event(Event({
+                    func = function() 
+                        card_eval_status_text(card, 'extra', nil, nil, nil, {
+                            message = localize{type = 'variable', key = 'a_chips', vars = {card.ability.extra.chips}},
+                                colour = G.C.CHIPS
+                        }) 
+                        return true
+                    end}))
+            end
+	end
+	if context.joker_main then
+		if card.ability.extra.chips ~= 0 then
+                return {
+                    message = localize {
+                        type = 'variable',
+                        key = 'a_chips',
+                        vars = { card.ability.extra.chips }
+                    },
+                    chip_mod = card.ability.extra.chips
+                }
+end
+end
+end
+
+function zipper.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+
+-- endregion Zipper
+
+--region Temple Eyes
+
+local templeeyes = SMODS.Joker({
+	name = "Temple Eyes",
+	key = "templeeyes",
+    config = {},
+	pos = {x = 1, y = 0},
+	loc_txt = {
+        name = 'Temple Eyes',
+        text = {
+	"If {C:attention}Blind{} is selected with",
+	"{C:money}$4{} or less, create a",
+	"{C:tarot}Hanged Man{}",
+	"{C:inactive}(Must have room)"
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
+})
+
+templeeyes.calculate = function(self, card, context)
+	if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+	if G.GAME.dollars <= 4 then
+        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            return {
+		G.E_MANAGER:add_event(Event({
+                    func = (function()
+                        G.E_MANAGER:add_event(Event({
+                            func = function() 
+                                local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_hanged_man', 'see')
+                                card:add_to_deck()
+                                G.consumeables:emplace(card)
+                                G.GAME.consumeable_buffer = 0
+                                return true
+                            end}))   
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+                        return true
+                    end)}))}
+		end
+        end
+end
+
+function templeeyes.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+end
+
+-- endregion Temple Eyes
+
+-- region Mini Heart
+
+local miniheart = SMODS.Joker({
+	name = "Mini Heart",
+	key = "miniheart",
+    config = {},
+	pos = {x = 5, y = 0},
+	loc_txt = {
+        name = 'Mini Heart',
+        text = {
+	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
+	"edition to scored cards",
+	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "toneblock",
+		code = "toneblock",
+		concept = "toneblock"
+	}
+})
+
+miniheart.calculate = function(self, card, context)
+            if context.cardarea == G.jokers then
+       		 if context.joker_main then
+                    if not context.blueprint then
+			local miniheartsuccess = false
+                        local crystal = {}
+                        for k, v in ipairs(context.scoring_hand) do
+                         crystal[#crystal+1] = v
+			if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+       			 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+         		   local over = false
+			   local miniheartsuccess = true
+           		   v:set_edition({foil = true}, true)
+                           card:juice_up()
+                           v:juice_up()
+       		           return true end}))
+                            end
+			end
+			end
+			end
+end
+end
+
+function miniheart.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.e_foil
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+end
+
+-- endregion Mini Heart
 
 --region Bird
 
@@ -164,6 +298,8 @@ local bird = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "toneblock",
@@ -172,14 +308,14 @@ local bird = SMODS.Joker({
 	}
 })
 
-bird.calculate = function(self, context)
+bird.calculate = function(self, card, context)
     if context.using_consumeable then
         if context.consumeable.ability.set == 'Planet' then
             if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
                 return {
                         G.E_MANAGER:add_event(Event({
                                             func = function() 
-                                card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+4 Cards", colour = G.C.FILTER})
+                                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+4 Cards", colour = G.C.FILTER})
                                 G.FUNCS.draw_from_deck_to_hand(4)          
                                                 return true
                                 end}))
@@ -211,6 +347,8 @@ local partofyou = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "toneblock",
@@ -219,8 +357,8 @@ local partofyou = SMODS.Joker({
 	}
 })
 
-partofyou.calculate = function(self, context)
-	if SMODS.end_calculate_context(context) then
+partofyou.calculate = function(self, card, context)
+	if context.joker_main then
 	if not context.blueprint then
      	  if G.GAME.current_round.hands_played == 0 then
             if #context.full_hand == 2 then
@@ -228,7 +366,7 @@ partofyou.calculate = function(self, context)
                 G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('card1', 1);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
  		G.E_MANAGER:add_event(Event({trigger = 'before',
                             func = function() 
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Mirrored!", colour = G.C.FILTER})   
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Mirrored!", colour = G.C.FILTER})   
                                 return true
 				end}))
                         local suit = string.sub(context.full_hand[1].config.card.suit, 1, 1) .. "_"
@@ -327,134 +465,6 @@ end
 
 -- endregion Part Of You
 
--- region Zipper
-
-local zipper = SMODS.Joker({
-	name = "Zipper",
-	key = "zipper",
-    config = {extra = {chips = 0}},
-	pos = {x = 4, y = 0},
-	loc_txt = {
-        name = 'Zipper',
-        text = {
-	"Gains {C:chips}+30{} Chips for each",
-	"{C:attention}Blind{} skipped this run",
-	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
-        }
-    },
-	rarity = 1,
-	cost = 5,
-	discovered = true,
-	blueprint_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "toneblock",
-		code = "toneblock",
-		concept = "toneblock"
-	}
-})
-
-zipper.set_ability = function(self, context)
-        if self.ability.name == 'Zipper' then
-            self.ability.extra.chips = G.GAME.skips*30
-	end
-end
-
-zipper.calculate = function(self, context)
-        if self.ability.name == 'Zipper' then
-            self.ability.extra.chips = G.GAME.skips*30
-	end
-        if context.skip_blind then
-            if not context.blueprint then
-                G.E_MANAGER:add_event(Event({
-                    func = function() 
-                        card_eval_status_text(self, 'extra', nil, nil, nil, {
-                            message = localize{type = 'variable', key = 'a_chips', vars = {self.ability.extra.chips}},
-                                colour = G.C.CHIPS,
-                            card = self
-                        }) 
-                        return true
-                    end}))
-            end
-	end
-	if SMODS.end_calculate_context(context) then
-		if self.ability.extra.chips ~= 0 then
-                return {
-                    message = localize {
-                        type = 'variable',
-                        key = 'a_chips',
-                        vars = { self.ability.extra.chips }
-                    },
-                    chip_mod = self.ability.extra.chips,
-                    card = self
-                }
-end
-end
-end
-
-function zipper.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.chips}}
-end
-
--- endregion Zipper
-
--- region Mini Heart
-
-local miniheart = SMODS.Joker({
-	name = "Mini Heart",
-	key = "miniheart",
-    config = {},
-	pos = {x = 5, y = 0},
-	loc_txt = {
-        name = 'Mini Heart',
-        text = {
-	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
-	"edition to scored cards",
-	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-        }
-    },
-	rarity = 1,
-	cost = 5,
-	discovered = true,
-	blueprint_compat = false,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "toneblock",
-		code = "toneblock",
-		concept = "toneblock"
-	}
-})
-
-miniheart.calculate = function(self, context)
-            if context.cardarea == G.jokers then
-       		 if SMODS.end_calculate_context(context) then
-                    if not context.blueprint then
-			local miniheartsuccess = false
-                        local crystal = {}
-                        for k, v in ipairs(context.scoring_hand) do
-                         crystal[#crystal+1] = v
-			if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
-       			 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-         		   local over = false
-			   local miniheartsuccess = true
-           		   v:set_edition({foil = true}, true)
-                           self:juice_up()
-                           v:juice_up()
-       		           return true end}))
-                            end
-			end
-			end
-			end
-end
-end
-
-function miniheart.loc_vars(self, info_queue, card)
-	info_queue[#info_queue+1] = G.P_CENTERS.e_foil
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
-end
-
--- endregion Mini Heart
-
 -- region Huge Mess: Towels
 
 local towels = SMODS.Joker({
@@ -476,6 +486,8 @@ local towels = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "toneblock",
@@ -484,7 +496,7 @@ local towels = SMODS.Joker({
 	}
 })
 
-towels.calculate = function(self, context)
+towels.calculate = function(self, card, context)
 	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
 
                             local suits = {
@@ -504,43 +516,41 @@ towels.calculate = function(self, context)
 			    end
                             if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
 			    towels_flush_suit = 'Hearts'
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
                             elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
 			    towels_flush_suit = 'Diamonds'
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
                             elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
 			    towels_flush_suit = 'Spades'
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
                             elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
 			    towels_flush_suit = 'Clubs'
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
 			    else bredcard_flush_suit = 'Wild'
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
 			    end
 	end
 
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
-                        self.ability.extra.chips = self.ability.extra.chips + 6
+                        card.ability.extra.chips = card.ability.extra.chips + 6
                         	    return {
                             message = localize('k_upgrade_ex'),
-                            colour = G.C.CHIPS,
-                            card = self
+                            colour = G.C.CHIPS
                         }
         		end
 	        end
 	end
-	if SMODS.end_calculate_context(context) then
-            if self.ability.extra.chips ~= 0 then
+	if context.joker_main then
+            if card.ability.extra.chips ~= 0 then
                 return {
                     message = localize {
                         type = 'variable',
                         key = 'a_chips',
-                        vars = { self.ability.extra.chips }
+                        vars = { card.ability.extra.chips }
                     },
-                    chip_mod = self.ability.extra.chips,
-                    card = self
+                    chip_mod = card.ability.extra.chips
                 }
 	end
 end
@@ -573,6 +583,8 @@ local chests = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "toneblock",
@@ -581,7 +593,7 @@ local chests = SMODS.Joker({
 	}
 })
 
-chests.calculate = function(self, context)
+chests.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
 	boxes_rank_array = {}
@@ -597,7 +609,7 @@ chests.calculate = function(self, context)
 		end
 	end
 
-	if SMODS.end_calculate_context(context) and not context.blueprint then
+	if context.joker_main and not context.blueprint then
 		for v = 1, 13 do
 			boxes_card_pair_candidate = 0
 			for i = 1, boxes_card_array_length do
@@ -608,20 +620,19 @@ chests.calculate = function(self, context)
 			boxes_pair_amounts = boxes_pair_amounts + ((boxes_card_pair_candidate - 1)*(boxes_card_pair_candidate)) / 2
 		end
 		if boxes_pair_amounts > 0 then
-			self.ability.extra.mult = self.ability.extra.mult + (boxes_pair_amounts)*2
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
+			card.ability.extra.mult = card.ability.extra.mult + (boxes_pair_amounts)*2
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
-	if SMODS.end_calculate_context(context) then
-		if self.ability.extra.mult ~= 0 then
+	if context.joker_main then
+		if card.ability.extra.mult ~= 0 then
                 	return {
                    	message = localize {
                   		type = 'variable',
                    		key = 'a_mult',
-                  		vars = { self.ability.extra.mult }
+                  		vars = { card.ability.extra.mult }
                 		},
-                	mult_mod = self.ability.extra.mult,
-                	card = self
+                	mult_mod = card.ability.extra.mult
                 	}
 		end
 	end
@@ -639,8 +650,9 @@ local books = SMODS.Joker({
 	name = "Huge Mess: Books",
 	key = "books",
     config = {extra = {xmult = 1}},
-	pos = {x = 0, y = 0},
+	pos = {x = 2, y = 3},
 	loc_txt = {
+	default = {
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
@@ -650,19 +662,32 @@ local books = SMODS.Joker({
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
         }
     },
+	fr = {
+        name = 'Huge Mess: Books',
+        text = {
+	"When played hand contains a",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X0.11 {} Mult",
+	"for each additional card in",
+	"the {C:attention}sequence{} held in hand",
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
+        }
+    }
+},
 	rarity = 2,
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "Bred"
 	}
 })
 
-books.calculate = function(self, context)
+books.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
 	books_rank_array = {}
@@ -692,7 +717,7 @@ books.calculate = function(self, context)
 		end
 	end
 
-	if SMODS.end_calculate_context(context) and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
+	if context.joker_main and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
 		for i = 1, #context.scoring_hand do
 			books_scoring_straight_array[i] = context.scoring_hand[i]:get_id()
 		end
@@ -975,20 +1000,19 @@ books.calculate = function(self, context)
 			end
 		end
 		if books_additional_sequence_cards > 0 then
-			self.ability.extra.xmult = self.ability.extra.xmult + (0.11*(books_additional_sequence_cards))
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
+			card.ability.extra.xmult = card.ability.extra.xmult + (0.11*(books_additional_sequence_cards))
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
-	if SMODS.end_calculate_context(context) then
-		if self.ability.extra.xmult ~= 1 then
+	if context.joker_main then
+		if card.ability.extra.xmult ~= 1 then
                 	return {
                    	message = localize {
                   		type = 'variable',
                    		key = 'a_xmult',
-                  		vars = { self.ability.extra.xmult }
+                  		vars = { card.ability.extra.xmult }
                 		},
-                	mult_mod = self.ability.extra.xmult,
-                	card = self
+                	mult_mod = card.ability.extra.xmult
                 	}
 		end
 	end
@@ -1022,6 +1046,8 @@ local ominousmirror = SMODS.Joker({
 	cost = 10,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1032,19 +1058,19 @@ local ominousmirror = SMODS.Joker({
 
 
 
-ominousmirror.set_ability = function(self, context)
-	self.children.center:set_sprite_pos(self.ability.extra.pos_override)
+ominousmirror.set_ability = function(self, card, initial, delay_sprites)
+	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 end
 
 
-ominousmirror.calculate = function(self, context)
-	self.children.center:set_sprite_pos(self.ability.extra.pos_override)
-	if context.before and self.ability.extra.broken == false then
-		if not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
+ominousmirror.calculate = function(self, card, context)
+	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
+	if context.before and card.ability.extra.broken == false then
+		if not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
 			for k, v in ipairs(context.scoring_hand) do
 				if pseudorandom('ominous') < G.GAME.probabilities.normal/6 then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
-						self:juice_up()
+						card:juice_up()
 						v:juice_up()
 						local _card = copy_card(v, nil, nil, G.playing_card)
 						_card:add_to_deck()
@@ -1060,7 +1086,7 @@ ominousmirror.calculate = function(self, context)
 			end
 		end
 	end
-	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and self.ability.extra.broken == false then
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
 		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/6 then 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, 
 				func = function()
@@ -1075,7 +1101,7 @@ ominousmirror.calculate = function(self, context)
         scale = 0.3,
         speed = 4,
         lifespan = 0.5*1,
-        attach = self,
+        attach = card,
         colours = {G.C.MULT},
         fill = true
     })
@@ -1088,17 +1114,17 @@ ominousmirror.calculate = function(self, context)
 
 -- i cannot be bothered to re-indent this
 
-				self.T.r = -0.2
-				self:juice_up(0.3, 0.4)
-				self.ability.extra.broken = true
-				self.ability.extra.pos_override.x = 1
-				self.ability.extra.pos_override.y = 2
+				card.T.r = -0.2
+				card:juice_up(0.3, 0.4)
+				card.ability.extra.broken = true
+				card.ability.extra.pos_override.x = 1
+				card.ability.extra.pos_override.y = 2
 				return true
 				end
 			}))
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Broken", colour = G.C.MULT})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Broken", colour = G.C.MULT})
 		else
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Safe..?", colour = G.C.FILTER})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Safe..?", colour = G.C.FILTER})
 		end
 	end
 end
@@ -1132,6 +1158,7 @@ local strawberry = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = false,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1142,25 +1169,25 @@ local strawberry = SMODS.Joker({
 
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
 
-strawberry.calculate = function(self, context)
+strawberry.calculate = function(self, card, context)
 	if context.ending_shop and not context.blueprint then
-		if self.ability.extra.money > 1 then
-			self.ability.extra.money = self.ability.extra.money - 1
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
+		if card.ability.extra.money > 1 then
+			card.ability.extra.money = card.ability.extra.money - 1
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
 		else
 			G.E_MANAGER:add_event(Event({
 				func = function()
-				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Eaten!", colour = G.C.FILTER})
 				play_sound('tarot1')
-				self.T.r = -0.2
-				self:juice_up(0.3, 0.4)
-				self.states.drag.is = true
-				self.children.center.pinch.x = true
+				card.T.r = -0.2
+				card:juice_up(0.3, 0.4)
+				card.states.drag.is = true
+				card.children.center.pinch.x = true
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
 					func = function()
-						G.jokers:remove_card(self)
-						self:remove()
-						self = nil
+						G.jokers:remove_card(card)
+						card:remove()
+						card = nil
 					return true; end})) 
 				return true
 			end
@@ -1196,6 +1223,8 @@ local wingedstrawberry = SMODS.Joker({
 	cost = 5,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1204,28 +1233,28 @@ local wingedstrawberry = SMODS.Joker({
 	}
 })
 
-wingedstrawberry.calculate = function(self, context)
+wingedstrawberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
-                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+                        if v.visible and k ~= card.ability.extra.winged_poker_hand then 
 				_poker_hands[#_poker_hands+1] = k 
 			end
                     end
-                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
+                    card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
 		end
-		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 	end
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
-			if not next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
-				ease_dollars(2)
-				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 2
+			if not next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
+				ease_dollars(3)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 3
 				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
 				return {
-					message = localize('$')..2,
-					dollars = 2,
+					message = localize('$')..3,
+					dollars = 3,
 					colour = G.C.MONEY
 					}
 			end
@@ -1259,6 +1288,8 @@ local goldenstrawberry = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1269,7 +1300,7 @@ local goldenstrawberry = SMODS.Joker({
 
 -- literally the simplest code in the entire mod lmao
 
-goldenstrawberry.calculate = function(self, context)
+goldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind then
 		if context.blind.boss then
 			golden_strawberry_after_boss_blind = true
@@ -1302,6 +1333,8 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1310,22 +1343,22 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	}
 })
 
-wingedgoldenstrawberry.calculate = function(self, context)
+wingedgoldenstrawberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
-                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+                        if v.visible and k ~= card.ability.extra.winged_poker_hand then 
 				_poker_hands[#_poker_hands+1] = k 
 			end
                     end
-                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
+                    card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
 		end
-		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 	end
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
-			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+			if next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
 				winged_golden_strawberry_condition_satisfied = false
 			end
 		end
@@ -1359,7 +1392,7 @@ local moonberry = SMODS.Joker({
 	"If round ends without playing",
 	"hand that contains a {C:attention}#1#{},",
 	"create its {C:planet}Planet{} card with",
-	"with added {C:dark_edition}Negative{} edition,",
+	"added {C:dark_edition}Negative{} edition,",
 	"poker hand changes",
 	"at end of round"
         }
@@ -1368,6 +1401,8 @@ local moonberry = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1376,7 +1411,7 @@ local moonberry = SMODS.Joker({
 	}
 })
 
-moonberry.calculate = function(self, context)
+moonberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
 			if space_berry_condition_satisfied == true then
@@ -1385,11 +1420,12 @@ moonberry.calculate = function(self, context)
 				trigger = 'before',
 				delay = 0.0,
 				func = (function()
-					if self.ability.extra.winged_poker_hand then
+					if card.ability.extra.winged_poker_hand then
 						local _planet = 0
 						for k, v in pairs(G.P_CENTER_POOLS.Planet) do
-						if v.config.hand_type == old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk then
+						if v.config.hand_type == card.ability.extra.winged_poker_hand then
 							_planet = v.key
+						card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
                         			end
                    			end
                     			local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')
@@ -1399,24 +1435,22 @@ moonberry.calculate = function(self, context)
                 			end
                 			return true
             				end)}))
-        			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.PLANET})
+        			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.PLANET})
     			end
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
-                        if v.visible and k ~= self.ability.extra.winged_poker_hand then 
+                        if v.visible and k ~= card.ability.extra.winged_poker_hand then 
 				_poker_hands[#_poker_hands+1] = k 
 			end
                     end
-		    old_moon_berry_poker_hand_variable_stupid_race_condition_thing_idfk = self.ability.extra.winged_poker_hand
-                    self.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
 		end
-		card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 		the_SPACE_berry_end_of_round_fucking_finished = true
 	end
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
 			the_SPACE_berry_end_of_round_fucking_finished = false
-			if next(context.poker_hands[self.ability.extra.winged_poker_hand]) then
+			if next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
 				space_berry_condition_satisfied = false
 			end
 		end
@@ -1456,6 +1490,8 @@ local tothesummit = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1464,35 +1500,34 @@ local tothesummit = SMODS.Joker({
 	}
 })
 
-tothesummit.calculate = function(self, context)
+tothesummit.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
 		if ccc_tothesummit_min_money == nil then
 			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
-			self.ability.extra.xmult = self.ability.extra.xmult + 0.25
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {self.ability.extra.xmult}}})
+			card.ability.extra.xmult = card.ability.extra.xmult + 0.25
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
 		elseif ccc_tothesummit_min_money >= math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
-			local last_xmult = self.ability.extra.xmult
-			self.ability.extra.xmult = 1
+			local last_xmult = card.ability.extra.xmult
+			card.ability.extra.xmult = 1
 			if last_xmult > 1 then
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 			end
 			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		elseif ccc_tothesummit_min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
-			self.ability.extra.xmult = self.ability.extra.xmult + 0.25
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {self.ability.extra.xmult}}})
+			card.ability.extra.xmult = card.ability.extra.xmult + 0.25
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
 			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		end
 	end		
-	if SMODS.end_calculate_context(context) then
-            	if self.ability.extra.xmult ~= 1 then
+	if context.joker_main then
+            	if card.ability.extra.xmult ~= 1 then
                 	return {
                     	message = localize {
                         	type = 'variable',
                         	key = 'a_xmult',
-                        	vars = { self.ability.extra.xmult }
+                        	vars = { card.ability.extra.xmult }
                     	},
-			Xmult_mod = self.ability.extra.xmult,
-               	    	card = self
+			Xmult_mod = card.ability.extra.xmult
                 	}
 		end
 	end
@@ -1523,6 +1558,8 @@ local coreswitch = SMODS.Joker({
 	cost = 3,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1531,13 +1568,13 @@ local coreswitch = SMODS.Joker({
 	}
 })
 
-coreswitch.calculate = function(self, context)
-	if context.first_hand_drawn and not self.getting_sliced and not context.blueprint and not context.individual then
+coreswitch.calculate = function(self, card, context)
+	if context.first_hand_drawn and not card.getting_sliced and not context.blueprint and not context.individual then
 		G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			coreswitch_hand_juggle = G.GAME.current_round.discards_left
 			ease_discard(1 + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
 			ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
-			card_eval_status_text(self, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
 			if coreswitch_hand_juggle == 0 then  -- you're a dumbass lol
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
 					G.STATE = G.STATES.GAME_OVER
@@ -1573,6 +1610,8 @@ local templerock = SMODS.Joker({
 	cost = 4,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1581,7 +1620,7 @@ local templerock = SMODS.Joker({
 	}
 })
 
-templerock.calculate = function(self, context)
+templerock.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil then
         	if context.cardarea == G.hand then
 	         	if context.other_card.ability.name == 'Stone Card' then
@@ -1593,8 +1632,7 @@ templerock.calculate = function(self, context)
                         			key = 'a_chips',
                         			vars = { 50 }
                     				},
-					chip_mod = 50,
-                    			card = self
+					chip_mod = 50
 				}
 			end
         	end
@@ -1626,6 +1664,8 @@ local strongwinds = SMODS.Joker({
 	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1634,9 +1674,9 @@ local strongwinds = SMODS.Joker({
 	}
 })
 
-strongwinds.calculate = function(self, context)
+strongwinds.calculate = function(self, card, context)
 	if context.cardarea == G.jokers then
-		if SMODS.end_calculate_context(context) then
+		if context.joker_main then
 			if not context.blueprint then
 				local cards_destroyed = {}
 				YOU_CANNOT_STOP_THE_WIND_BITCH = context.scoring_hand[1]
@@ -1677,8 +1717,7 @@ strongwinds.calculate = function(self, context)
 					key = 'a_xmult',
 					vars = { 2.22 }
 				},
-				Xmult_mod = 2.22,
-				card = self
+				Xmult_mod = 2.22
 			}
 		end
 	end
@@ -1707,6 +1746,8 @@ local coyotejump = SMODS.Joker({
 	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1715,7 +1756,7 @@ local coyotejump = SMODS.Joker({
 	}
 })
 
-coyotejump.calculate = function(self, context) -- thank you bred?????
+coyotejump.calculate = function(self, card, context) -- thank you bred?????
 
 	if context.before and not context.blueprint then
 	coyotejump_card_array = {}
@@ -1727,22 +1768,22 @@ coyotejump.calculate = function(self, context) -- thank you bred?????
 		end
 	end
 	
-	if SMODS.end_calculate_context(context) and context.poker_hands ~= nil then
+	if context.joker_main and context.poker_hands ~= nil then
 		  local parts = {
 			_2 = get_X_same(2, coyotejump_card_array),
 			_flush = get_flush(coyotejump_card_array),
 			_straight = get_straight(coyotejump_card_array)
 		}
 		if next(parts._straight) then
-			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Straight", colour = G.C.RED})
+			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Straight", colour = G.C.RED})
 		elseif next(parts._flush) then
-			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Flush", colour = G.C.RED})
+			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Flush", colour = G.C.RED})
 		elseif next(parts._2) then
-			card_eval_status_text(self, 'debuff', nil, nil, nil, {message = "Pair", colour = G.C.RED})
+			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Pair", colour = G.C.RED})
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 				ease_discard(1, nil, true)
-				card_eval_status_text(self, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
+				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
 			return true end }))
 		end
 	end
@@ -1768,7 +1809,9 @@ local climbinggear = SMODS.Joker({
 	rarity = 2,
 	cost = 5,
 	discovered = true,
-	blueprint_compat = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1802,7 +1845,9 @@ local bluespinner = SMODS.Joker({
 	rarity = 2,
 	cost = 6,
 	discovered = true,
-	blueprint_compat = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1811,7 +1856,7 @@ local bluespinner = SMODS.Joker({
 	}
 })
 
-bluespinner.calculate = function(self, context)
+bluespinner.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
 		if next(find_joker('Rainbow Spinner')) then
@@ -1856,7 +1901,7 @@ bluespinner.calculate = function(self, context)
            					bluespinner_seal_candidates[k]:set_seal('Blue', true, false)
 						bluespinner_seal_candidates[k]:juice_up()
 						play_sound('gold_seal', 1.2, 0.4)
-						self:juice_up()
+						card:juice_up()
             				return true end }))
 					delay(0.5)
 				end
@@ -1893,6 +1938,8 @@ local purplespinner = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1901,7 +1948,7 @@ local purplespinner = SMODS.Joker({
 	}
 })
 
-purplespinner.calculate = function(self, context)
+purplespinner.calculate = function(self, card, context)
 
 	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
 		if next(find_joker('Rainbow Spinner')) then
@@ -1946,7 +1993,7 @@ purplespinner.calculate = function(self, context)
            					purplespinner_seal_candidates[k]:set_seal('Purple', true, false)
 						purplespinner_seal_candidates[k]:juice_up()
 						play_sound('gold_seal', 1.2, 0.4)
-						self:juice_up()
+						card:juice_up()
             				return true end }))
 					delay(0.5)
 				end
@@ -1982,6 +2029,8 @@ local redspinner = SMODS.Joker({
 	cost = 6,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -1990,7 +2039,7 @@ local redspinner = SMODS.Joker({
 	}
 })
 
-redspinner.calculate = function(self, context)
+redspinner.calculate = function(self, card, context)
 
 	if context.pre_discard and not context.blueprint then
 		if next(find_joker('Rainbow Spinner')) then
@@ -2035,7 +2084,7 @@ redspinner.calculate = function(self, context)
            					redspinner_seal_candidates[k]:set_seal('Red', true, false)
 						redspinner_seal_candidates[k]:juice_up()
 						play_sound('gold_seal', 1.2, 0.4)
-						self:juice_up()
+						card:juice_up()
             				return true end }))
 					delay(0.5)
 				end
@@ -2069,6 +2118,8 @@ local rainbowspinner = SMODS.Joker({
 	cost = 11,
 	discovered = true,
 	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -2096,18 +2147,20 @@ local lettinggo = SMODS.Joker({
         name = 'Letting Go',
         text = {
 	"When a card is destroyed,",
-	"{C:green}#1# in 3{} chance to create",
+	"{C:green}#1# in 2{} chance to create",
 	"a {C:tarot}Death{}",
-	"Gain {C:mult}+2{} Mult for each",
+	"Gains {C:mult}+4{} Mult for each",
 	"{C:tarot}Death{} used",
 	"{C:inactive}(Must have room)",
 	"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
         }
     },
-	rarity = 2,
-	cost = 7,
+	rarity = 3,
+	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "bein",
@@ -2116,7 +2169,7 @@ local lettinggo = SMODS.Joker({
 	}
 })
 
-lettinggo.calculate = function(self, context)
+lettinggo.calculate = function(self, card, context)
 
 	if context.cards_destroyed then
                 ccc_lettinggo_death_chances = 0
@@ -2125,7 +2178,7 @@ lettinggo.calculate = function(self, context)
                 end
 		for i = 1, ccc_lettinggo_death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/3 then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
                     			func = (function()
@@ -2137,7 +2190,7 @@ lettinggo.calculate = function(self, context)
                                 			G.GAME.consumeable_buffer = 0
                                 			return true
                             			end}))   
-                            			card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+                            			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
                         		return true
                     			end)}))
 				end
@@ -2152,7 +2205,7 @@ lettinggo.calculate = function(self, context)
                 end
 		for i = 1, ccc_lettinggo_death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/3 then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
                     			func = (function()
@@ -2164,7 +2217,7 @@ lettinggo.calculate = function(self, context)
                                 			G.GAME.consumeable_buffer = 0
                                 			return true
                             			end}))   
-                            			card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+                            			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
                         		return true
                     			end)}))
 				end
@@ -2175,22 +2228,21 @@ lettinggo.calculate = function(self, context)
 	if context.using_consumeable then
 		if context.consumeable.ability.name == 'Death' then
 			if not context.blueprint then
-				self.ability.extra.mult = self.ability.extra.mult + 2
-				card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {self.ability.extra.mult}}})
+				card.ability.extra.mult = card.ability.extra.mult + 4
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {card.ability.extra.mult}}})
 			end
 		end
 	end
 
-	if SMODS.end_calculate_context(context) then
-		if self.ability.extra.mult ~= 0 then
+	if context.joker_main then
+		if card.ability.extra.mult ~= 0 then
                 	return {
                    	message = localize {
                   		type = 'variable',
                    		key = 'a_mult',
-                  		vars = { self.ability.extra.mult }
+                  		vars = { card.ability.extra.mult }
                 		},
-                	mult_mod = self.ability.extra.mult,
-                	card = self
+                	mult_mod = card.ability.extra.mult
                 	}
 		end
 	end

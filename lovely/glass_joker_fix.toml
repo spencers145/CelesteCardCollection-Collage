@@ -1,0 +1,28 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# hmm?
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.ability.name == 'Glass Joker' and not context.blueprint then"
+position = "at"
+payload = '''
+if self.ability.name == 'Glass Joker' and not context.blueprint then
+local shattered_glass = 0
+                for k, val in ipairs(context.removed) do
+                    if val.ability.name == 'Glass Card' then shattered_glass = shattered_glass + 1 end
+                end
+                if shattered_glass > 0 then
+                    self.ability.x_mult = self.ability.x_mult + self.ability.extra*shattered_glass
+                    G.E_MANAGER:add_event(Event({
+                        func = function() card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_xmult',vars={self.ability.x_mult}}}); return true
+                        end}))
+                end
+                return
+            end
+if self.ability.name == 'DEPRECATED_DO_NOT_USE' and not context.blueprint then
+'''
+match_indent = true
