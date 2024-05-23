@@ -1793,7 +1793,7 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 				ease_discard(1, nil, true)
-				card_eval_status_text(context.blueprint_card or self, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
 			return true end }))
 		end
 	end
