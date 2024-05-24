@@ -33,3 +33,4 @@ Since 0.12.1
 1. Make omnious mirror broken from loading run if it is so
 2. Make omnioius mirror description change if broken (name is waiting on steammodded fix)
 3. Make mirrored cards appear in collection
+4. Change Summit deck to start at 1 Joker slot and not give Joker Slots on final boss blinds

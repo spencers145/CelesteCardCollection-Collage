@@ -100,7 +100,7 @@ function ease_ante(mod)
 	G.E_MANAGER:add_event(Event({
 		trigger = 'immediate',
 		func = function () 
-			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante > G.GAME.highest_ante then
+			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante % G.GAME.win_ante ~= 0 and G.GAME.round_resets.ante > G.GAME.highest_ante then
 						G.jokers.config.card_limit = G.jokers.config.card_limit + 1
 						G.GAME.highest_ante = G.GAME.round_resets.ante
 						attention_text({
@@ -124,14 +124,14 @@ table.insert(trigger_effect_callbacks, summit_effect)
 local summit = SMODS.Back({
     name = "Summit Deck",
     key = "summit",
-	config = {joker_slot = -5, add_slot_each_ante = 1},
+	config = {joker_slot = -4, add_slot_each_ante = 1},
 	pos = {x = 1, y = 0},
 	loc_txt = {
         name = "Summit Deck",
         text = {
-            "Start with {C:attention}0{} Joker Slots",
             "{C:attention}+1{} Joker slot each Ante",
-	    "{s:0.75}(if Ante has not been reached before){}"
+			"without a {C:red}final boss{}",
+	    	"{s:0.75}(if Ante has not been reached before){}"
         }
     },
     atlas= "b_ccc_decks",
