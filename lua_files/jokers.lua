@@ -1059,7 +1059,7 @@ local ominousmirror = SMODS.Joker({
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Broken Mirror", {
 				name = ('Broken Mirror'),
 				text = {
-					"Does nothing."
+					"{C:inactive}Does nothing."
 				}
 		})
 	end,
@@ -1141,7 +1141,7 @@ end
 
 function ominousmirror.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
-	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.name}}
+	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken}}
 end
 
 -- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
@@ -2261,4 +2261,217 @@ end
 function lettinggo.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = G.P_CENTERS.c_death
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.mult}}
+end
+
+-- endregion Letting Go
+
+-- region Green Bubble
+
+local greenbooster = SMODS.Joker({
+	name = "Green Booster",
+	key = "greenbooster",
+    config = {},
+	pos = {x = 3, y = 2},
+	loc_txt = {
+        name = 'Green Booster',
+        text = {
+	"When a {C:attention}Booster Pack{}",
+	"is opened, get an",
+	"{C:attention}extra{} card to",
+	"choose from",
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "bein",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
+})
+
+-- lovely abuse
+
+greenbooster.calculate = function(self, card, context)
+	if context.open_booster then
+		ccc_grubble_bonus_choices = (ccc_grubble_bonus_choices or 0) + 1
+		card:juice_up()
+	end
+end
+
+-- endregion Green Booster
+
+-- region Red Booster
+
+local redbooster = SMODS.Joker({
+	name = "Red Booster",
+	key = "redbooster",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Red Booster',
+        text = {
+	"When a {C:attention}Booster Pack{}",
+	"is opened, choose an",
+	"{C:attention}extra{} card"
+        }
+    },
+	rarity = 3,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "sunsetquasar"
+	}
+})
+
+-- more lovely abuse
+
+redbooster.calculate = function(self, card, context)
+	if context.open_booster then
+		ccc_rrubble_bonus_choices = (ccc_rrubble_bonus_choices or 0) + 1
+		card:juice_up()
+	end
+end
+
+-- endregion Red Booster
+
+-- region Cassette Block
+
+local cassetteblock = SMODS.Joker({
+	name = "Cassette Block",
+	key = "cassetteblock",
+    config = {extra = {chips = 0, mult = 0, pink = false, pos_override = {x = 0, y = 0}}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = ('Cassette Block'),
+        text = {
+	"Gains {C:chips}+7{} Chips for each",
+	"{C:attention}unused{} {C:chips}hand{} at end of round",
+	"{C:mult}Swaps{} at start of round",
+	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
+        }
+    },
+	rarity = 3,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	},
+	process_loc_text = function(self)
+		SMODS.process_loc_text(G.localization.descriptions[self.set], self.key, self.loc_txt)
+		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
+				name = ('Cassette Block'),
+				text = {
+					"Gains {C:mult}+2{} Mult for each",
+					"{C:attention}unused{} {C:mult}discard{} at end of round",
+					"{C:chips}Swaps{} at start of round",
+					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
+				}
+		})
+	end,
+	load = function(self, card, card_table, other_card)
+		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
+	end
+})
+
+cassetteblock.calculate = function(self, card, context)
+
+	if context.setting_blind and not context.blueprint then
+
+		if card.ability.extra.pink == false then
+			return {
+			G.E_MANAGER:add_event(Event({func = function()
+			
+			G.E_MANAGER:add_event(Event({func = function()
+			
+			card.ability.extra.pink = true
+			card.ability.extra.pos_override.x = 1
+			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
+			
+			return true end }))
+			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.RED})
+			return true end }))
+			}
+		else
+			return {
+			G.E_MANAGER:add_event(Event({func = function()
+			
+			G.E_MANAGER:add_event(Event({func = function()
+			
+			card.ability.extra.pink = false
+			card.ability.extra.pos_override.x = 0
+			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
+			
+			return true end }))
+			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.BLUE})
+			return true end }))
+			}
+		end
+	end
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+
+		if card.ability.extra.pink == false then
+			if G.GAME.current_round.hands_left > 0 then
+				card.ability.extra.chips = card.ability.extra.chips + 7*G.GAME.current_round.hands_left
+
+				G.E_MANAGER:add_event(Event({func = function()
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
+				return true end }))
+		else
+			if G.GAME.current_round.discards_left > 0 then
+				card.ability.extra.mult = card.ability.extra.mult + 2*G.GAME.current_round.discards_left
+
+				G.E_MANAGER:add_event(Event({func = function()
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
+				return true end }))
+		end
+	end
+
+	if context.joker_main then
+		if card.ability.extra.pink == false then
+			if card.ability.extra.chips ~= 0 then
+                		return {
+                  	 	message = localize {
+                  			type = 'variable',
+                   			key = 'a_chips',
+                  			vars = { card.ability.extra.chips }
+                			},
+                		chip_mod = card.ability.extra.chips
+                		}
+			end
+		else
+			if card.ability.extra.mult ~= 0 then
+                		return {
+                  	 	message = localize {
+                  			type = 'variable',
+                   			key = 'a_mult',
+                  			vars = { card.ability.extra.mult }
+                			},
+                		mult_mod = card.ability.extra.mult
+                		}
+			end
+		end
+	end
+end
+
+function cassetteblock.loc_vars(self, info_queue, card)
+	return {key = (card.ability.extra.pink and "Cassette Block" or card.config.center.key), vars = {card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.pink}}
 end
