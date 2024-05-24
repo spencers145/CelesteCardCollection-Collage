@@ -2435,6 +2435,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
 				return true end }))
+			end
 		else
 			if G.GAME.current_round.discards_left > 0 then
 				card.ability.extra.mult = card.ability.extra.mult + 2*G.GAME.current_round.discards_left
@@ -2442,6 +2443,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
 				return true end }))
+			end
 		end
 	end
 
