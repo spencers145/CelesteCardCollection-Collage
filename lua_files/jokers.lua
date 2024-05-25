@@ -1576,7 +1576,7 @@ local coreswitch = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie & Aurora Aquir",
 		code = "toneblock",
 		concept = "Aurora Aquir"
 	},
