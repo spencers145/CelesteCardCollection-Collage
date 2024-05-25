@@ -1558,8 +1558,8 @@ end
 local coreswitch = SMODS.Joker({
 	name = "Core Switch",
 	key = "coreswitch",
-    config = {},
-	pos = {x = 0, y = 0},
+    config = {extra = {pos_override = {x = 6, y = 0}}},
+	pos = {x = 6, y = 0},
 	loc_txt = {
         name = 'Core Switch',
         text = {
@@ -1579,16 +1579,26 @@ local coreswitch = SMODS.Joker({
 		art = "N/A",
 		code = "toneblock",
 		concept = "Aurora Aquir"
-	}
+	},
+	load = function(self, card, card_table, other_card)
+		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
+	end
 })
 
 coreswitch.calculate = function(self, card, context)
+	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 	if context.first_hand_drawn and not card.getting_sliced and not context.blueprint and not context.individual then
 		G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			coreswitch_hand_juggle = G.GAME.current_round.discards_left
 			ease_discard(1 + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
 			ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
+			if card.ability.extra.pos_override.x == 6 then 
+				card.ability.extra.pos_override.x = 7 
+			else
+				card.ability.extra.pos_override.x = 6
+			end
+			
 			if coreswitch_hand_juggle == 0 then  -- you're a dumbass lol
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
 					G.STATE = G.STATES.GAME_OVER
