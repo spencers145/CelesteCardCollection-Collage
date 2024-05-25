@@ -357,7 +357,7 @@ local partofyou = SMODS.Joker({
 	}
 })
 
-partofyou.calculate = function(self, card, context)
+partofyou.calculate = function(self, card, context)  -- if you're looking at this code to use it as a reference... don't
 	if context.joker_main then
 	if not context.blueprint then
      	  if G.GAME.current_round.hands_played == 0 then
@@ -526,7 +526,7 @@ towels.calculate = function(self, card, context)
                             elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
 			    towels_flush_suit = 'Clubs'
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
-			    else bredcard_flush_suit = 'Wild'
+			    else towels_flush_suit = 'Wild'
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
 			    end
 	end
@@ -552,8 +552,8 @@ towels.calculate = function(self, card, context)
                     },
                     chip_mod = card.ability.extra.chips
                 }
+	    end
 	end
-end
 end
 
 function towels.loc_vars(self, info_queue, card)
@@ -1034,7 +1034,7 @@ local ominousmirror = SMODS.Joker({
 	loc_txt = {
         name = ('Ominous Mirror'),
         text = {
-	"{C:green}#1# in 6{} chance to copy a",
+	"{C:green}#1# in 2{} chance to copy a",
 	"scored card to your hand,",
 	"adding {C:dark_edition}Mirrored{} edition",
 	"{C:green}#1# in 6{} chance to {C:inactive}break{}",
@@ -1050,8 +1050,8 @@ local ominousmirror = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "Gappie",
-		code = "toneblock",
+		art = "Gappie & sunsetquasar",
+		code = "toneblock & Aurora Aquir",
 		concept = "Gappie"
 	},
 	process_loc_text = function(self)
@@ -1078,7 +1078,7 @@ ominousmirror.calculate = function(self, card, context)
 	if context.before and card.ability.extra.broken == false then
 		if not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
 			for k, v in ipairs(context.scoring_hand) do
-				if pseudorandom('ominous') < G.GAME.probabilities.normal/6 then
+				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
 						card:juice_up()
 						v:juice_up()
@@ -1675,7 +1675,7 @@ local strongwinds = SMODS.Joker({
 	name = "Strong Winds",
 	key = "strongwinds",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 4, y = 2},
 	loc_txt = {
         name = 'Strong Winds',
         text = {
@@ -1799,11 +1799,17 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 			_straight = get_straight(coyotejump_card_array)
 		}
 		if next(parts._straight) then
-			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Straight", colour = G.C.RED})
+			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Straight", colour = G.C.RED})
+			return true end }))
 		elseif next(parts._flush) then
-			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Flush", colour = G.C.RED})
+			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Flush", colour = G.C.RED})
+			return true end }))
 		elseif next(parts._2) then
-			card_eval_status_text(card, 'debuff', nil, nil, nil, {message = "Pair", colour = G.C.RED})
+			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Pair", colour = G.C.RED})
+			return true end }))
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 				ease_discard(1, nil, true)
@@ -2491,3 +2497,163 @@ end
 function cassetteblock.loc_vars(self, info_queue, card)
 	return {key = (card.ability.extra.pink and "Cassette Block" or card.config.center.key), vars = {card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.pink}}
 end
+
+-- region Bumper
+
+local bumper = SMODS.Joker({
+	name = "Bumper",
+	key = "bumper",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Bumper',
+        text = {
+	"If {C:mult}discards{} {C:attention}>{} {C:chips}hands{}, {C:mult}+16{} Mult",
+	"If {C:chips}hands{} {C:attention}>{} {C:mult}discards{}, {C:chips}+60{} Chips",
+	"If both are {C:attention}equal{}, does {C:red}nothing{}"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Aurora Aquir"
+	}
+})
+
+bumper.calculate = function(self, card, context)
+	
+	if context.joker_main then
+
+		if G.GAME.current_round.hands_left > G.GAME.current_round.discards_left then
+                	return {
+                  	 message = localize {
+                  		type = 'variable',
+                   		key = 'a_chips',
+                  		vars = { 60 }
+                		},
+                	chip_mod = 60
+                	}
+		elseif G.GAME.current_round.discards_left > G.GAME.current_round.hands_left then
+                	return {
+                  	 message = localize {
+                  		type = 'variable',
+                   		key = 'a_mult',
+                  		vars = { 16 }
+                		},
+                	mult_mod = 16
+                	}
+		else
+			if not context.blueprint then
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Equal", colour = G.C.RED})
+			end
+		end
+	end
+end
+
+-- endregion Bumper
+
+-- region Waterfall
+
+local waterfall = SMODS.Joker({
+	name = "Waterfall",
+	key = "waterfall",
+    config = {},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Waterfall',
+        text = {
+	"If played hand contains a",
+	"{C:attention}Flush{}, convert a random",
+	"card {C:attention}held{} in hand to",
+	"the same {C:attention}suit{}"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Bred"
+	}
+})
+
+waterfall.calculate = function(self, card, context)
+	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
+
+                            local suits = {
+                                ['Hearts'] = 0,
+                                ['Diamonds'] = 0,
+                                ['Spades'] = 0,
+                                ['Clubs'] = 0
+                            }
+			    waterfall_flush_suit = 'None'
+                            for i = 1, #context.scoring_hand do
+                                if context.scoring_hand[i].ability.name ~= 'Wild Card' then
+                                    if context.scoring_hand[i]:is_suit('Hearts', true) then suits["Hearts"] = suits["Hearts"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Diamonds', true) then suits["Diamonds"] = suits["Diamonds"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Spades', true) then suits["Spades"] = suits["Spades"] + 1
+                                    elseif context.scoring_hand[i]:is_suit('Clubs', true) then suits["Clubs"] = suits["Clubs"] + 1 end
+                                end
+			    end
+                            if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
+			        ccc_waterfall_flush_suit = 'Hearts'
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
+                            elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
+			        ccc_waterfall_flush_suit = 'Diamonds'
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
+                            elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
+			        ccc_waterfall_flush_suit = 'Spades'
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
+                            elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
+			        ccc_waterfall_flush_suit = 'Clubs'
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
+			    else ccc_waterfall_flush_suit = 'Wild'
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
+			    end
+		local waterfall_card_candidates = {}
+		if ccc_waterfall_flush_suit ~= 'Wild' then
+			for i = 1, #G.hand.cards do
+				if not G.hand.cards[i]:is_suit(ccc_waterfall_flush_suit, true) then
+					waterfall_card_candidates[#waterfall_card_candidates + 1] = G.hand.cards[i]
+				end
+			end
+		else
+			for i = 1, #G.hand.cards do
+				if G.hand.cards[i].ability.name ~= 'Wild Card' or G.hand.cards[i].ability.name ~= 'Steel Card' or G.hand.cards[i].ability.name ~= 'Gold Card' then
+					waterfall_card_candidates[#waterfall_card_candidates + 1] = G.hand.cards[i]
+				end
+			end
+		end
+		if #waterfall_card_candidates > 0 then  -- copying more bunco code... firch ily
+			local waterfall_card = pseudorandom_element(waterfall_card_candidates, pseudoseed('waterfall'))
+			if ccc_waterfall_flush_suit ~= 'Wild' then
+				G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1);
+				waterfall_card:juice_up(0.3, 0.3); return true end }))
+           	         	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.1,  func = function() waterfall_card:change_suit(ccc_waterfall_flush_suit); 
+				return true end }))
+            	        	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1, 0.6);
+				waterfall_card:juice_up(0.3, 0.3); return true end }))
+			else
+				G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1);
+				waterfall_card:juice_up(0.3, 0.3); return true end }))
+            	        	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.1,  func = function() waterfall_card:set_ability(G.P_CENTERS.m_wild); 
+				return true end }))
+             		       	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1, 0.6);
+				waterfall_card:juice_up(0.3, 0.3); return true end }))
+			end
+		end
+	end
+end
+				
