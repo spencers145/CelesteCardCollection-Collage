@@ -1218,7 +1218,7 @@ end
 local wingedstrawberry = SMODS.Joker({
 	name = "Winged Strawberry",
 	key = "wingedstrawberry",
-    config = {extra = {winged_poker_hand = 'Pair'}},  -- initialize all winged berries to pair. i don't like this but idfk how to change it and pair is fine
+    config = {extra = {winged_poker_hand = 'Pair'}},
 	pos = {x = 2, y = 1},
 	loc_txt = {
         name = 'Winged Strawberry',
@@ -1242,6 +1242,16 @@ local wingedstrawberry = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
+
+wingedstrawberry.set_ability = function(self, card, initial, delay_sprites)
+	local _poker_hands = {}
+	for k, v in pairs(G.GAME.hands) do
+		if v.visible then 
+			_poker_hands[#_poker_hands+1] = k 
+		end
+	end
+	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('winged'))
+end
 
 wingedstrawberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
@@ -1290,7 +1300,7 @@ local goldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Golden Strawberry',
         text = {
-	"Earn {C:money}$18{} at end of",
+	"Earn {C:money}$15{} at end of",
 	"{C:attention}Boss Blind{}"
         }
     },
@@ -1332,7 +1342,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Winged Golden Strawberry',
         text = {
-	"Earn {C:money}$24{} at end of {C:attention}Boss Blind{} if",
+	"Earn {C:money}$20{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
 	"poker hand changes",
@@ -1352,6 +1362,16 @@ local wingedgoldenstrawberry = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
+
+wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
+	local _poker_hands = {}
+	for k, v in pairs(G.GAME.hands) do
+		if v.visible then 
+			_poker_hands[#_poker_hands+1] = k 
+		end
+	end
+	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
+end
 
 wingedgoldenstrawberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
@@ -1420,6 +1440,16 @@ local moonberry = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
+
+moonberry.set_ability = function(self, card, initial, delay_sprites)
+	local _poker_hands = {}
+	for k, v in pairs(G.GAME.hands) do
+		if v.visible then 
+			_poker_hands[#_poker_hands+1] = k 
+		end
+	end
+	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+end
 
 moonberry.calculate = function(self, card, context)
 	if context.end_of_round and not context.repetition and not context.individual then
@@ -1711,7 +1741,6 @@ strongwinds.calculate = function(self, card, context)
 						end
 					end
 				end
-            			local cards_destroyed = {}
             			highlight_card(YOU_CANNOT_STOP_THE_WIND_BITCH,(1-0.999)/(#context.scoring_hand-0.998),'down') -- i copied literally the entire goddamn card destruction code to fix this stupid bug... it's probably just this line that i was missing but oh my god i don't care at this point
 				if YOU_CANNOT_STOP_THE_WIND_BITCH.ability.name == 'Glass Card' then 
 					YOU_CANNOT_STOP_THE_WIND_BITCH.shattered = true
@@ -2590,7 +2619,7 @@ local waterfall = SMODS.Joker({
 })
 
 waterfall.calculate = function(self, card, context)
-	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
+	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) then
 
                             local suits = {
                                 ['Hearts'] = 0,
@@ -2609,18 +2638,28 @@ waterfall.calculate = function(self, card, context)
 			    end
                             if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
 			        ccc_waterfall_flush_suit = 'Hearts'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
+				if not context.blueprint then
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER}) 
+				end  
                             elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
 			        ccc_waterfall_flush_suit = 'Diamonds'
+				if not context.blueprint then
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
+				end  
                             elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
 			        ccc_waterfall_flush_suit = 'Spades'
+				if not context.blueprint then
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
+				end  
                             elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
 			        ccc_waterfall_flush_suit = 'Clubs'
+				if not context.blueprint then
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
+				end  
 			    else ccc_waterfall_flush_suit = 'Wild'
+				if not context.blueprint then
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
+				end  
 			    end
 		local waterfall_card_candidates = {}
 		if ccc_waterfall_flush_suit ~= 'Wild' then
@@ -2657,3 +2696,175 @@ waterfall.calculate = function(self, card, context)
 	end
 end
 				
+-- endregion Waterfall
+
+-- region Collapsing Bridge
+
+local collapsingbridge = SMODS.Joker({
+	name = "Collapsing Bridge",
+	key = "collapsingbridge",
+    config = {extra = {xmult = 5}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Collapsing Bridge',
+        text = {
+	"{X:mult,C:white} X#2# {} Mult when played hand",
+	"contains a {C:attention}Straight{}",
+	"All played cards have a {C:green}#1# in 5{}",
+	"chance of being {C:red}destroyed{}"
+        }
+    },
+	rarity = 3,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+collapsingbridge.calculate = function(self, card, context)
+	
+	if context.joker_main then
+
+		if not context.blueprint then
+			local cards_destroyed = {}
+			for k, v in ipairs(context.full_hand) do
+				if pseudorandom('bridge') < G.GAME.probabilities.normal/5 then
+					cards_destroyed[#cards_destroyed+1] = v
+					if v.ability.name == 'Glass Card' then 
+						v.shattered = true
+					else 
+						v.destroyed = true
+					end 
+				end
+			end
+			
+			for j=1, #G.jokers.cards do
+				eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
+			end
+			for i=1, #cards_destroyed do
+				highlight_card(cards_destroyed[i],(1-0.999)/(#context.full_hand-0.998),'down')
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						if cards_destroyed[i].ability.name == 'Glass Card' then 
+							cards_destroyed[i]:shatter()
+						else
+							cards_destroyed[i]:start_dissolve()
+						end
+					return true
+					end
+				}))
+			end
+		end
+
+		if next(context.poker_hands['Straight']) then
+                	return {
+			message = localize {
+				type = 'variable',
+				key = 'a_xmult',
+				vars = { card.ability.extra.xmult }
+                		},
+                	Xmult_mod = card.ability.extra.xmult
+                	}
+		end
+	end
+end
+
+function collapsingbridge.loc_vars(self, info_queue, card)
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.xmult}}
+end
+
+-- endregion Collapsing Bridge
+
+-- region Pointless Machines
+
+local pointlessmachines = SMODS.Joker({
+	name = "Pointless Machines",
+	key = "pointlessmachines",
+    config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Pointless Machines',
+        text = {
+	""
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
+        for i = 1, 5 do
+		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
+	end
+end
+
+pointlessmachines.calculate = function(self, card, context)
+	if context.before and not context.blueprint then
+		if #context.full_hand == 5 then
+			for i = 1, 5 do
+				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
+					card.ability.extra.incorrect = true
+				end
+			end
+		else
+			card.ability.extra.incorrect = true
+		end
+		if card.ability.extra.incorrect == false then
+			card.ability.extra.reset = true
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Correct", colour = G.C.GREEN})
+			local temp_dollars = pseudorandom('littlemoney', 4, 7)
+				ease_dollars(temp_dollars)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + temp_dollars
+				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+				return {
+					message = localize('$')..temp_dollars,
+					dollars = temp_dollars,
+				colour = G.C.MONEY
+				}
+		else
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Incorrect", colour = G.C.RED})
+		end
+	end
+	
+	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then
+		if pseudorandom('chipsormult', 0, 2) > 1 then 
+			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
+                            return {
+                                message = localize{type='variable',key='a_mult',vars={temp_Mult}},
+                                mult_mod = temp_Mult
+                            }
+		else
+			local temp_chips = pseudorandom('misprintbutchips', 80, 145)
+                            return {
+                                message = localize{type='variable',key='a_chips',vars={temp_chips}},
+                                chip_mod = temp_chips
+                            }
+		end
+	end
+
+	if context.after and card.ability.extra.reset == true and not context.blueprint then
+		for i = 1, 5 do
+			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('reinitialize'))
+		end
+		card.ability.extra.reset = false
+	end
+end				
+
+-- endregion Pointless Machines		
