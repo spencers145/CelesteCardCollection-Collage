@@ -55,6 +55,7 @@ if ccc_MAX_CHOICES_FAILSAFE < G.GAME.pack_choices then
 	G.GAME.pack_choices = ccc_MAX_CHOICES_FAILSAFE
 end
 ccc_grubble_bonus_choices = 0
+ccc_rrubble_bonus_choices = 0
 return true
 end}))
 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.0, blockable = true, blocking = false, func = function()
