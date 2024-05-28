@@ -476,7 +476,7 @@ local towels = SMODS.Joker({
         name = 'Huge Mess: Towels',
         text = {
 	"When played hand contains a",
-	"{C:attention}Flush{}, gains {C:chips}+6{} Chips for",
+	"{C:attention}Flush{}, gains {C:chips}+8{} Chips for",
 	"each card held in hand that",
 	"shares the same {C:attention}suit{}",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
@@ -534,7 +534,7 @@ towels.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
-                        card.ability.extra.chips = card.ability.extra.chips + 6
+                        card.ability.extra.chips = card.ability.extra.chips + 8
                         	    return {
                             message = localize('k_upgrade_ex'),
                             colour = G.C.CHIPS
@@ -574,7 +574,7 @@ local chests = SMODS.Joker({
         text = {
 	"When played hand contains a",
 	"{C:attention}Three of a Kind{}, gains",
-	"{C:mult}+2{} Mult for each possible",
+	"{C:mult}+3{} Mult for each possible",
 	"{C:attention}Pair{} held in hand",
 	"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
         }
@@ -620,7 +620,7 @@ chests.calculate = function(self, card, context)
 			boxes_pair_amounts = boxes_pair_amounts + ((boxes_card_pair_candidate - 1)*(boxes_card_pair_candidate)) / 2
 		end
 		if boxes_pair_amounts > 0 then
-			card.ability.extra.mult = card.ability.extra.mult + (boxes_pair_amounts)*2
+			card.ability.extra.mult = card.ability.extra.mult + (boxes_pair_amounts)*3
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -656,7 +656,7 @@ local books = SMODS.Joker({
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X0.11 {} Mult",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X0.14 {} Mult",
 	"for each additional card in",
 	"the {C:attention}sequence{} held in hand",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
@@ -666,7 +666,7 @@ local books = SMODS.Joker({
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X0.11 {} Mult",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X0.14 {} Mult",
 	"for each additional card in",
 	"the {C:attention}sequence{} held in hand",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
@@ -1000,7 +1000,7 @@ books.calculate = function(self, card, context)
 			end
 		end
 		if books_additional_sequence_cards > 0 then
-			card.ability.extra.xmult = card.ability.extra.xmult + (0.11*(books_additional_sequence_cards))
+			card.ability.extra.xmult = card.ability.extra.xmult + (0.14*(books_additional_sequence_cards))
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -1337,7 +1337,7 @@ end
 local wingedgoldenstrawberry = SMODS.Joker({
 	name = "Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-    config = {extra = {winged_poker_hand = 'Pair'}},
+    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair'}},
 	pos = {x = 4, y = 1},
 	loc_txt = {
         name = 'Winged Golden Strawberry',
@@ -1389,12 +1389,12 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
 			if next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
-				winged_golden_strawberry_condition_satisfied = false
+				card.ability.extra.condition_satisfied = false
 			end
 		end
 	end
 	if context.setting_blind then
-		winged_golden_strawberry_condition_satisfied = true
+		card.ability.extra.condition_satisfied = true
 		if context.blind.boss then
 			golden_strawberry_after_boss_blind = true	-- redundant variable switching if you have both... idc
 		else
@@ -1856,7 +1856,7 @@ local climbinggear = SMODS.Joker({
 	name = "Climbing Gear",
 	key = "climbinggear",
     config = {d_size = 2},
-	pos = {x = 0, y = 0},
+	pos = {x = 6, y = 1},
 	loc_txt = {
         name = 'Climbing Gear',
         text = {
@@ -1873,7 +1873,7 @@ local climbinggear = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "goose"
 	}
@@ -1895,7 +1895,7 @@ local bluespinner = SMODS.Joker({
         name = 'Blue Spinner',
         text = {
 	"When a card with a {C:planet}Blue Seal{}",
-	"is scored, {C:green}#1# in 6{} chance",
+	"is scored, {C:green}#1# in 3{} chance",
 	"to add a {C:planet}Blue Seal{} to each",
 	"{C:attention}adjacent{} card in scored hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -1928,7 +1928,7 @@ bluespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #context.scoring_hand then
 					if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-						if pseudorandom('bloo1') < G.GAME.probabilities.normal/6 then
+						if pseudorandom('bloo1') < G.GAME.probabilities.normal/3 then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
@@ -1936,18 +1936,18 @@ bluespinner.calculate = function(self, card, context)
 			elseif k == #context.scoring_hand then
 				if k ~= 1 then
 					if context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-						if pseudorandom('bloo2') < G.GAME.probabilities.normal/6 then
+						if pseudorandom('bloo2') < G.GAME.probabilities.normal/3 then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
 				end
 			else
 				if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-					if pseudorandom('bloo3') < G.GAME.probabilities.normal/6 then
+					if pseudorandom('bloo3') < G.GAME.probabilities.normal/3 then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				elseif context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-					if pseudorandom('bloo4') < G.GAME.probabilities.normal/6 then
+					if pseudorandom('bloo4') < G.GAME.probabilities.normal/3 then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				end
@@ -1988,7 +1988,7 @@ local purplespinner = SMODS.Joker({
         text = {
 	"When a card with a {C:tarot}Purple Seal{}",
 	"is {C:attention}held{} in hand at end of round,",
-	"{C:green}#1# in 6{} chance to add a {C:tarot}Purple Seal{}",
+	"{C:green}#1# in 3{} chance to add a {C:tarot}Purple Seal{}",
 	"to each {C:attention}adjacent{} card in hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
@@ -2020,7 +2020,7 @@ purplespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.cards then
 					if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-						if pseudorandom('purple1') < G.GAME.probabilities.normal/6 then
+						if pseudorandom('purple1') < G.GAME.probabilities.normal/3 then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
@@ -2028,18 +2028,18 @@ purplespinner.calculate = function(self, card, context)
 			elseif k == #G.hand.cards then
 				if k ~= 1 then
 					if G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-						if pseudorandom('is2') < G.GAME.probabilities.normal/6 then
+						if pseudorandom('is2') < G.GAME.probabilities.normal/3 then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
 				end
 			else
 				if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-					if pseudorandom('best3') < G.GAME.probabilities.normal/6 then
+					if pseudorandom('best3') < G.GAME.probabilities.normal/3 then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				elseif G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-					if pseudorandom('colour4') < G.GAME.probabilities.normal/6 then
+					if pseudorandom('colour4') < G.GAME.probabilities.normal/3 then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				end
@@ -2078,7 +2078,7 @@ local redspinner = SMODS.Joker({
         name = 'Red Spinner',
         text = {
 	"When a card with a {C:red}Red Seal{}",
-	"is {C:attention}discarded{}, {C:green}#1# in 5{} chance",
+	"is {C:attention}discarded{}, {C:green}#1# in 3{} chance",
 	"to add a {C:red}Red Seal{} to each",
 	"{C:attention}adjacent{} card in discarded hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -2111,7 +2111,7 @@ redspinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.highlighted then
 					if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-						if pseudorandom('RED1') < G.GAME.probabilities.normal/5 then
+						if pseudorandom('RED1') < G.GAME.probabilities.normal/3 then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
@@ -2119,18 +2119,18 @@ redspinner.calculate = function(self, card, context)
 			elseif k == #G.hand.highlighted then
 				if k ~= 1 then
 					if G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-						if pseudorandom('redge2') < G.GAME.probabilities.normal/5 then
+						if pseudorandom('redge2') < G.GAME.probabilities.normal/3 then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
 				end
 			else
 				if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/5 then
+					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/3 then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				elseif G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/5 then
+					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/3 then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				end
@@ -2405,7 +2405,7 @@ local cassetteblock = SMODS.Joker({
 	loc_txt = {
         name = ('Cassette Block'),
         text = {
-	"Gains {C:chips}+7{} Chips for each",
+	"Gains {C:chips}+8{} Chips for each",
 	"{C:attention}unused{} {C:chips}hand{} at end of round",
 	"{C:mult}Swaps{} at start of round",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
@@ -2428,7 +2428,7 @@ local cassetteblock = SMODS.Joker({
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
 				name = ('Cassette Block'),
 				text = {
-					"Gains {C:mult}+2{} Mult for each",
+					"Gains {C:mult}+3{} Mult for each",
 					"{C:attention}unused{} {C:mult}discard{} at end of round",
 					"{C:chips}Swaps{} at start of round",
 					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
@@ -2539,7 +2539,7 @@ local bumper = SMODS.Joker({
         text = {
 	"If {C:mult}discards{} {C:attention}>{} {C:chips}hands{}, {C:mult}+16{} Mult",
 	"If {C:chips}hands{} {C:attention}>{} {C:mult}discards{}, {C:chips}+60{} Chips",
-	"If both are {C:attention}equal{}, does {C:red}nothing{}"
+	"If both are {C:attention}equal{}, does {C:inactive}nothing{}"
         }
     },
 	rarity = 1,
@@ -2843,7 +2843,7 @@ pointlessmachines.calculate = function(self, card, context)
 		end
 	end
 	
-	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then
+	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then	-- 1/3 chance for mult, 2/3 chance for chips
 		if pseudorandom('chipsormult', 0, 2) > 1 then 
 			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
                             return {
@@ -2867,4 +2867,80 @@ pointlessmachines.calculate = function(self, card, context)
 	end
 end				
 
--- endregion Pointless Machines		
+-- endregion Pointless Machines	
+
+-- region Checkpoint
+
+local checkpoint = SMODS.Joker({
+	name = "Checkpoint",
+	key = "checkpoint",
+    config = {extra = {xmult = 1}},
+	pos = {x = 0, y = 0},
+	loc_txt = {
+        name = 'Checkpoint',
+        text = {
+	"Gains {X:mult,C:white} X1#{} Mult if",
+	"{C:attention}Boss Blind{} is defeated",
+	"without {C:red}discarding{}",
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
+        }
+    },
+	rarity = 3,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+
+checkpoint.calculate = function(self, card, context)
+
+	if context.setting_blind and not context.blueprint then
+		checkpoint_didyoudiscard = false
+		if context.blind.boss then
+			golden_strawberry_after_boss_blind = true
+		else
+			golden_strawberry_after_boss_blind = false
+		end
+	end
+
+	if context.discard and not context.blueprint then
+		if golden_strawberry_after_boss_blind == true and checkpoint_didyoudiscard == false then
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Discarded", colour = G.C.RED})
+			checkpoint_didyoudiscard = true
+		end
+	end
+	
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		if golden_strawberry_after_boss_blind == true and checkpoint_didyoudiscard == false then
+			card.ability.extra.xmult = card.ability.extra.xmult + 1
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
+		end
+	end
+		
+	if context.joker_main then
+            	if card.ability.extra.xmult ~= 1 then
+                	return {
+                    	message = localize {
+                        	type = 'variable',
+                        	key = 'a_xmult',
+                        	vars = { card.ability.extra.xmult }
+                    	},
+			Xmult_mod = card.ability.extra.xmult
+                	}
+		end
+	end
+end
+
+function checkpoint.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.xmult}}
+end
+
+-- endregion Checkpoint

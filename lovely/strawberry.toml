@@ -21,7 +21,7 @@ if self.ability.name == 'Golden Strawberry' then
 end
 if self.ability.name == 'Winged Golden Strawberry' then
 	if golden_strawberry_after_boss_blind == true then
-		if winged_golden_strawberry_condition_satisfied == true then
+		if self.ability.extra.condition_satisfied == true then
 			return 20
 		end
 	end
