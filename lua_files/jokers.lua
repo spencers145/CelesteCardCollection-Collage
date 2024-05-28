@@ -1652,7 +1652,7 @@ local templerock = SMODS.Joker({
 	name = "Temple Rock",
 	key = "templerock",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Temple Rock',
         text = {
@@ -1785,7 +1785,7 @@ local coyotejump = SMODS.Joker({
 	name = "Coyote Jump",
 	key = "coyotejump",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Coyote Jump',
         text = {
@@ -1890,7 +1890,7 @@ local bluespinner = SMODS.Joker({
 	name = "Blue Spinner",
 	key = "bluespinner",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Blue Spinner',
         text = {
@@ -1982,7 +1982,7 @@ local purplespinner = SMODS.Joker({
 	name = "Purple Spinner",
 	key = "purplespinner",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Purple Spinner',
         text = {
@@ -2073,7 +2073,7 @@ local redspinner = SMODS.Joker({
 	name = "Red Spinner",
 	key = "redspinner",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Red Spinner',
         text = {
@@ -2165,7 +2165,7 @@ local rainbowspinner = SMODS.Joker({
 	name = "Rainbow Spinner",
 	key = "rainbowspinner",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Rainbow Spinner',
         text = {
@@ -2361,7 +2361,7 @@ local redbooster = SMODS.Joker({
 	name = "Red Booster",
 	key = "redbooster",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Red Booster',
         text = {
@@ -2533,7 +2533,7 @@ local bumper = SMODS.Joker({
 	name = "Bumper",
 	key = "bumper",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Bumper',
         text = {
@@ -2594,7 +2594,7 @@ local waterfall = SMODS.Joker({
 	name = "Waterfall",
 	key = "waterfall",
     config = {},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Waterfall',
         text = {
@@ -2704,7 +2704,7 @@ local collapsingbridge = SMODS.Joker({
 	name = "Collapsing Bridge",
 	key = "collapsingbridge",
     config = {extra = {xmult = 5}},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Collapsing Bridge',
         text = {
@@ -2788,7 +2788,7 @@ local pointlessmachines = SMODS.Joker({
 	name = "Pointless Machines",
 	key = "pointlessmachines",
     config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Pointless Machines',
         text = {
@@ -2817,6 +2817,7 @@ end
 
 pointlessmachines.calculate = function(self, card, context)
 	if context.before and not context.blueprint then
+		card.ability.extra.incorrect = false
 		if #context.full_hand == 5 then
 			for i = 1, 5 do
 				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
@@ -2875,7 +2876,7 @@ local checkpoint = SMODS.Joker({
 	name = "Checkpoint",
 	key = "checkpoint",
     config = {extra = {xmult = 1}},
-	pos = {x = 0, y = 0},
+	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Checkpoint',
         text = {
