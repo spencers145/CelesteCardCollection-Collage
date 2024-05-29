@@ -21,6 +21,9 @@ assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/decks.lua"
 SMODS.Atlas({key = "v_ccc_vouchers", path = "v_ccc_vouchers.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/vouchers.lua")))()
 
+SMODS.Atlas({key = "bl_ccc_blinds", path = "bl_ccc_blinds.png", px = 34, py = 34, frames = 21, atlas_table = "ANIMATION_ATLAS"})
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/blinds.lua")))()
+
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/editions.lua")))()
 
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/localization/en-us.lua")))()
