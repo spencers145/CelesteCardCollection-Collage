@@ -155,3 +155,56 @@ berry.disable = function(self)
 end
 
 -- endregion Berry
+
+-- region Fallacy
+
+local fallacy = SMODS.Blind{
+	name = "The Fallacy",
+	slug = "fallacy", 
+	key = 'fallacy',
+	atlas = 'bl_ccc_blinds',
+	pos = {x = 0, y = 4},
+	dollars = 5, 
+	mult = 2, 
+	vars = {}, 
+	debuff = {},
+	discovered = true,
+	boss = {min = 3, max = 10},
+	boss_colour = HEX('2f4063'),
+	loc_txt = {
+        	['default'] = {
+			name = "The Fallacy",
+			text = {
+				"Playing cards lose",
+				"a rank when played"
+			}
+		}
+	}
+}
+
+fallacy.press_play = function(self)
+	G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.2, func = function()
+        for i = 1, #G.play.cards do
+		G.E_MANAGER:add_event(Event({func = function()
+			local card = G.play.cards[i]
+			local suit_prefix = string.sub(card.base.suit, 1, 1)..'_'
+			local rank_suffix = card.base.id == 2 and 14 or math.min(card.base.id-1, 14)
+			if rank_suffix < 10 then rank_suffix = tostring(rank_suffix)
+			elseif rank_suffix == 10 then rank_suffix = 'T'
+			elseif rank_suffix == 11 then rank_suffix = 'J'
+			elseif rank_suffix == 12 then rank_suffix = 'Q'
+			elseif rank_suffix == 13 then rank_suffix = 'K'
+			elseif rank_suffix == 14 then rank_suffix = 'A'
+			end
+			card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
+			card:juice_up()
+			play_sound('tarot1')
+		return true end }))
+		delay(0.23)
+        end
+        return true end }))
+	self.triggered = true
+        return true
+end
+
+

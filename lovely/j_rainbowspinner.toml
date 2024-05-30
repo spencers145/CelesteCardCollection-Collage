@@ -1,0 +1,66 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+
+# hardcoding rainbow spinner... gross
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.seal == 'Blue' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then"
+position = "at"
+payload = '''
+if ((next(find_joker('Rainbow Spinner')) and self.seal == 'Gold') or (self.seal == 'Blue')) and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+'''
+match_indent = true
+
+# repeats blue and gold seals... funny though
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.seal == 'Red' then"
+position = "at"
+payload = '''
+if (next(find_joker('Rainbow Spinner')) and self.seal == 'Gold') or (self.seal == 'Red') then
+'''
+match_indent = true
+
+# repeat purple seals for power fantasy
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.seal == 'Purple' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then"
+position = "before"
+payload = '''
+if (next(find_joker('Rainbow Spinner')) and self.seal == 'Gold') then
+G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            G.E_MANAGER:add_event(Event({
+                trigger = 'before',
+                delay = 0.0,
+                func = (function()
+                        local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, nil, '8ba')
+                        card:add_to_deck()
+                        G.consumeables:emplace(card)
+                        G.GAME.consumeable_buffer = 0
+                    return true
+                end)}))
+            card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})
+	    if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+		card_eval_status_text(self, 'extra', nil, nil, nil, {message = localize('k_again_ex'), colour = G.C.FILTER})
+	    end
+end
+'''
+match_indent = true
+
+# overwrite
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.seal == 'Purple' and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then"
+position = "at"
+payload = '''
+if ((next(find_joker('Rainbow Spinner')) and self.seal == 'Gold') or (self.seal == 'Purple')) and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+'''
+match_indent = true
+

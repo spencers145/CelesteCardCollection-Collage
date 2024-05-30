@@ -1300,7 +1300,7 @@ local goldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Golden Strawberry',
         text = {
-	"Earn {C:money}$15{} at end of",
+	"Earn {C:money}$10{} at end of",
 	"{C:attention}Boss Blind{}"
         }
     },
@@ -1342,7 +1342,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Winged Golden Strawberry',
         text = {
-	"Earn {C:money}$20{} at end of {C:attention}Boss Blind{} if",
+	"Earn {C:money}$12{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
 	"poker hand changes",
@@ -1855,12 +1855,12 @@ end
 local climbinggear = SMODS.Joker({
 	name = "Climbing Gear",
 	key = "climbinggear",
-    config = {d_size = 2},
+    config = {d_size = 4},
 	pos = {x = 6, y = 1},
 	loc_txt = {
         name = 'Climbing Gear',
         text = {
-	"{C:red}+2{} discards",
+	"{C:red}+4{} discards",
 	"Discarded cards are",
 	"reshuffled into deck"
         }
@@ -2170,7 +2170,7 @@ local rainbowspinner = SMODS.Joker({
         name = 'Rainbow Spinner',
         text = {
 	"{C:money}Gold Seals{} act as",
-	"{C:red,s:1.2}ev{C:tarot,s:1.2}e{C:planet,s:1.2}ry{} seal"
+	"{C:red,s:1.2,E:1}ev{C:tarot,s:1.2,E:1}e{C:planet,s:1.2,E:1}ry{} seal"
         }
     },
 	rarity = 3,
@@ -2324,10 +2324,8 @@ local greenbooster = SMODS.Joker({
 	loc_txt = {
         name = 'Green Booster',
         text = {
-	"When a {C:attention}Booster Pack{}",
-	"is opened, get an",
-	"{C:attention}extra{} card to",
-	"choose from",
+	"Adds an {C:attention}extra{} card",
+	"to all {C:attention}Booster Packs{}"
         }
     },
 	rarity = 2,
@@ -2365,9 +2363,9 @@ local redbooster = SMODS.Joker({
 	loc_txt = {
         name = 'Red Booster',
         text = {
-	"When a {C:attention}Booster Pack{}",
-	"is opened, choose an",
-	"{C:attention}extra{} card"
+	"Allows you to {C:attention}choose{}",
+	"{C:attention}1{} extra card",
+	"from all {C:attention}Booster Packs{}"
         }
     },
 	rarity = 3,
@@ -2416,7 +2414,7 @@ local cassetteblock = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -2594,7 +2592,7 @@ local waterfall = SMODS.Joker({
 	name = "Waterfall",
 	key = "waterfall",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 5, y = 2},
 	loc_txt = {
         name = 'Waterfall',
         text = {
@@ -2951,18 +2949,18 @@ end
 local theocrystal = SMODS.Joker({
 	name = "Theo Crystal",
 	key = "theocrystal",
-    config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
+	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
 	pos = {x = 9, y = 4},
 	loc_txt = {
-        name = 'Theo Crystal',
-        text = {
+	name = 'Theo Crystal',
+	text = {
 	"Forces 1 card to",
 	"{C:attention}always{} be selected",
 	"Adds {C:green}+#1#{} to all {C:attention}listed{}",
 	"{C:green,E:1}probabilities{} at round end",
 	"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
 	"{C:inactive}(Currently {C:green}+#2#{C:inactive})"
-        }
+	}
     },
 	rarity = 3,
 	cost = 9,
@@ -3006,3 +3004,126 @@ end
 function theocrystal.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.scale, card.ability.extra.probs}}
 end
+
+-- endregion Theo Crystal
+
+-- region Switch Gate
+
+local switchgate = SMODS.Joker({
+	name = "Switch Gate",
+	key = "switchgate",
+	config = {extra = {chips = 0, cards = {[1] = {rank = 'Ace', suit = 'Spades', id = 14}, [2] = {rank = 'Ace', suit = 'Hearts', id = 14}, [3] = {rank = 'Ace', suit = 'Clubs', id = 14}}}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+	name = 'Switch Gate',
+	text = {
+	"Gains {C:chips}+10{} Chips if {C:attention}any{} of the",
+	"following cards are scored:",
+	"{C:attention}#2#{} of {V:1}#3#{}",
+	"{C:attention}#4#{} of {V:2}#5#{}",
+	"{C:attention}#6#{} of {V:3}#7#{}",
+	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
+	"{s:0.8}Cards change every round"
+	}
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+switchgate.set_ability = function(self, card, initial, delay_sprites)	-- shamelessly copied from idol
+	local valid_gate_cards = {}
+	if G.playing_cards ~= nil then
+		for k, v in ipairs(G.playing_cards) do
+			if v.ability.effect ~= 'Stone Card' then
+				valid_gate_cards[#valid_gate_cards+1] = v
+			end
+		end
+		if valid_gate_cards[1] then
+			for i = 1, 3 do
+				local gate_card = pseudorandom_element(valid_gate_cards, pseudoseed('switchgate'..G.GAME.round_resets.ante))
+				card.ability.extra.cards[i].rank = gate_card.base.value
+				card.ability.extra.cards[i].suit = gate_card.base.suit
+				card.ability.extra.cards[i].id = gate_card.base.id
+			end
+		end
+	end
+end
+
+-- this may work. but it may also break. i hope it doesn't but i won't be surprised if it does
+
+switchgate.calculate = function(self, card, context)
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		local valid_gate_cards = {}
+		for k, v in ipairs(G.playing_cards) do
+			if v.ability.effect ~= 'Stone Card' then
+				valid_gate_cards[#valid_gate_cards+1] = v
+			end
+		end
+		if valid_gate_cards[1] then
+			for i = 1, 3 do
+				local gate_card = pseudorandom_element(valid_gate_cards, pseudoseed('switchgate'..G.GAME.round_resets.ante))
+				card.ability.extra.cards[i].rank = gate_card.base.value
+				card.ability.extra.cards[i].suit = gate_card.base.suit
+				card.ability.extra.cards[i].id = gate_card.base.id
+			end
+		end
+	end
+
+	if context.individual and not context.blueprint then
+		if context.cardarea == G.play then
+			for i = 1, 3 do
+				if context.other_card:get_id() == card.ability.extra.cards[i].id and context.other_card:is_suit(card.ability.extra.cards[i].suit) then
+					card.ability.extra.chips = card.ability.extra.chips + 10
+					return {
+						extra = {focus = card, message = localize('k_upgrade_ex')},
+						colour = G.C.CHIPS
+					}
+				end
+			end
+		end
+	end
+
+	if context.joker_main then
+		if card.ability.extra.chips ~= 0 then
+                	return {
+                    	message = localize {
+                        	type = 'variable',
+                        	key = 'a_chips',
+                        	vars = { card.ability.extra.chips }
+                    	},
+			chip_mod = card.ability.extra.chips
+                	}
+		end
+	end
+end
+
+function switchgate.loc_vars(self, info_queue, card)	-- what a mess
+	return {vars = {
+		card.ability.extra.chips, 
+		localize(card.ability.extra.cards[1].rank, 'ranks'), 
+		localize(card.ability.extra.cards[1].suit, 'suits_plural'), 
+		localize(card.ability.extra.cards[2].rank, 'ranks'), 
+		localize(card.ability.extra.cards[2].suit, 'suits_plural'), 
+		localize(card.ability.extra.cards[3].rank, 'ranks'), 
+		localize(card.ability.extra.cards[3].suit, 'suits_plural'),
+		colours = {
+			G.C.SUITS[card.ability.extra.cards[1].suit], 
+			G.C.SUITS[card.ability.extra.cards[2].suit], 
+			G.C.SUITS[card.ability.extra.cards[3].suit]
+		}
+	}
+}
+end
+
+-- endregion Switch Gate
