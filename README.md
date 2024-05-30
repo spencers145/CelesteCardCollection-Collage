@@ -6,6 +6,9 @@ A Balatro mod using Steamodded revolving around a Celeste card theme
 # Decks
 <b>Virus Deck</b>: Each played card is retriggered then debuffed until the end of the ante<br><br>
 <b>Summit Deck</b>: Start with 0 Joker Slots. Each Ante gain 1 Joker Slot (if you haven't been in this ante yet)<br><br>
+<b>B-Side Deck</b>: All blinds are boss blinds. Start at Ante 0<br><br>
+<b>Heartside Deck</b>: Only modded Jokers may appear (and maybe jimbo)<br><br>
+
 # Jokers
 <b>Temple Eyes</b>: Gives Hanged Man if Blind is selected with $4 or less<br><br>
 <b>Feather</b>: Gains X0.05 for each card drawn this round<br><br>
@@ -22,8 +25,10 @@ A Balatro mod using Steamodded revolving around a Celeste card theme
 <b>Golden Strawberry</b>: Earn $15 at end of Boss Blind<br><br>
 <b>Winged Golden Strawberry</b>: Earn $25 at end of Boss Blind if beaten without playing a hand that contains a Pair, poker hand changes at end of round<br><br>
 <b>Moon Berry</b>: If round ends without playing a hand that contains a Pair, create its Planet card with Negative edition, poker hand changes at end of round<br><br>
+
 # Blinds
 None
+
 # Vouchers
 <b>Fast Track</b>: +1 Ante, -30% blind chips <br><br>
 <b>Mindfulness</b> (Requires Fast Track): -30% blind chips (again) <br>

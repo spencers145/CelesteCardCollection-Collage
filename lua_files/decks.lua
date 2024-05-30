@@ -1,5 +1,5 @@
 local trigger_effect_callbacks = {}
-
+local start_run_after_callbacks = {}
 -- region virus deck -----------------------
 
 local eval_cardRef = eval_card
@@ -119,7 +119,7 @@ function ease_ante(mod)
 end
 
 
-table.insert(trigger_effect_callbacks, summit_effect)
+--table.insert(trigger_effect_callbacks, summit_effect)
 
 local summit = SMODS.Back({
     name = "Summit Deck",
@@ -142,8 +142,141 @@ local summit = SMODS.Back({
 	}
 })
 
--- endregion summit deck-----------------------
 
+-- endregion summit deck-----------------------
+-- region B-Side deck
+
+local bside = SMODS.Back({
+    name = "B-Side Deck",
+    key = "bside",
+	config = {everything_is_boss = true},
+	pos = {x = 2, y = 0},
+	loc_txt = {
+        name = "B-Side Deck",
+        text = {
+            "Every blind is a {C:red}boss blind{}",
+			"Start from {C:attention}Ante 0{}"
+        }
+    },
+    atlas= "b_ccc_decks",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Bred"
+	}
+})
+
+local get_type_ref = Blind.get_type
+function Blind:get_type()
+	local ret = get_type_ref
+	if G.GAME.blind_on_deck then 
+		return G.GAME.blind_on_deck
+	end
+	
+	return ret
+end
+
+
+local reset_blinds_ref = reset_blinds
+function reset_blinds()
+	local state = G.GAME.round_resets.blind_states or {Small = 'Select', Big = 'Upcoming', Boss = 'Upcoming'}
+	reset_blinds_ref()
+	if G.GAME.selected_back.effect.config.everything_is_boss and state.Boss == 'Defeated' then
+		
+		G.GAME.round_resets.blind_choices.Small = get_new_boss()
+		G.GAME.round_resets.blind_choices.Big = get_new_boss()
+	end
+end
+
+local end_round_ref = end_round
+function end_round()
+	if G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then 
+		
+		-- campfire and ante not increasing and such
+		G.GAME.blind.boss = nil
+
+		-- no money red stake
+        if G.GAME.modifiers.no_blind_reward and G.GAME.modifiers.no_blind_reward[G.GAME.blind:get_type()] then G.GAME.blind.dollars = 0 end
+		-- game actually advancing to big/boss
+		if G.GAME.blind:get_type() == "Small" then
+			G.GAME.round_resets.blind = G.P_BLINDS.bl_small
+		end
+		if G.GAME.blind:get_type() == "Big" then
+			G.GAME.round_resets.blind = G.P_BLINDS.bl_big
+		end
+	end
+	return end_round_ref()
+end
+
+-- madness joker
+local calculate_joker_ref = Card.calculate_joker
+function Card:calculate_joker(context)
+	local ret
+	if context.setting_blind and G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then
+		local boss = context.blind.boss
+		context.blind.boss = nil
+		ret = calculate_joker_ref(self, context)
+		context.blind.boss = boss 
+	else 
+		ret = calculate_joker_ref(self, context)
+	end
+	return ret
+end
+
+function bside_start_run(self)
+	if G.GAME.selected_back.effect.config.everything_is_boss then
+		G.GAME.round_resets.ante = 0
+		G.GAME.round_resets.blind_ante = 0
+		G.GAME.round_resets.blind_choices.Small = get_new_boss()
+		G.GAME.round_resets.blind_choices.Big = get_new_boss()
+	end
+end
+
+table.insert(start_run_after_callbacks, bside_start_run)
+
+
+-- endregion B-Side deck
+
+-- region Heartside Deck
+
+local heartside = SMODS.Back({
+    name = "Heartside Deck",
+    key = "heartside",
+	config = {all_jokers_modded = true},
+	pos = {x = 3, y = 0},
+	loc_txt = {
+        name = "Heartside Deck",
+        text = {
+            "Only {C:attention}Modded{} Jokers may appear",
+			"{s:0.75}(and maybe {C:legendary,E:1,s:0.75}jimbo{}{s:0.75})"
+        }
+    },
+    atlas= "b_ccc_decks",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+function heartside_start_run(self)
+	if G.GAME.selected_back.effect.config.all_jokers_modded then
+		local jokerPool = {}
+		for index, joker in ipairs(self.P_CENTER_POOLS["Joker"]) do
+			if not joker.mod and joker.rarity < 4 then
+				joker.no_pool_flag = "heartside_deck"
+			end
+		end
+		G.GAME.pool_flags.heartside_deck = true
+	else 
+		G.GAME.pool_flags.heartside_deck = false
+	end
+end
+
+table.insert(start_run_after_callbacks, heartside_start_run)
+
+-- endregion 
 -- region HOOKS
 
 local trigger_effectRef = Back.trigger_effect
@@ -155,12 +288,17 @@ function Back.trigger_effect(self, args)
 	return trigger_effectRef(self, args)
 end
 
+local start_run_ref = Game.start_run
+function Game:start_run(args)
+	local ret = start_run_ref(self, args)
+	for _, callback in ipairs(start_run_after_callbacks) do
+		callback(self)
+	end
 
-local start_runRef = Game.start_run
-function Game.start_run(self, args)
-	start_runRef(self, args)
 	self.GAME.highest_ante = self.GAME.highest_ante or 1
+	return ret
 end
+
 -- endregion HOOKS
 
 sendDebugMessage("[CCC] Decks loaded")
