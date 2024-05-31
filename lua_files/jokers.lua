@@ -1300,7 +1300,7 @@ local goldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Golden Strawberry',
         text = {
-	"Earn {C:money}$10{} at end of",
+	"Earn {C:money}$12{} at end of",
 	"{C:attention}Boss Blind{}"
         }
     },
@@ -1342,7 +1342,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	loc_txt = {
         name = 'Winged Golden Strawberry',
         text = {
-	"Earn {C:money}$12{} at end of {C:attention}Boss Blind{} if",
+	"Earn {C:money}$15{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
 	"poker hand changes",
@@ -1795,7 +1795,7 @@ local coyotejump = SMODS.Joker({
 	"gain {C:red}+1{} discard"
         }
     },
-	rarity = 2,
+	rarity = 3,
 	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
@@ -1821,9 +1821,12 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 		end
 	end
 	
-	if context.joker_main and context.poker_hands ~= nil then
+	if context.joker_main and context.poker_hands ~= nil then	-- idk how to check for at least 2 lmfao, if you're seeing this and know how please change this
 		  local parts = {
 			_2 = get_X_same(2, coyotejump_card_array),
+			_3 = get_X_same(3, coyotejump_card_array),
+			_4 = get_X_same(4, coyotejump_card_array),
+			_5 = get_X_same(5, coyotejump_card_array),
 			_flush = get_flush(coyotejump_card_array),
 			_straight = get_straight(coyotejump_card_array)
 		}
@@ -1835,7 +1838,7 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Flush", colour = G.C.RED})
 			return true end }))
-		elseif next(parts._2) then
+		elseif next(parts._2) or next(parts._3) or next(parts._4) or next(parts._5) then
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Pair", colour = G.C.RED})
 			return true end }))
@@ -3085,10 +3088,7 @@ switchgate.calculate = function(self, card, context)
 			for i = 1, 3 do
 				if context.other_card:get_id() == card.ability.extra.cards[i].id and context.other_card:is_suit(card.ability.extra.cards[i].suit) then
 					card.ability.extra.chips = card.ability.extra.chips + 10
-					return {
-						extra = {focus = card, message = localize('k_upgrade_ex')},
-						colour = G.C.CHIPS
-					}
+					card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
 				end
 			end
 		end
