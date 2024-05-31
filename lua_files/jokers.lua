@@ -1652,7 +1652,7 @@ local templerock = SMODS.Joker({
 	name = "Temple Rock",
 	key = "templerock",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 8, y = 0},
 	loc_txt = {
         name = 'Temple Rock',
         text = {
@@ -1785,7 +1785,7 @@ local coyotejump = SMODS.Joker({
 	name = "Coyote Jump",
 	key = "coyotejump",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 9, y = 0},
 	loc_txt = {
         name = 'Coyote Jump',
         text = {
@@ -1893,7 +1893,7 @@ local bluespinner = SMODS.Joker({
 	name = "Blue Spinner",
 	key = "bluespinner",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 0, y = 4},
 	loc_txt = {
         name = 'Blue Spinner',
         text = {
@@ -1985,7 +1985,7 @@ local purplespinner = SMODS.Joker({
 	name = "Purple Spinner",
 	key = "purplespinner",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 1, y = 4},
 	loc_txt = {
         name = 'Purple Spinner',
         text = {
@@ -2076,7 +2076,7 @@ local redspinner = SMODS.Joker({
 	name = "Red Spinner",
 	key = "redspinner",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 2, y = 4},
 	loc_txt = {
         name = 'Red Spinner',
         text = {
@@ -2168,7 +2168,7 @@ local rainbowspinner = SMODS.Joker({
 	name = "Rainbow Spinner",
 	key = "rainbowspinner",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 3, y = 4},
 	loc_txt = {
         name = 'Rainbow Spinner',
         text = {
@@ -2362,7 +2362,7 @@ local redbooster = SMODS.Joker({
 	name = "Red Booster",
 	key = "redbooster",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 3, y = 3},
 	loc_txt = {
         name = 'Red Booster',
         text = {
@@ -2401,12 +2401,12 @@ end
 local cassetteblock = SMODS.Joker({
 	name = "Cassette Block",
 	key = "cassetteblock",
-    config = {extra = {chips = 0, mult = 0, pink = false, pos_override = {x = 0, y = 0}}},
-	pos = {x = 0, y = 0},
+    config = {extra = {chips = 0, mult = 0, pink = false, pos_override = {x = 6, y = 2}}},
+	pos = {x = 6, y = 2},
 	loc_txt = {
         name = ('Cassette Block'),
         text = {
-	"Gains {C:chips}+8{} Chips for each",
+	"Gains {C:chips}+7{} Chips for each",
 	"{C:attention}unused{} {C:chips}hand{} at end of round",
 	"{C:mult}Swaps{} at start of round",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
@@ -2429,7 +2429,7 @@ local cassetteblock = SMODS.Joker({
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
 				name = ('Cassette Block'),
 				text = {
-					"Gains {C:mult}+3{} Mult for each",
+					"Gains {C:mult}+2{} Mult for each",
 					"{C:attention}unused{} {C:mult}discard{} at end of round",
 					"{C:chips}Swaps{} at start of round",
 					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
@@ -2452,7 +2452,7 @@ cassetteblock.calculate = function(self, card, context)
 			G.E_MANAGER:add_event(Event({func = function()
 			
 			card.ability.extra.pink = true
-			card.ability.extra.pos_override.x = 1
+			card.ability.extra.pos_override.x = 7
 			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 			
 			return true end }))
@@ -2466,7 +2466,7 @@ cassetteblock.calculate = function(self, card, context)
 			G.E_MANAGER:add_event(Event({func = function()
 			
 			card.ability.extra.pink = false
-			card.ability.extra.pos_override.x = 0
+			card.ability.extra.pos_override.x = 6
 			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 			
 			return true end }))
@@ -2534,7 +2534,7 @@ local bumper = SMODS.Joker({
 	name = "Bumper",
 	key = "bumper",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 7, y = 1},
 	loc_txt = {
         name = 'Bumper',
         text = {
@@ -2705,7 +2705,7 @@ local collapsingbridge = SMODS.Joker({
 	name = "Collapsing Bridge",
 	key = "collapsingbridge",
     config = {extra = {xmult = 5}},
-	pos = {x = 9, y = 4},
+	pos = {x = 8, y = 1},
 	loc_txt = {
         name = 'Collapsing Bridge',
         text = {
@@ -2789,7 +2789,7 @@ local pointlessmachines = SMODS.Joker({
 	name = "Pointless Machines",
 	key = "pointlessmachines",
     config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
-	pos = {x = 9, y = 4},
+	pos = {x = 9, y = 1},
 	loc_txt = {
         name = 'Pointless Machines',
         text = {
@@ -2877,7 +2877,7 @@ local checkpoint = SMODS.Joker({
 	name = "Checkpoint",
 	key = "checkpoint",
     config = {extra = {xmult = 1}},
-	pos = {x = 9, y = 4},
+	pos = {x = 8, y = 2},
 	loc_txt = {
         name = 'Checkpoint',
         text = {
@@ -2953,7 +2953,7 @@ local theocrystal = SMODS.Joker({
 	name = "Theo Crystal",
 	key = "theocrystal",
 	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
-	pos = {x = 9, y = 4},
+	pos = {x = 9, y = 2},
 	loc_txt = {
 	name = 'Theo Crystal',
 	text = {
@@ -3016,7 +3016,7 @@ local switchgate = SMODS.Joker({
 	name = "Switch Gate",
 	key = "switchgate",
 	config = {extra = {chips = 0, cards = {[1] = {rank = 'Ace', suit = 'Spades', id = 14}, [2] = {rank = 'Ace', suit = 'Hearts', id = 14}, [3] = {rank = 'Ace', suit = 'Clubs', id = 14}}}},
-	pos = {x = 9, y = 4},
+	pos = {x = 4, y = 3},
 	loc_txt = {
 	name = 'Switch Gate',
 	text = {
