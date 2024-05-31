@@ -16,13 +16,13 @@ if self.ability.name == 'Strawberry' then
 end
 if self.ability.name == 'Golden Strawberry' then
 	if golden_strawberry_after_boss_blind == true then 
-		return 10
+		return 12
 	end
 end
 if self.ability.name == 'Winged Golden Strawberry' then
 	if golden_strawberry_after_boss_blind == true then
 		if self.ability.extra.condition_satisfied == true then
-			return 12
+			return 15
 		end
 	end
 end
