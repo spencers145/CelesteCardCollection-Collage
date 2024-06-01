@@ -4,7 +4,7 @@ dump_lua = true
 priority = 0
 
 
-# move Card:load()
+# add Card:afterload()
 [[patches]]
 [patches.pattern]
 target = 'card.lua'
@@ -13,7 +13,7 @@ match_indent = true
 position = 'after'
 payload = '''
 local obj = self.config.center
-if obj.load and type(obj.load) == 'function' then
-	obj:load(self, cardTable, other_card)
+if obj.afterload and type(obj.afterload) == 'function' then
+	obj:afterload(self, cardTable, other_card)
 end
 '''

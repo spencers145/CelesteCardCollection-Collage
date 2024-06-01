@@ -50,6 +50,9 @@ Below is a list of everything this mod adds
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
+|Cloud| Common | +30 chips for each hand played this round|
+|Brittle Cloud| Common |+150 chips on the first hand played this round|
+|5-Star Hardlist| Common |+25 Mult; -5 Mult for every booster pack opened|
 |Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
 |Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|

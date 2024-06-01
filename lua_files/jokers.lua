@@ -1063,7 +1063,7 @@ local ominousmirror = SMODS.Joker({
 				}
 		})
 	end,
-	load = function(self, card, card_table, other_card)
+	afterload = function(self, card, card_table, other_card)
 		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
 	end
 })
@@ -1610,7 +1610,7 @@ local coreswitch = SMODS.Joker({
 		code = "toneblock",
 		concept = "Aurora Aquir"
 	},
-	load = function(self, card, card_table, other_card)
+	afterload = function(self, card, card_table, other_card)
 		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
 	end
 })
@@ -2436,7 +2436,7 @@ local cassetteblock = SMODS.Joker({
 				}
 		})
 	end,
-	load = function(self, card, card_table, other_card)
+	afterload = function(self, card, card_table, other_card)
 		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
 	end
 })
@@ -3127,3 +3127,258 @@ function switchgate.loc_vars(self, info_queue, card)	-- what a mess
 end
 
 -- endregion Switch Gate
+
+
+-- region Lapidary
+
+local lapidary = SMODS.Joker({
+	name = "Lapidary",
+	key = "lapidary",
+    config = {extra = 1.5},
+	pos = {x = 6, y = 3},
+	loc_txt = {
+        name = 'Lapidary',
+        text = {
+	"Jokers with a unique rarity",
+	"each give {X:mult,C:white}X#1#{} mult",
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+function lapidary.loc_vars(self, info_queue, card)
+	return {vars = {
+		card.ability.extra,
+	}
+}
+end
+
+lapidary.calculate = function(self, card, context)
+	if context.other_joker then
+		local uniqueRarity = true 
+		for i = 1, #G.jokers.cards do
+			if G.jokers.cards[i] ~= context.other_joker and G.jokers.cards[i].config.center.rarity == context.other_joker.config.center.rarity then
+				uniqueRarity = false
+				break
+			end
+		end
+
+		if uniqueRarity then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					context.other_joker:juice_up(0.5, 0.5)
+					return true
+				end
+			})) 
+			return {
+				message = localize{type='variable',key='a_xmult',vars={card.ability.extra}},
+				Xmult_mod = card.ability.extra
+			}
+		end
+	end
+end
+
+function lapidary.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra}}
+end
+
+-- endregion Checkpoint
+-- region hardlist
+
+local hardlist = SMODS.Joker({
+	name = "hardlist",
+	key = "hardlist",
+    config = {extra = {mult = 25, sub = 5}},
+	pos = {x = 5, y = 3},
+	loc_txt = {
+        name = '5-Star Hardlist',
+        text = {
+			"{C:mult}+#1#{} Mult",
+			"{C:mult}-#2#{} Mult for every",
+			"{C:attention}Booster Pack{} opened"
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = false,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+
+hardlist.calculate = function(self, card, context)
+
+	if context.open_booster then
+		if not context.blueprint then
+			card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.sub
+			if card.ability.extra.mult <= 0 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						play_sound('tarot1')
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+									card_eval_status_text(card, 'extra', nil, nil, nil, {
+										message = "Standard!",
+										colour = G.C.RED
+									});
+									G.jokers:remove_card(card)
+									card:remove()
+									card = nil
+								return true; end})) 
+						return true
+					end
+				})) 
+			else
+				G.E_MANAGER:add_event(Event({
+					func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {
+						message = string.format("%d-Star!", card.ability.extra.mult/card.ability.extra.sub),
+						colour = G.C.RED
+					}); return true
+					end}))
+			end
+		end
+	elseif context.joker_main then
+		return {
+			message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult}},
+			mult_mod = card.ability.extra.mult
+		}
+	end
+end
+
+
+function hardlist.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult, card.ability.extra.sub}}
+end
+-- endregion hardlist
+
+-- region cloud
+
+local cloud = SMODS.Joker({
+	name = "cloud",
+	key = "cloud",
+    config = {extra = {chips = 0, add = 30}},
+	pos = {x = 4, y = 4},
+	loc_txt = {
+        name = 'Cloud',
+        text = {
+			"{C:chips}+#1#{} Chips for each",
+			"{C:blue}Hand{} played this round",
+			"{C:inactive}(Currently {C:blue}+#2#{C:inactive})"
+        }
+    },
+	rarity = 1,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+
+cloud.calculate = function(self, card, context)
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		card.ability.extra.chips = 0
+	elseif context.cardarea == G.jokers and context.after then
+		card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.add
+	elseif context.joker_main and card.ability.extra.chips > 0 then
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_chips',
+				vars = { card.ability.extra.chips }
+			},
+			chip_mod = card.ability.extra.chips
+		}
+	end
+end
+
+
+function cloud.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.add, card.ability.extra.chips}}
+end
+-- endregion cloud
+
+-- region cloud
+
+local brittlecloud = SMODS.Joker({
+	name = "brittlecloud",
+	key = "brittlecloud",
+    config = {extra = {chips = 150, used = false}},
+	pos = {x = 5, y = 4},
+	loc_txt = {
+        name = 'Brittle Cloud',
+        text = {
+			"{C:chips}+#1#{} Chips on the",
+			"first {C:blue}Hand{} played this round",
+        }
+    },
+	rarity = 1,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Aurora Aquir",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+brittlecloud.calculate = function(self, card, context)
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		card.ability.extra.used = false
+	elseif context.cardarea == G.jokers and (context.after or context.debuffed_hand) then
+		card.ability.extra.used = true
+	elseif context.joker_main then
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_chips',
+				vars = { card.ability.extra.chips }
+			},
+			chip_mod = card.ability.extra.chips
+		}
+	end
+end
+
+
+function brittlecloud.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+-- endregion cloud
