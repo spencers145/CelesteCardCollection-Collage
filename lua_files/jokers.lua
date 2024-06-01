@@ -2804,7 +2804,7 @@ local pointlessmachines = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "goose",
 		code = "toneblock",
 		concept = "Fytos"
 	}

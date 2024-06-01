@@ -23,6 +23,7 @@ A Balatro mod using Steamodded revolving around a Celeste card theme
 |Core Switch| Common | Swap hands and discards at the start of round +1 discard after swap|
 |Climbing Gear| Common | +4 discards; Discarded cards are reshuffled into deck |
 |Waterfall| Common |If played hand contains a Flush, convert a random card held in hand to the same suit|
+|Pointless Machines| Common | <secret> |
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +5 Chips for each card in hand that shares the same suit |
@@ -45,7 +46,6 @@ A Balatro mod using Steamodded revolving around a Celeste card theme
 | ---  | ---    | ---|
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
-|Pointless Machines| Common | <secret> |
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Coyote Jump| Uncommon |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (unaffected by retriggers)|
