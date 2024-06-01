@@ -497,39 +497,33 @@ local towels = SMODS.Joker({
 })
 
 towels.calculate = function(self, card, context)
+
 	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
 
-                            local suits = {
-                                ['Hearts'] = 0,
-                                ['Diamonds'] = 0,
-                                ['Spades'] = 0,
-                                ['Clubs'] = 0
-                            }
-			    towels_flush_suit = 'None'
-                            for i = 1, #context.scoring_hand do
-                                if context.scoring_hand[i].ability.name ~= 'Wild Card' then
-                                    if context.scoring_hand[i]:is_suit('Hearts', true) then suits["Hearts"] = suits["Hearts"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Diamonds', true) then suits["Diamonds"] = suits["Diamonds"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Spades', true) then suits["Spades"] = suits["Spades"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Clubs', true) then suits["Clubs"] = suits["Clubs"] + 1 end
-                            end
-			    end
-                            if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
-			    towels_flush_suit = 'Hearts'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER})   
-                            elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
-			    towels_flush_suit = 'Diamonds'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
-                            elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
-			    towels_flush_suit = 'Spades'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
-                            elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
-			    towels_flush_suit = 'Clubs'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
-			    else towels_flush_suit = 'Wild'
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
-			    end
-	end
+		local suits = {}
+		local used_suits = {}
+		for i = 1, #context.scoring_hand do
+			if context.scoring_hand[i].ability.name ~= 'Wild Card' then
+				if not suits[context.scoring_hand[i].base.suit] then
+					suits[context.scoring_hand[i].base.suit] = 1
+					used_suits[#used_suits + 1] = context.scoring_hand[i].base.suit
+				else
+					suits[context.scoring_hand[i].base.suit] = suits[context.scoring_hand[i].base.suit] + 1
+				end
+			end
+		end
+		local value = 0
+		if #used_suits ~= 0 then
+			for i = 1, #used_suits do
+				if suits[used_suits[i]] > value then
+					towels_flush_suit = used_suits[i]
+					value = suits[used_suits[i]]
+				end
+			end
+		else
+			towels_flush_suit = 'Wild'
+		end
+	end	
 
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
@@ -2620,48 +2614,32 @@ local waterfall = SMODS.Joker({
 })
 
 waterfall.calculate = function(self, card, context)
-	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) then
+	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
 
-                            local suits = {
-                                ['Hearts'] = 0,
-                                ['Diamonds'] = 0,
-                                ['Spades'] = 0,
-                                ['Clubs'] = 0
-                            }
-			    waterfall_flush_suit = 'None'
-                            for i = 1, #context.scoring_hand do
-                                if context.scoring_hand[i].ability.name ~= 'Wild Card' then
-                                    if context.scoring_hand[i]:is_suit('Hearts', true) then suits["Hearts"] = suits["Hearts"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Diamonds', true) then suits["Diamonds"] = suits["Diamonds"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Spades', true) then suits["Spades"] = suits["Spades"] + 1
-                                    elseif context.scoring_hand[i]:is_suit('Clubs', true) then suits["Clubs"] = suits["Clubs"] + 1 end
-                                end
-			    end
-                            if suits["Hearts"] > suits["Diamonds"] and suits["Hearts"] > suits["Spades"] and suits["Hearts"] > suits["Clubs"] then
-			        ccc_waterfall_flush_suit = 'Hearts'
-				if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Hearts!", colour = G.C.FILTER}) 
-				end  
-                            elseif suits["Diamonds"] > suits["Hearts"] and suits["Diamonds"] > suits["Spades"] and suits["Diamonds"] > suits["Clubs"] then
-			        ccc_waterfall_flush_suit = 'Diamonds'
-				if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Diamonds!", colour = G.C.FILTER})   
-				end  
-                            elseif suits["Spades"] > suits["Hearts"] and suits["Spades"] > suits["Diamonds"] and suits["Spades"] > suits["Clubs"] then
-			        ccc_waterfall_flush_suit = 'Spades'
-				if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Spades!", colour = G.C.FILTER})   
-				end  
-                            elseif suits["Clubs"] > suits["Hearts"] and suits["Clubs"] > suits["Diamonds"] and suits["Clubs"] > suits["Spades"] then  
-			        ccc_waterfall_flush_suit = 'Clubs'
-				if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Clubs!", colour = G.C.FILTER}) 
-				end  
-			    else ccc_waterfall_flush_suit = 'Wild'
-				if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Wild!", colour = G.C.FILTER})   
-				end  
-			    end
+		local suits = {}
+		local used_suits = {}
+		for i = 1, #context.scoring_hand do
+			if context.scoring_hand[i].ability.name ~= 'Wild Card' then
+				if not suits[context.scoring_hand[i].base.suit] then
+					suits[context.scoring_hand[i].base.suit] = 1
+					used_suits[#used_suits + 1] = context.scoring_hand[i].base.suit
+				else
+					suits[context.scoring_hand[i].base.suit] = suits[context.scoring_hand[i].base.suit] + 1
+				end
+			end
+		end
+		local value = 0
+		if #used_suits ~= 0 then
+			for i = 1, #used_suits do
+				if suits[used_suits[i]] > value then
+					ccc_waterfall_flush_suit = used_suits[i]
+					value = suits[used_suits[i]]
+				end
+			end
+		else
+			ccc_waterfall_flush_suit = 'Wild'
+		end
+
 		local waterfall_card_candidates = {}
 		if ccc_waterfall_flush_suit ~= 'Wild' then
 			for i = 1, #G.hand.cards do
@@ -2679,20 +2657,13 @@ waterfall.calculate = function(self, card, context)
 		if #waterfall_card_candidates > 0 then  -- copying more bunco code... firch ily
 			local waterfall_card = pseudorandom_element(waterfall_card_candidates, pseudoseed('waterfall'))
 			if ccc_waterfall_flush_suit ~= 'Wild' then
-				G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1);
-				waterfall_card:juice_up(0.3, 0.3); return true end }))
-           	         	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.1,  func = function() waterfall_card:change_suit(ccc_waterfall_flush_suit); 
-				return true end }))
-            	        	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1, 0.6);
-				waterfall_card:juice_up(0.3, 0.3); return true end }))
+					waterfall_card:change_suit(ccc_waterfall_flush_suit)
 			else
-				G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1);
-				waterfall_card:juice_up(0.3, 0.3); return true end }))
-            	        	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.1,  func = function() waterfall_card:set_ability(G.P_CENTERS.m_wild); 
-				return true end }))
-             		       	G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.15, func = function() waterfall_card:flip(); play_sound('card1', 1, 0.6);
-				waterfall_card:juice_up(0.3, 0.3); return true end }))
+					waterfall_card:set_ability(G.P_CENTERS.m_wild)
 			end
+			waterfall_card:juice_up()
+			card:juice_up()
+			play_sound('tarot1', 0.8, 0.4)
 		end
 	end
 end
