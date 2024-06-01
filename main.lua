@@ -12,6 +12,8 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/_helper_functions.lua")))()
+
 SMODS.Atlas({key = "j_ccc_jokers", path = "j_ccc_jokers.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/jokers.lua")))()
 
@@ -35,37 +37,6 @@ SMODS.Atlas({
     px = 34,
     py = 34
 })
-
--- region functions
--- check if table has an item
-function Has_value (tab, val)
-   for index, value in ipairs(tab) do
-       if value == val then
-           return true
-       end
-   end
-
-   return false
-end
--- endregion
-
--- debug
-function dump(o, i)
-    i = i or 5
-    if i <= 0 then
-        return "..."
-    end
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v, i-1) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
 
 ----------------------------------------------
 ------------MOD CODE END----------------------

@@ -3200,7 +3200,7 @@ end
 local hardlist = SMODS.Joker({
 	name = "hardlist",
 	key = "hardlist",
-    config = {extra = {mult = 25, sub = 5}},
+    config = {extra = {mult = 25, sub = 5}}, -- mult should be a multiple of sub for this card
 	pos = {x = 5, y = 3},
 	loc_txt = {
         name = '5-Star Hardlist',
@@ -3233,25 +3233,29 @@ hardlist.calculate = function(self, card, context)
 			card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.sub
 			if card.ability.extra.mult <= 0 then
 				G.E_MANAGER:add_event(Event({
-					func = function()
-						play_sound('tarot1')
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-									card_eval_status_text(card, 'extra', nil, nil, nil, {
-										message = "Standard!",
-										colour = G.C.RED
-									});
-									G.jokers:remove_card(card)
-									card:remove()
-									card = nil
-								return true; end})) 
-						return true
-					end
-				})) 
+				func = function()
+					card_eval_status_text(card, 'extra', nil, nil, nil, {
+						message = "Standard!",
+						colour = G.C.RED
+					});
+					G.E_MANAGER:add_event(Event({trigger = 'after',
+						func = function()
+							play_sound('tarot1')
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+										G.jokers:remove_card(card)
+										card:remove()
+										card = nil
+									return true; end})) 
+							return true
+						end
+					})) 
+					return true
+				end}))
 			else
 				G.E_MANAGER:add_event(Event({
 					func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {
