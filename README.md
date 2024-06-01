@@ -27,6 +27,7 @@ Below is a list of everything this mod adds
 |Climbing Gear| Common | +4 discards; Discarded cards are reshuffled into deck |
 |Waterfall| Common | If played hand contains a Flush, convert a random card held in hand to the same suit |
 |Pointless Machines| Common | <secret> |
+|5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker purchased|
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +8 Chips for each card in hand that shares the same suit |
@@ -52,7 +53,6 @@ Below is a list of everything this mod adds
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|5-Star Hardlist| Common |+25 Mult; -5 Mult for every booster pack opened|
 |Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
 |Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
@@ -63,6 +63,7 @@ Below is a list of everything this mod adds
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
+|Seeker| Rare | If drawn card is not most owned Rank or most owned Suit put it back in deck and draw again|
 
 || Common | |
 || Uncommon | |

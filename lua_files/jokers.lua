@@ -1724,7 +1724,7 @@ local strongwinds = SMODS.Joker({
 	credit = {
 		art = "N/A",
 		code = "toneblock",
-		concept = "goose"
+		concept = "goose!"
 	}
 })
 
@@ -1878,7 +1878,7 @@ local climbinggear = SMODS.Joker({
 	credit = {
 		art = "Gappie",
 		code = "toneblock",
-		concept = "goose"
+		concept = "goose!"
 	}
 })
 -- this may be the easiest joker so far... literally NO code needs to be here, it's all done in lovely patches
@@ -2804,7 +2804,7 @@ local pointlessmachines = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "goose",
+		art = "goose!",
 		code = "toneblock",
 		concept = "Fytos"
 	}
@@ -3207,7 +3207,7 @@ local hardlist = SMODS.Joker({
         text = {
 			"{C:mult}+#1#{} Mult",
 			"{C:mult}-#2#{} Mult for every",
-			"{C:attention}Booster Pack{} opened"
+			"{C:attention}Joker{} purchased"
         }
     },
 	rarity = 1,
@@ -3227,8 +3227,7 @@ local hardlist = SMODS.Joker({
 
 
 hardlist.calculate = function(self, card, context)
-
-	if context.open_booster then
+	if context.buying_card and context.card.config.center.set == "Joker" then
 		if not context.blueprint then
 			card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.sub
 			if card.ability.extra.mult <= 0 then
@@ -3302,7 +3301,7 @@ local cloud = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "Aurora Aquir",
+		art = "N/A",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	}
@@ -3356,7 +3355,7 @@ local brittlecloud = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "Aurora Aquir",
+		art = "N/A",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	}
@@ -3386,3 +3385,80 @@ function brittlecloud.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.chips}}
 end
 -- endregion cloud
+
+-- region seeker
+
+local seeker = SMODS.Joker({
+	name = "seeker",
+	key = "seeker",
+    config = {extra = {suit = "Hearts", rank = "Ace"}},
+	pos = {x = 6, y = 4},
+	loc_txt = {
+        name = 'Seeker',
+        text = {
+			"If card drawn is not",
+			"most owned Suit ({C:attention}#1#{})",
+			"or most owned Rank ({V:1}#2#{})",
+			"place it back in deck and",
+			"draw one more card",
+			"WIP!!! currenlty does nothing!"
+        }
+    },
+	rarity = 3,
+	cost = 10,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	}
+})
+
+
+seeker.calculate = function(self, card, context)
+
+	if context.individual and not context.blueprint and not context.repetition then
+		local ranks = {}
+		local suits = {}
+		for index, card in ipairs(G.deck.cards) do
+			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
+			suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
+		end
+		local most_common_suit = {
+			key = "Hearts",
+			value = -1
+		}
+		local most_common_rank= {
+			key = "Ace",
+			value = -1
+		}
+		for key, value in pairs(ranks) do
+			if value > most_common_rank.value then
+				most_common_rank.key = key
+				most_common_rank.value = value
+			end
+		end
+		for key, value in pairs(suits) do
+			if value > most_common_suit.value then
+				most_common_suit.key = key
+				most_common_suit.value = value
+			end
+		end
+		card.ability.extra.rank = most_common_rank.key
+		card.ability.extra.suit = most_common_suit.key
+	end
+end
+
+
+function seeker.loc_vars(self, info_queue, card)
+	return {vars = {
+		localize(card.ability.extra.rank, 'ranks'), 
+		localize(card.ability.extra.suit, 'suits_plural'),
+		colours = {
+			G.C.SUITS[card.ability.extra.suit], }}}
+end
+-- endregion seeker
