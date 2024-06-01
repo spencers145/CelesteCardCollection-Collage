@@ -36,8 +36,22 @@ SMODS.Atlas({
     py = 34
 })
 
+-- region functions
+-- check if table has an item
+function Has_value (tab, val)
+   for index, value in ipairs(tab) do
+       if value == val then
+           return true
+       end
+   end
+
+   return false
+end
+-- endregion
+
+-- debug
 function dump(o, i)
-    i = i or 11
+    i = i or 5
     if i <= 0 then
         return "..."
     end
