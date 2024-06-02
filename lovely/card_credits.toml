@@ -68,3 +68,37 @@ AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G
 }}}}}}) or nil
 '''
 match_indent = true
+
+
+# deck credits NEW RUN
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R, config={align = "cm", colour = G.C.WHITE, minh = 1.7, r = 0.1}, nodes={'''
+position = "before"
+payload = '''
+	ccc_generate_deck_credit_payload(),
+'''
+match_indent = true
+
+# deck credits CONTINUE
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R, config={align = "cm", colour = G.C.WHITE,padding = 0.03, minh = 1.75, r = 0.1}, nodes={'''
+position = "before"
+payload = '''
+	ccc_generate_deck_credit_payload(),
+'''
+match_indent = true
+
+# deck credits COLLECTION
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''{n=G.UIT.R, config={align = "cm", colour = G.C.WHITE, emboss = 0.1, minh = 2.2, r = 0.1}, nodes={'''
+position = "before"
+payload = '''
+	ccc_generate_deck_credit_payload(),
+'''
+match_indent = true

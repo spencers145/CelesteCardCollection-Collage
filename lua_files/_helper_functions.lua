@@ -32,6 +32,9 @@ function dump(o, i)
           s = s .. '['..k..'] = ' .. dump(v, i-1) .. ','
        end
        return s .. '} '
+    elseif type(o) == "function" then
+      local info = debug.getinfo(o, "nS")
+      return "FUNCTION{ " .. "linedefined: " .. info.linedefined .. ", source: " .. info.source .. " }"
     else
        return tostring(o)
     end
