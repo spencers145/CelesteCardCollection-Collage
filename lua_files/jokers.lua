@@ -1807,20 +1807,30 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 
 	if context.before and not context.blueprint then
 	coyotejump_card_array = {}
+	coyotejump_ranks = {}
 	end
 
 	if context.individual and context.poker_hands ~= nil and not context.blueprint then
        		if context.cardarea == G.hand then
 			coyotejump_card_array[#coyotejump_card_array + 1] = context.other_card
+			if not coyotejump_ranks[context.other_card:get_id()] then
+				coyotejump_ranks[context.other_card:get_id()] = 1
+			else
+				coyotejump_ranks[context.other_card:get_id()] = coyotejump_ranks[context.other_card:get_id()] + 1
+			end
 		end
 	end
 	
-	if context.joker_main and context.poker_hands ~= nil then	-- idk how to check for at least 2 lmfao, if you're seeing this and know how please change this
-		  local parts = {
-			_2 = get_X_same(2, coyotejump_card_array),
-			_3 = get_X_same(3, coyotejump_card_array),
-			_4 = get_X_same(4, coyotejump_card_array),
-			_5 = get_X_same(5, coyotejump_card_array),
+	if context.joker_main and context.poker_hands ~= nil then
+		local pair_found = false
+		for i = 2, 14 do
+			if coyotejump_ranks[i] then 
+				if coyotejump_ranks[i] > 1 then
+					pair_found = true
+				end
+			end
+		end		
+		local parts = {
 			_flush = get_flush(coyotejump_card_array),
 			_straight = get_straight(coyotejump_card_array)
 		}
@@ -1832,7 +1842,7 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Flush", colour = G.C.RED})
 			return true end }))
-		elseif next(parts._2) or next(parts._3) or next(parts._4) or next(parts._5) then
+		elseif pair_found == true then
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Pair", colour = G.C.RED})
 			return true end }))
