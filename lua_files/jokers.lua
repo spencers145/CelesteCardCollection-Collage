@@ -358,7 +358,7 @@ local partofyou = SMODS.Joker({
 })
 
 partofyou.calculate = function(self, card, context)  -- if you're looking at this code to use it as a reference... don't
-	if context.joker_main then
+	if context.before then
 	if not context.blueprint then
      	  if G.GAME.current_round.hands_played == 0 then
             if #context.full_hand == 2 then
@@ -1039,7 +1039,7 @@ local ominousmirror = SMODS.Joker({
 	rarity = 3,
 	cost = 10,
 	discovered = true,
-	blueprint_compat = false,
+	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
@@ -1070,7 +1070,7 @@ end
 ominousmirror.calculate = function(self, card, context)
 	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 	if context.before and card.ability.extra.broken == false then
-		if not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
+		if not context.repetition and not context.individual and card.ability.extra.broken == false then
 			for k, v in ipairs(context.scoring_hand) do
 				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
 					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
@@ -1315,7 +1315,7 @@ local goldenstrawberry = SMODS.Joker({
 -- literally the simplest code in the entire mod lmao
 
 goldenstrawberry.calculate = function(self, card, context)
-	if context.setting_blind then
+	if context.setting_blind and not context.blueprint then
 		if context.blind.boss then
 			golden_strawberry_after_boss_blind = true
 		else
@@ -3109,7 +3109,6 @@ end
 
 -- endregion Switch Gate
 
-
 -- region Lapidary
 
 local lapidary = SMODS.Joker({
@@ -3175,7 +3174,8 @@ function lapidary.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra}}
 end
 
--- endregion Checkpoint
+-- endregion lapidary
+
 -- region hardlist
 
 local hardlist = SMODS.Joker({
@@ -3294,7 +3294,7 @@ cloud.calculate = function(self, card, context)
 
 	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
 		card.ability.extra.chips = 0
-	elseif context.cardarea == G.jokers and context.after then
+	elseif context.cardarea == G.jokers and context.after and not context.blueprint then
 		card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.add
 	elseif context.joker_main and card.ability.extra.chips > 0 then
 		return {
@@ -3314,12 +3314,12 @@ function cloud.loc_vars(self, info_queue, card)
 end
 -- endregion cloud
 
--- region cloud
+-- region brittle cloud
 
 local brittlecloud = SMODS.Joker({
 	name = "brittlecloud",
 	key = "brittlecloud",
-    config = {extra = {chips = 150, used = false}},
+    config = {extra = {chips = 150}},
 	pos = {x = 5, y = 4},
 	loc_txt = {
         name = 'Brittle Cloud',
@@ -3345,11 +3345,7 @@ local brittlecloud = SMODS.Joker({
 
 brittlecloud.calculate = function(self, card, context)
 
-	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
-		card.ability.extra.used = false
-	elseif context.cardarea == G.jokers and (context.after or context.debuffed_hand) then
-		card.ability.extra.used = true
-	elseif context.joker_main then
+	if context.joker_main and G.GAME.current_round.hands_played == 0 then
 		return {
 			message = localize {
 				type = 'variable',
@@ -3365,7 +3361,7 @@ end
 function brittlecloud.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.chips}}
 end
--- endregion cloud
+-- endregion brittle cloud
 
 -- region seeker
 
@@ -3405,7 +3401,7 @@ seeker.calculate = function(self, card, context)
 	if context.individual and not context.blueprint and not context.repetition then
 		local ranks = {}
 		local suits = {}
-		for index, card in ipairs(G.deck.cards) do
+		for index, card in ipairs(G.playing_cards) do
 			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
 			suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
 		end
