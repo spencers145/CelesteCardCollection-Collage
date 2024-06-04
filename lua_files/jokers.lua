@@ -3439,3 +3439,100 @@ function seeker.loc_vars(self, info_queue, card)
 			G.C.SUITS[card.ability.extra.suit], }}}
 end
 -- endregion seeker
+
+
+-- region Madeline
+
+-- USES GLOBAL VARIABLE
+local madeline = SMODS.Joker({
+	name = "Madeline",
+	key = "madeline",
+    config = {},
+	pos = {x = 8, y = 4},
+	loc_txt = {
+        name = 'Madeline',
+        text = {
+			"{C:attention}Joker{} values cannot go down",
+        }
+    },
+	rarity = 4,
+	cost = 20,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	},
+	add_to_deck = function (self, card, from_debuff)
+		G.GAME.pool_flags.madeline_in_hand = card
+	end,
+	remove_from_deck = function (self, card, from_debuff)
+		G.GAME.pool_flags.madeline_in_hand = nil
+		for _, value in ipairs(G.jokers.cards) do
+			if v ~= card and v.ability.name == "Madeline" then
+				G.GAME.pool_flags.madeline_in_hand = v
+			end
+		end
+	end,
+	load = function (self, card, card_table, other_card)
+		G.GAME.pool_flags.madeline_in_hand = card
+	end
+})
+
+local calculate_joker_ref = Card.calculate_joker
+function Card.calculate_joker(self, context)
+	local prevent = G.GAME.pool_flags.madeline_in_hand or false
+	local orig_values = {}
+	if self.ability and self.ability.set == "Joker" then
+		if prevent then
+			for index, value in pairs(self.ability) do
+				if type(value) == "number" then
+					orig_values[index] = value
+				end
+			end
+
+			if type(self.ability.extra) == "table" then
+				orig_values["extra"] = {}
+				for index, value in pairs(self.ability.extra) do
+					if type(value) == "number" then
+						orig_values.extra[index] = value
+					end
+				end
+			end
+
+			sendDebugMessage(dump(orig_values,3))
+		end
+	end
+	local ret = calculate_joker_ref(self, context)
+	if prevent then
+		for index, value in pairs(orig_values) do
+			if type(value) == "number" and self.ability[index] < orig_values[index]  then
+				self.ability[index] = orig_values[index] 
+				card_eval_status_text(prevent, 'extra', nil, nil, nil, {
+					message = "Prevent!",
+					colour = G.C.RED
+				});
+			end
+		end
+
+		if type(self.ability.extra) == "table" then
+			for index, value in pairs(orig_values.extra) do
+				if type(value) == "number" and self.ability.extra[index] < orig_values.extra[index]  then
+					self.ability.extra[index] = orig_values.extra[index] 
+					card_eval_status_text(prevent, 'extra', nil, nil, nil, {
+						message = "Prevent!",
+						colour = G.C.RED
+					});
+				end
+			end
+			
+		end
+	end
+
+	return ret
+end
+-- endregion seeker
