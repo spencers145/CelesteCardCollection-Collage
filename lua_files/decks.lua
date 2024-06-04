@@ -319,17 +319,10 @@ end
 function ccc_generate_deck_credit_payload()
 	local obj = Moveable()
 
-	if G.GAME.viewed_back.effect.center.credit then
-		obj= UIBox{
-			definition = G.UIDEF.ccc_generate_credits(G.GAME.viewed_back.effect.center.credit),
-			config = {offset = {x=0,y=0}, align = 'cm'}
-		}
-	else
-		obj= UIBox{
-			definition = G.UIDEF.ccc_generate_credits(),
-			config = {offset = {x=0,y=0}, align = 'cm'}
-		}
-	end
+	obj= UIBox{
+		definition = G.UIDEF.ccc_generate_credits(G.GAME.viewed_back.effect.center.credit),
+		config = {offset = {x=0,y=0}, align = 'cm'}
+	}
 
 	local e = {n=G.UIT.R, config={align = "cm"}, nodes={
 		{n=G.UIT.O, config={id = G.GAME.viewed_back.name, func = 'RUN_SETUP_check_back_credits', object = obj}}
@@ -339,23 +332,13 @@ end
 function G.FUNCS.RUN_SETUP_check_back_credits(e)
 	if G.GAME.viewed_back.name ~= e.config.id then 
 		--removes the UI from the previously selected back and adds the new one
-		if G.GAME.viewed_back.effect.center.credit then
-			if e.config.object then e.config.object:remove() end 
-			e.config.object = UIBox{
-				definition = G.UIDEF.ccc_generate_credits(G.GAME.viewed_back.effect.center.credit),
-				config = {offset = {x=0,y=0}, align = 'cm', parent = e}
-			}
-			e.config.id = G.GAME.viewed_back.name
-			e.config.object:recalculate()
-		else
-			if e.config.object then e.config.object:remove() end 
-			e.config.object = UIBox{
-				definition = G.UIDEF.ccc_generate_credits(),
-				config = {offset = {x=0,y=0}, align = 'cm', parent = e}
-			}
-			e.config.id = G.GAME.viewed_back.name
-			e.config.object:recalculate()
-		end
+		if e.config.object then e.config.object:remove() end 
+		e.config.object = UIBox{
+			definition = G.UIDEF.ccc_generate_credits(G.GAME.viewed_back.effect.center.credit),
+			config = {offset = {x=0,y=0}, align = 'cm', parent = e}
+		}
+		e.config.id = G.GAME.viewed_back.name
+		e.config.object:recalculate()
 	end
 end
 
