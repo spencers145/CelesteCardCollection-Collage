@@ -3,28 +3,37 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# If card not most common suit or rank shuffle back into deck (not on top spot)
+# replace the placeholder if statement with (if G.deck.cards[#G.deck.cards]:get_id() ~= G.GAME.pool_flags.seeker_table.rank and G.deck.cards[#G.deck.cards].config.card.suit ~= G.GAME.pool_flags.seeker_table.suit then)
 [[patches]]
 [patches.pattern]
-target = "cardarea.lua"
-pattern = "local card = area:remove_card(nil, discarded_only)"
-position = "at"
+target = "functions/state_events.lua"
+pattern = "if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK then"
+position = "before"
 payload = '''
-local top_card = nil
-if G.GAME.pool_flags.seeker_table and self == G.hand and area == G.deck and not discarded_only then
-	top_card = G.deck.cards[#G.deck.cards]
-	if top_card.base.value ~= G.GAME.pool_flags.seeker_table.rank and top_card.base.suit ~= G.GAME.pool_flags.seeker_table.suit then
-		table.remove(G.deck.cards, #G.deck.cards)
-		table.insert(G.deck.cards, pseudorandom("seeker", 1, math.max(#G.deck.cards-1, 1)), top_card)
-		local no_card = top_card
-		card_eval_status_text(G.GAME.pool_flags.seeker_table.ref, 'extra', nil, nil, nil, {
-						message = string.format("Redraw %s of %s", no_card.base.value, no_card.base.suit),
-						colour = G.C.Blue
-					})
-		
-		top_card = nil
-	end 
+if next(find_joker('Seeker')) then
+	if G.deck.cards[#G.deck.cards]:get_id() == G.deck.cards[#G.deck.cards]:get_id() and G.deck.cards[#G.deck.cards].config.card.suit == G.deck.cards[#G.deck.cards].config.card.suit then
+		local card = draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
+		delay(0.7)
+		draw_card(G.hand,G.deck, i*100/hand_space, 'down', false, card)
+		delay(0.1)
+		G.deck:shuffle('see'..G.GAME.round_resets.ante)
+		delay(0.1)
+		draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
+		delay(0.7)
+	else
+		draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
+	end
+else
+'''
+match_indent = true
+
+# seeker fix pt. 2
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "G.FUNCS.discard_cards_from_highlighted = function(e, hook)"
+position = "before"
+payload = '''
 end
-local card = area:remove_card(top_card, discarded_only)
 '''
 match_indent = true
