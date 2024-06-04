@@ -1090,35 +1090,28 @@ ominousmirror.calculate = function(self, card, context)
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, 
 				func = function()
 				play_sound('glass'..math.random(1, 6), math.random()*0.2 + 0.9,0.5)
-
--- messy particle code copied from glass shatter function
-
-
-   local childParts = Particles(0, 0, 0,0, {
-        timer_type = 'TOTAL',
-        timer = 0.007*1,
-        scale = 0.3,
-        speed = 4,
-        lifespan = 0.5*1,
-        attach = card,
-        colours = {G.C.MULT},
-        fill = true
-    })
-    G.E_MANAGER:add_event(Event({
-        trigger = 'after',
-        blockable = false,
-        delay =  0.5*1,
-        func = (function() childParts:fade(0.30*1) return true end)
-    }))
-
--- i cannot be bothered to re-indent this
-
+				local childParts = Particles(0, 0, 0,0, {
+					timer_type = 'TOTAL',
+					timer = 0.007*1,
+					scale = 0.3,
+					speed = 4,
+					lifespan = 0.5*1,
+					attach = card,
+					colours = {G.C.MULT},
+					fill = true
+				})
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					blockable = false,
+					delay =  0.5*1,
+					func = (function() childParts:fade(0.30*1) return true end)
+				}))
 				card.T.r = -0.2
 				card:juice_up(0.3, 0.4)
 				card.ability.extra.broken = true
 				card.ability.extra.pos_override.x = 1
 				card.ability.extra.pos_override.y = 2
-				G.GAME.badeline_break = true
+				G.GAME.pool_flags.badeline_break = true
 				return true
 				end
 			}))
@@ -3360,7 +3353,7 @@ end
 -- region seeker
 
 local seeker = SMODS.Joker({
-	name = "seeker",
+	name = "Seeker",
 	key = "seeker",
     config = {extra = {suit = "Hearts", rank = "Ace"}},
 	pos = {x = 6, y = 4},
@@ -3386,7 +3379,24 @@ local seeker = SMODS.Joker({
 		art = "N/A",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
-	}
+	},
+	load = function (self, card, card_table, other_card)
+		G.GAME.pool_flags.seeker_table = {
+			rank = card.ability.extra.rank,
+			suit = card.ability.extra.suit,
+		}
+	end,
+	remove_from_deck = function (self, card, from_debuff)
+		G.GAME.pool_flags.seeker_table = nil
+		for _, v in ipairs(G.jokers.cards) do
+			if v ~= card and v.ability.name == "Seeker" and not v.debuff then
+				G.GAME.pool_flags.seeker_table = {
+					rank = v.ability.extra.rank,
+					suit = v.ability.extra.suit,
+				}
+			end
+		end
+	end
 })
 
 
@@ -3421,6 +3431,11 @@ seeker.calculate = function(self, card, context)
 		end
 		card.ability.extra.rank = most_common_rank.key
 		card.ability.extra.suit = most_common_suit.key
+
+		G.GAME.pool_flags.seeker_table = {
+			rank = card.ability.extra.rank,
+			suit = card.ability.extra.suit,
+		}
 	end
 end
 
@@ -3434,7 +3449,7 @@ function seeker.loc_vars(self, info_queue, card)
 end
 -- endregion seeker
 
--- region Checkpoint
+-- region Badeline
 
 local badeline = SMODS.Joker({
 	name = "Badeline",
@@ -3496,3 +3511,107 @@ function badeline.loc_vars(self, info_queue, card)
 end
 
 -- endregion Checkpoint
+
+
+-- region Madeline
+
+-- USES GLOBAL VARIABLE
+local madeline = SMODS.Joker({
+	name = "Madeline",
+	key = "madeline",
+    config = {},
+	pos = {x = 8, y = 3},
+	loc_txt = {
+        name = 'Madeline',
+        text = {
+			"{C:attention}Joker{} values cannot go down",
+        }
+    },
+	rarity = 4,
+	cost = 20,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "Aurora Aquir",
+		concept = "Aurora Aquir"
+	},
+	add_to_deck = function (self, card, from_debuff)
+		G.GAME.pool_flags.madeline_in_hand = card
+	end,
+	remove_from_deck = function (self, card, from_debuff)
+		G.GAME.pool_flags.madeline_in_hand = nil
+		for _, v in ipairs(G.jokers.cards) do
+			if v ~= card and v.ability.name == "Madeline" and not v.debuff then
+				G.GAME.pool_flags.madeline_in_hand = v
+			end
+		end
+	end,
+	load = function (self, card, card_table, other_card)
+		G.GAME.pool_flags.madeline_in_hand = card
+	end
+})
+
+local calculate_joker_ref = Card.calculate_joker
+function Card.calculate_joker(self, context)
+	local prevent = G.GAME.pool_flags.madeline_in_hand or false
+	local orig_values = {}
+	if self.ability and self.ability.set == "Joker" then
+		if prevent then
+			for index, value in pairs(self.ability) do
+				if type(value) == "number" then
+					orig_values[index] = value
+				end
+			end
+
+			if type(self.ability.extra) == "table" then
+				orig_values["extra"] = {}
+				for index, value in pairs(self.ability.extra) do
+					if type(value) == "number" then
+						orig_values.extra[index] = value
+					end
+				end
+			end
+
+		end
+	end
+	local ret = calculate_joker_ref(self, context)
+	if prevent then
+		for index, value in pairs(orig_values) do
+			if type(value) == "number" and self.ability[index] < orig_values[index]  then
+				self.ability[index] = orig_values[index] 
+				card_eval_status_text(prevent, 'extra', nil, nil, nil, {
+					message = "Prevent!",
+					colour = G.C.RED
+				});
+			end
+		end
+
+		if type(self.ability.extra) == "table" then
+			for index, value in pairs(orig_values.extra) do
+				if type(value) == "number" and self.ability.extra[index] < orig_values.extra[index]  then
+					self.ability.extra[index] = orig_values.extra[index] 
+					card_eval_status_text(prevent, 'extra', nil, nil, nil, {
+						message = "Prevent!",
+						colour = G.C.RED
+					})
+					-- Give back hand size from turtle bean that would be taken
+					if self.ability.name == 'Turtle Bean' and not context.blueprint and index == "h_size" then
+						G.hand:change_size(self.ability.extra.h_mod)
+					end
+				end
+			end
+			
+		end
+	end
+
+	return ret
+end
+-- endregion Madeline
+
+
+
+sendDebugMessage("[CCC] Jokers loaded")
