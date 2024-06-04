@@ -280,7 +280,7 @@ end
 local bird = SMODS.Joker({
 	name = "Bird",
 	key = "bird",
-    config = {},
+    config = {extra = {active = false}},
 	pos = {x = 2, y = 0},
 	loc_txt = {
         name = 'Bird',
@@ -303,10 +303,19 @@ local bird = SMODS.Joker({
 	}
 })
 
+-- mid round judgement won't work but maan
+-- i really want to change this but this stupid bird is so dumb
+
 bird.calculate = function(self, card, context)
+	if context.setting_blind then
+		card.ability.extra.active = true
+	end
+	if context.end_of_round then
+		card.ability.extra.active = false
+	end
     if context.using_consumeable then
         if context.consumeable.ability.set == 'Planet' then
-            if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or (G.GAME.blind:get_type() == "Small") or (G.GAME.blind:get_type() == "Big") or (G.GAME.blind:get_type() == "Boss") then
+            if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or card.ability.extra.active == true then
                 return {
                         G.E_MANAGER:add_event(Event({
                                             func = function() 
@@ -3403,9 +3412,11 @@ local seeker = SMODS.Joker({
 seeker.get_common_suit_and_ranks = function (card)
 	local ranks = {}
 	local suits = {}
-	for index, card in ipairs(G.playing_cards) do
-		ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
-		suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
+	if G.playing_cards ~= nil then
+		for index, card in ipairs(G.playing_cards) do
+			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
+			suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
+		end
 	end
 	local most_common_suit = {
 		key = "Hearts",
@@ -3529,8 +3540,9 @@ local madeline = SMODS.Joker({
 	loc_txt = {
         name = 'Madeline',
         text = {
-			"{C:attention}Joker{} values cannot go down",
-			"through their own ability"
+			"Prevents reduction of",
+			"{C:attention}Joker{} values through",
+			"their own abilities"
         }
     },
 	rarity = 4,
