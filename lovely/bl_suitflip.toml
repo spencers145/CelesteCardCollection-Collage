@@ -26,16 +26,3 @@ end
 
 '''
 match_indent = true
-
-# blinds stuff
-[[patches]]
-[patches.pattern]
-target = "blind.lua"
-pattern = "function Blind:debuff_hand(cards, hand, handname, check)"
-position = "after"
-payload = '''
-if next(hand['Straight']) then
-	self.triggered = true
-end
-'''
-match_indent = true
