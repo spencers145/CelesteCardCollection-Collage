@@ -3525,6 +3525,7 @@ local madeline = SMODS.Joker({
         name = 'Madeline',
         text = {
 			"{C:attention}Joker{} values cannot go down",
+			"through their own ability"
         }
     },
 	rarity = 4,
@@ -3598,8 +3599,8 @@ function Card.calculate_joker(self, context)
 						message = "Prevent!",
 						colour = G.C.RED
 					})
-					-- Give back hand size from turtle bean that would be taken
-					if self.ability.name == 'Turtle Bean' and not context.blueprint and index == "h_size" then
+					-- Give back hand size from turtle bean that would be taken (if bean will not be destroyed)
+					if self.ability.name == 'Turtle Bean' and not context.blueprint and index == "h_size" and self.ability.extra.h_size > 1 then
 						G.hand:change_size(self.ability.extra.h_mod)
 					end
 				end
@@ -3610,6 +3611,7 @@ function Card.calculate_joker(self, context)
 
 	return ret
 end
+
 -- endregion Madeline
 
 
