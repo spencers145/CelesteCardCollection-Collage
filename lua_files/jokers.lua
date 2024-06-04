@@ -251,26 +251,21 @@ local miniheart = SMODS.Joker({
 })
 
 miniheart.calculate = function(self, card, context)
-            if context.cardarea == G.jokers then
-       		 if context.joker_main then
-                    if not context.blueprint then
-			local miniheartsuccess = false
-                        local crystal = {}
-                        for k, v in ipairs(context.scoring_hand) do
-                         crystal[#crystal+1] = v
-			if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
-       			 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-         		   local over = false
-			   local miniheartsuccess = true
-           		   v:set_edition({foil = true}, true)
-                           card:juice_up()
-                           v:juice_up()
-       		           return true end}))
-                            end
+	if context.cardarea == G.jokers then
+		if context.joker_main then
+			if not context.blueprint then
+				for k, v in ipairs(context.scoring_hand) do
+					if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+							v:set_edition({foil = true}, true)
+							card:juice_up()
+							v:juice_up()
+						return true end}))
+					end
+				end
 			end
-			end
-			end
-end
+		end
+	end
 end
 
 function miniheart.loc_vars(self, info_queue, card)
@@ -1123,6 +1118,7 @@ ominousmirror.calculate = function(self, card, context)
 				card.ability.extra.broken = true
 				card.ability.extra.pos_override.x = 1
 				card.ability.extra.pos_override.y = 2
+				G.GAME.badeline_break = true
 				return true
 				end
 			}))
@@ -1138,7 +1134,7 @@ function ominousmirror.loc_vars(self, info_queue, card)
 	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken}}
 end
 
--- endregion Ominous Mirror (WIP, NOT FUNCTIONAL)
+-- endregion Ominous Mirror
 
 -- region ALL BERRIES
 
@@ -1289,7 +1285,7 @@ end
 local goldenstrawberry = SMODS.Joker({
 	name = "Golden Strawberry",
 	key = "goldenstrawberry",
-    config = {},
+    config = {extra = {after_boss = false}},
 	pos = {x = 3, y = 1},
 	loc_txt = {
         name = 'Golden Strawberry',
@@ -1317,9 +1313,9 @@ local goldenstrawberry = SMODS.Joker({
 goldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
 		if context.blind.boss then
-			golden_strawberry_after_boss_blind = true
+			card.ability.extra.after_boss = true
 		else
-			golden_strawberry_after_boss_blind = false
+			card.ability.extra.after_boss = false
 		end
 	end
 end
@@ -1331,7 +1327,7 @@ end
 local wingedgoldenstrawberry = SMODS.Joker({
 	name = "Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair'}},
+    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false}},
 	pos = {x = 4, y = 1},
 	loc_txt = {
         name = 'Winged Golden Strawberry',
@@ -1390,9 +1386,9 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind then
 		card.ability.extra.condition_satisfied = true
 		if context.blind.boss then
-			golden_strawberry_after_boss_blind = true	-- redundant variable switching if you have both... idc
+			card.ability.extra.after_boss = true
 		else
-			golden_strawberry_after_boss_blind = false
+			card.ability.extra.after_boss = false
 		end
 	end
 end
@@ -1512,7 +1508,7 @@ end
 local tothesummit = SMODS.Joker({
 	name = "To The Summit",
 	key = "tothesummit",
-    config = {extra = {xmult = 1}},
+    config = {extra = {xmult = 1, min_money = 0}},	-- rip debt lovers
 	pos = {x = 0, y = 1},
 	loc_txt = {
         name = 'To The Summit',
@@ -1521,7 +1517,8 @@ local tothesummit = SMODS.Joker({
 	"{C:attention}consecutive Blind{} selected",
 	"with more {C:money}money{} than",
 	"the {C:attention}previous Blind{}",
-	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)",
+	"{C:inactive}(Must be higher than {C:money}$#2#{C:inactive})"
         }
     },
 	rarity = 2,
@@ -1540,21 +1537,17 @@ local tothesummit = SMODS.Joker({
 
 tothesummit.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
-		if ccc_tothesummit_min_money == nil then
-			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
-			card.ability.extra.xmult = card.ability.extra.xmult + 0.25
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
-		elseif ccc_tothesummit_min_money >= math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
+		if card.ability.extra.min_money >= math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
 			local last_xmult = card.ability.extra.xmult
 			card.ability.extra.xmult = 1
 			if last_xmult > 1 then
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 			end
 			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
-		elseif ccc_tothesummit_min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
+		elseif card.ability.extra.min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
 			card.ability.extra.xmult = card.ability.extra.xmult + 0.25
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
-			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
+			card.ability.extra.min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		end
 	end		
 	if context.joker_main then
@@ -1572,7 +1565,7 @@ tothesummit.calculate = function(self, card, context)
 end
 
 function tothesummit.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.xmult}}
+	return {vars = {card.ability.extra.xmult, card.ability.extra.min_money}}
 end
 
 -- endregion To The Summit
@@ -1885,7 +1878,8 @@ local climbinggear = SMODS.Joker({
 		concept = "goose!"
 	}
 })
--- this may be the easiest joker so far... literally NO code needs to be here, it's all done in lovely patches
+
+-- literally NO code needs to be here, it's all done in lovely patches
 
 -- endregion Climbing Gear
 
@@ -2238,11 +2232,11 @@ local lettinggo = SMODS.Joker({
 lettinggo.calculate = function(self, card, context)
 
 	if context.cards_destroyed then
-                ccc_lettinggo_death_chances = 0
+                local death_chances = 0
 		for k, v in ipairs(context.glass_shattered) do
-                    ccc_lettinggo_death_chances = ccc_lettinggo_death_chances + 1
+                    death_chances = death_chances + 1
                 end
-		for i = 1, ccc_lettinggo_death_chances do
+		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
@@ -2265,11 +2259,11 @@ lettinggo.calculate = function(self, card, context)
 	end
 
 	if context.remove_playing_cards then -- it's just the same thing as before, folks
-		ccc_lettinggo_death_chances = 0
+		local death_chances = 0
 		for k, val in ipairs(context.removed) do
-                    ccc_lettinggo_death_chances = ccc_lettinggo_death_chances + 1
+                    death_chances = death_chances + 1
                 end
-		for i = 1, ccc_lettinggo_death_chances do
+		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
@@ -2764,233 +2758,6 @@ end
 
 -- endregion Collapsing Bridge
 
--- region Pointless Machines
-
-local pointlessmachines = SMODS.Joker({
-	name = "Pointless Machines",
-	key = "pointlessmachines",
-    config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
-	pos = {x = 9, y = 1},
-	loc_txt = {
-        name = 'Pointless Machines',
-        text = {
-	""
-        }
-    },
-	rarity = 1,
-	cost = 5,
-	discovered = true,
-	blueprint_compat = false,
-	eternal_compat = true,
-	perishable_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "goose!",
-		code = "toneblock",
-		concept = "Fytos"
-	}
-})
-
-pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
-        for i = 1, 5 do
-		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
-	end
-end
-
-pointlessmachines.calculate = function(self, card, context)
-	if context.before and not context.blueprint then
-		card.ability.extra.incorrect = false
-		if #context.full_hand == 5 then
-			for i = 1, 5 do
-				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
-					card.ability.extra.incorrect = true
-				end
-			end
-		else
-			card.ability.extra.incorrect = true
-		end
-		if card.ability.extra.incorrect == false then
-			card.ability.extra.reset = true
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Correct", colour = G.C.GREEN})
-			local temp_dollars = pseudorandom('littlemoney', 4, 7)
-				ease_dollars(temp_dollars)
-				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + temp_dollars
-				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
-				return {
-					message = localize('$')..temp_dollars,
-					dollars = temp_dollars,
-				colour = G.C.MONEY
-				}
-		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Incorrect", colour = G.C.RED})
-		end
-	end
-	
-	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then	-- 1/3 chance for mult, 2/3 chance for chips
-		if pseudorandom('chipsormult', 0, 2) > 1 then 
-			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
-                            return {
-                                message = localize{type='variable',key='a_mult',vars={temp_Mult}},
-                                mult_mod = temp_Mult
-                            }
-		else
-			local temp_chips = pseudorandom('misprintbutchips', 80, 145)
-                            return {
-                                message = localize{type='variable',key='a_chips',vars={temp_chips}},
-                                chip_mod = temp_chips
-                            }
-		end
-	end
-
-	if context.after and card.ability.extra.reset == true and not context.blueprint then
-		for i = 1, 5 do
-			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('reinitialize'))
-		end
-		card.ability.extra.reset = false
-	end
-end				
-
--- endregion Pointless Machines	
-
--- region Checkpoint
-
-local checkpoint = SMODS.Joker({
-	name = "Checkpoint",
-	key = "checkpoint",
-    config = {extra = {xmult = 1}},
-	pos = {x = 8, y = 2},
-	loc_txt = {
-        name = 'Checkpoint',
-        text = {
-	"Gains {X:mult,C:white} X1#{} Mult if",
-	"{C:attention}Boss Blind{} is defeated",
-	"without {C:red}discarding{}",
-	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
-        }
-    },
-	rarity = 3,
-	cost = 7,
-	discovered = true,
-	blueprint_compat = true,
-	eternal_compat = true,
-	perishable_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "N/A",
-		code = "toneblock",
-		concept = "Gappie"
-	}
-})
-
-
-checkpoint.calculate = function(self, card, context)
-
-	if context.setting_blind and not context.blueprint then
-		checkpoint_didyoudiscard = false
-		if context.blind.boss then
-			golden_strawberry_after_boss_blind = true
-		else
-			golden_strawberry_after_boss_blind = false
-		end
-	end
-
-	if context.discard and not context.blueprint then
-		if golden_strawberry_after_boss_blind == true and checkpoint_didyoudiscard == false then
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Discarded", colour = G.C.RED})
-			checkpoint_didyoudiscard = true
-		end
-	end
-	
-	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
-		if golden_strawberry_after_boss_blind == true and checkpoint_didyoudiscard == false then
-			card.ability.extra.xmult = card.ability.extra.xmult + 1
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
-		end
-	end
-		
-	if context.joker_main then
-            	if card.ability.extra.xmult ~= 1 then
-                	return {
-                    	message = localize {
-                        	type = 'variable',
-                        	key = 'a_xmult',
-                        	vars = { card.ability.extra.xmult }
-                    	},
-			Xmult_mod = card.ability.extra.xmult
-                	}
-		end
-	end
-end
-
-function checkpoint.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.xmult}}
-end
-
--- endregion Checkpoint
-
--- region Theo Crystal
-
-local theocrystal = SMODS.Joker({
-	name = "Theo Crystal",
-	key = "theocrystal",
-	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
-	pos = {x = 9, y = 2},
-	loc_txt = {
-	name = 'Theo Crystal',
-	text = {
-	"Forces 1 card to",
-	"{C:attention}always{} be selected",
-	"Adds {C:green}+#1#{} to all {C:attention}listed{}",
-	"{C:green,E:1}probabilities{} at round end",
-	"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
-	"{C:inactive}(Currently {C:green}+#2#{C:inactive})"
-	}
-    },
-	rarity = 3,
-	cost = 9,
-	discovered = true,
-	blueprint_compat = false,
-	eternal_compat = true,
-	perishable_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "N/A",
-		code = "toneblock",
-		concept = "toneblock"
-	}
-})
-
--- lovely injections to deal with the probability system (what a pain)
-
--- scale and probs are only for display purposes and are not actually used
-
--- also using lovely to hijack Blind:drawn_to_hand? this is so scuffed
-
-theocrystal.calculate = function(self, card, context)
-
-	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
-		card.ability.extra.base_probs = card.ability.extra.base_probs + card.ability.extra.base_scale
-		local oops_factor = 1
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i].ability.set == 'Joker' then
-				if G.jokers.cards[i].ability.name == 'Oops! All 6s' then
-					oops_factor = oops_factor*2
-				end
-			end
-		end
-		for k, v in pairs(G.GAME.probabilities) do 
-			G.GAME.probabilities[k] = v + card.ability.extra.base_scale*oops_factor		-- this is fragile but should work in normal circumstances
-		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "+"..(oops_factor), colour = G.C.GREEN})
-	end
-end
-
-function theocrystal.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.scale, card.ability.extra.probs}}
-end
-
--- endregion Theo Crystal
-
 -- region Switch Gate
 
 local switchgate = SMODS.Joker({
@@ -3107,7 +2874,234 @@ function switchgate.loc_vars(self, info_queue, card)	-- what a mess
 }
 end
 
--- endregion Switch Gate
+-- endregion Switch Gate	
+
+-- region Checkpoint
+
+local checkpoint = SMODS.Joker({
+	name = "Checkpoint",
+	key = "checkpoint",
+    config = {extra = {xmult = 1, did_you_discard = false, after_boss = false}},
+	pos = {x = 8, y = 2},
+	loc_txt = {
+        name = 'Checkpoint',
+        text = {
+	"Gains {X:mult,C:white} X1#{} Mult if",
+	"{C:attention}Boss Blind{} is defeated",
+	"without {C:red}discarding{}",
+	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
+        }
+    },
+	rarity = 3,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+
+checkpoint.calculate = function(self, card, context)
+
+	if context.setting_blind and not context.blueprint then
+		card.ability.extra.did_you_discard = false
+		if context.blind.boss then
+			card.ability.extra.after_boss = true
+		else
+			card.ability.extra.after_boss = false
+		end
+	end
+
+	if context.discard and not context.blueprint then
+		if card.ability.extra.after_boss == true and card.ability.extra.did_you_discard == false then
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Discarded", colour = G.C.RED})
+			card.ability.extra.did_you_discard = true
+		end
+	end
+	
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		if card.ability.extra.after_boss == true and card.ability.extra.did_you_discard == false then
+			card.ability.extra.xmult = card.ability.extra.xmult + 1
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
+		end
+	end
+		
+	if context.joker_main then
+            	if card.ability.extra.xmult ~= 1 then
+                	return {
+                    	message = localize {
+                        	type = 'variable',
+                        	key = 'a_xmult',
+                        	vars = { card.ability.extra.xmult }
+                    	},
+			Xmult_mod = card.ability.extra.xmult
+                	}
+		end
+	end
+end
+
+function checkpoint.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.xmult}}
+end
+
+-- endregion Checkpoint
+
+-- region Theo Crystal
+
+local theocrystal = SMODS.Joker({
+	name = "Theo Crystal",
+	key = "theocrystal",
+	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
+	pos = {x = 9, y = 2},
+	loc_txt = {
+	name = 'Theo Crystal',
+	text = {
+	"Forces 1 card to",
+	"{C:attention}always{} be selected",
+	"Adds {C:green}+#1#{} to all {C:attention}listed{}",
+	"{C:green,E:1}probabilities{} at round end",
+	"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
+	"{C:inactive}(Currently {C:green}+#2#{C:inactive})"
+	}
+    },
+	rarity = 3,
+	cost = 9,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "toneblock"
+	}
+})
+
+-- lovely injections to deal with the probability system (what a pain)
+
+-- scale and probs are only for display purposes and are not actually used
+
+-- also using lovely to hijack Blind:drawn_to_hand? this is so scuffed
+
+theocrystal.calculate = function(self, card, context)
+
+	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+		card.ability.extra.base_probs = card.ability.extra.base_probs + card.ability.extra.base_scale
+		local oops_factor = 1
+		for i = 1, #G.jokers.cards do
+			if G.jokers.cards[i].ability.set == 'Joker' then
+				if G.jokers.cards[i].ability.name == 'Oops! All 6s' then
+					oops_factor = oops_factor*2
+				end
+			end
+		end
+		for k, v in pairs(G.GAME.probabilities) do 
+			G.GAME.probabilities[k] = v + card.ability.extra.base_scale*oops_factor		-- this is fragile but should work in normal circumstances
+		end
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "+"..(oops_factor), colour = G.C.GREEN})
+	end
+end
+
+function theocrystal.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.scale, card.ability.extra.probs}}
+end
+
+-- endregion Theo Crystal
+
+-- region Pointless Machines
+
+local pointlessmachines = SMODS.Joker({
+	name = "Pointless Machines",
+	key = "pointlessmachines",
+    config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
+	pos = {x = 9, y = 1},
+	loc_txt = {
+        name = 'Pointless Machines',
+        text = {
+	""
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "goose!",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
+        for i = 1, 5 do
+		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
+	end
+end
+
+pointlessmachines.calculate = function(self, card, context)
+	if context.before and not context.blueprint then
+		card.ability.extra.incorrect = false
+		if #context.full_hand == 5 then
+			for i = 1, 5 do
+				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
+					card.ability.extra.incorrect = true
+				end
+			end
+		else
+			card.ability.extra.incorrect = true
+		end
+		if card.ability.extra.incorrect == false then
+			card.ability.extra.reset = true
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Correct", colour = G.C.GREEN})
+			local temp_dollars = pseudorandom('littlemoney', 4, 7)
+				ease_dollars(temp_dollars)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + temp_dollars
+				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+				return {
+					message = localize('$')..temp_dollars,
+					dollars = temp_dollars,
+				colour = G.C.MONEY
+				}
+		else
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Incorrect", colour = G.C.RED})
+		end
+	end
+	
+	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then	-- 1/3 chance for mult, 2/3 chance for chips
+		if pseudorandom('chipsormult', 0, 2) > 1 then 
+			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
+                            return {
+                                message = localize{type='variable',key='a_mult',vars={temp_Mult}},
+                                mult_mod = temp_Mult
+                            }
+		else
+			local temp_chips = pseudorandom('misprintbutchips', 80, 145)
+                            return {
+                                message = localize{type='variable',key='a_chips',vars={temp_chips}},
+                                chip_mod = temp_chips
+                            }
+		end
+	end
+
+	if context.after and card.ability.extra.reset == true and not context.blueprint then
+		for i = 1, 5 do
+			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('reinitialize'))
+		end
+		card.ability.extra.reset = false
+	end
+end				
+
+-- endregion Pointless Machines	
 
 -- region Lapidary
 
@@ -3439,3 +3433,66 @@ function seeker.loc_vars(self, info_queue, card)
 			G.C.SUITS[card.ability.extra.suit], }}}
 end
 -- endregion seeker
+
+-- region Checkpoint
+
+local badeline = SMODS.Joker({
+	name = "Badeline",
+	key = "badeline",
+    config = {extra = {}},
+	pos = {x = 7, y = 3},
+	loc_txt = {
+        name = 'Badeline',
+        text = {
+	"Retrigger all {C:attention}Glass{} cards",
+	"and all {C:dark_edition}Mirrored{} cards",
+	"{C:attention}Sustains{} {C:dark_edition}Mirrored{} cards"
+        }
+    },
+	rarity = 4,
+	cost = 20,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+badeline.yes_pool_flag = 'preventsoulspawn'
+
+-- huge jank on calculate but i don't even know tbh... card = card????????? it shouldn't need that...
+
+badeline.calculate = function(self, card, context)
+	if context.repetition then
+		if context.cardarea == G.play then
+			if (context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card' then
+				return {
+					message = localize('k_again_ex'),
+					repetitions = 1,
+					card = card
+				}
+			end
+		elseif context.cardarea == G.hand then
+			if (context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card' and (next(context.card_effects[1]) or #context.card_effects > 1) then
+				return {
+					message = localize('k_again_ex'),
+					repetitions = 1,
+					card = card
+				}
+			end
+		end
+	end
+end
+
+function badeline.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
+	info_queue[#info_queue+1] = G.P_CENTERS.m_glass
+	return {vars = {}}
+end
+
+-- endregion Checkpoint

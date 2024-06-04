@@ -49,7 +49,7 @@ payload = '''
 for i = 1, #G.discard.cards do
 	if G.discard.cards[i].edition ~= nil then
 		if G.discard.cards[i].edition.mirrored == true then
-			if not next(find_joker('Ominous Mirror')) then
+			if not next(find_joker('Ominous Mirror')) and not next(find_joker('Badeline')) then
 				G.discard.cards[i]:start_dissolve()
 			end
 		end
@@ -58,7 +58,7 @@ end
 for i = 1, #G.deck.cards do
 	if G.deck.cards[i].edition ~= nil then
 		if G.deck.cards[i].edition.mirrored == true then
-			if not next(find_joker('Ominous Mirror')) then
+			if not next(find_joker('Ominous Mirror')) and not next(find_joker('Badeline')) then
 				G.deck.cards[i]:start_dissolve()
 			end
 		end
@@ -76,7 +76,7 @@ position = "after"
 payload = '''
 	if G.hand.cards[i].edition ~= nil then
 		if G.hand.cards[i].edition.mirrored == true then
-			if not next(find_joker('Ominous Mirror')) then
+			if not next(find_joker('Ominous Mirror')) and not next(find_joker('Badeline')) then
 				if G.hand.cards[i].ability.name == 'Glass Card' then 
                     			G.hand.cards[i]:shatter()
 				else
