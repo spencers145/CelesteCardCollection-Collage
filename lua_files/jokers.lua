@@ -3365,7 +3365,6 @@ local seeker = SMODS.Joker({
 			"or most owned Rank ({V:1}#2#{})",
 			"place it back in deck and",
 			"draw one more card",
-			"WIP!!! currenlty does nothing!"
         }
     },
 	rarity = 3,
@@ -3382,8 +3381,9 @@ local seeker = SMODS.Joker({
 	},
 	load = function (self, card, card_table, other_card)
 		G.GAME.pool_flags.seeker_table = {
-			rank = card.ability.extra.rank,
-			suit = card.ability.extra.suit,
+			rank = card_table.ability.extra.rank,
+			suit = card_table.ability.extra.suit,
+			ref = card
 		}
 	end,
 	remove_from_deck = function (self, card, from_debuff)
@@ -3393,52 +3393,57 @@ local seeker = SMODS.Joker({
 				G.GAME.pool_flags.seeker_table = {
 					rank = v.ability.extra.rank,
 					suit = v.ability.extra.suit,
+					ref = v
 				}
 			end
 		end
 	end
 })
 
-
-seeker.calculate = function(self, card, context)
-
-	if context.individual and not context.blueprint and not context.repetition then
-		local ranks = {}
-		local suits = {}
-		for index, card in ipairs(G.playing_cards) do
-			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
-			suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
-		end
-		local most_common_suit = {
-			key = "Hearts",
-			value = -1
-		}
-		local most_common_rank= {
-			key = "Ace",
-			value = -1
-		}
-		for key, value in pairs(ranks) do
-			if value > most_common_rank.value then
-				most_common_rank.key = key
-				most_common_rank.value = value
-			end
-		end
-		for key, value in pairs(suits) do
-			if value > most_common_suit.value then
-				most_common_suit.key = key
-				most_common_suit.value = value
-			end
-		end
-		card.ability.extra.rank = most_common_rank.key
-		card.ability.extra.suit = most_common_suit.key
-
-		G.GAME.pool_flags.seeker_table = {
-			rank = card.ability.extra.rank,
-			suit = card.ability.extra.suit,
-		}
+seeker.get_common_suit_and_ranks = function (card)
+	local ranks = {}
+	local suits = {}
+	for index, card in ipairs(G.playing_cards) do
+		ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
+		suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
 	end
+	local most_common_suit = {
+		key = "Hearts",
+		value = -1
+	}
+	local most_common_rank= {
+		key = "Ace",
+		value = -1
+	}
+	for key, value in pairs(ranks) do
+		if value > most_common_rank.value then
+			most_common_rank.key = key
+			most_common_rank.value = value
+		end
+	end
+	for key, value in pairs(suits) do
+		if value > most_common_suit.value then
+			most_common_suit.key = key
+			most_common_suit.value = value
+		end
+	end
+	card.ability.extra.rank = most_common_rank.key
+	card.ability.extra.suit = most_common_suit.key
+
+	G.GAME.pool_flags.seeker_table = {
+		rank = card.ability.extra.rank,
+		suit = card.ability.extra.suit,
+		ref = card
+	}
 end
 
+seeker.set_ability = function(self, card, initial, delay_sprites)
+	seeker.get_common_suit_and_ranks(card)
+end
+
+seeker.calculate = function(self, card, context)
+	seeker.get_common_suit_and_ranks(card)
+end
 
 function seeker.loc_vars(self, info_queue, card)
 	return {vars = {
