@@ -1,0 +1,31 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# G.GAME.badeline_break global
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = "ecto_minus = 1,"
+position = "before"
+payload = '''
+badeline_break = false,
+'''
+match_indent = true
+
+# overwrite :( can't think of a better way to do this
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')"
+position = "at"
+payload = '''
+local card = ""
+if next(find_joker('Ominous Mirror')) and G.GAME.badeline_break == true and not (G.GAME.used_jokers['j_ccc_badeline'] and not next(find_joker("Showman"))) and pseudorandom('baddie'..G.GAME.round_resets.ante) > 0.997 then
+	card = create_card('Joker', area, nil, nil, nil, nil, 'j_ccc_badeline', 'bad')
+else
+	card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')
+end
+'''
+match_indent = true
