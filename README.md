@@ -64,6 +64,9 @@ Below is a list of everything this mod adds
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit put it back in deck and draw again|
+|Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
+|Madeline| Legendary | Joker values cannot go down through their own ability|
+
 
 || Common | |
 || Uncommon | |
