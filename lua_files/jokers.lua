@@ -3115,8 +3115,9 @@ local lapidary = SMODS.Joker({
 	loc_txt = {
         name = 'Lapidary',
         text = {
-	"Jokers with a unique rarity",
-	"each give {X:mult,C:white}X#1#{} mult",
+	"Jokers with a",
+	"{C:attention}unique{} rarity each",
+	"give {X:mult,C:white}X#1#{} Mult"
         }
     },
 	rarity = 2,
@@ -3265,9 +3266,10 @@ local cloud = SMODS.Joker({
 	loc_txt = {
         name = 'Cloud',
         text = {
-			"{C:chips}+#1#{} Chips for each",
-			"{C:blue}Hand{} played this round",
-			"{C:inactive}(Currently {C:blue}+#2#{C:inactive})"
+			"Gains {C:chips}+#1#{} Chips",
+			"{C:attention}after{} each hand",
+			"played this round",
+			"{C:inactive}(Currently {C:blue}+#2#{C:inactive} Chips)"
         }
     },
 	rarity = 1,
@@ -3320,8 +3322,8 @@ local brittlecloud = SMODS.Joker({
 	loc_txt = {
         name = 'Brittle Cloud',
         text = {
-			"{C:chips}+#1#{} Chips on the",
-			"first {C:blue}Hand{} played this round",
+			"{C:chips}+#1#{} Chips in",
+			"{C:attention}first{} hand of round",
         }
     },
 	rarity = 1,
@@ -3370,11 +3372,10 @@ local seeker = SMODS.Joker({
 	loc_txt = {
         name = 'Seeker',
         text = {
-			"If card drawn is not",
-			"most owned Suit ({C:attention}#1#{})",
-			"or most owned Rank ({V:1}#2#{})",
-			"place it back in deck and",
-			"draw one more card",
+			"If card is drawn {C:attention}face up{} and",
+			"is not most owned {C:attention}rank{} ({C:attention}#1#{})",
+			"or {C:attention}suit{} ({V:1}#2#{}), reshuffle",
+			"it into {C:attention}deck{} and redraw"
         }
     },
 	rarity = 3,
@@ -3543,9 +3544,9 @@ local madeline = SMODS.Joker({
 	loc_txt = {
         name = 'Madeline',
         text = {
-			"Prevents reduction of",
-			"{C:attention}Joker{} values through",
-			"their own abilities"
+			"{C:attention}Prevents{} reduction and",
+			"resets of Joker {C:attention}values{}",
+			"through owned abilities"
         }
     },
 	rarity = 4,
