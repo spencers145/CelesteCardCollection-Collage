@@ -10,19 +10,10 @@ target = "functions/state_events.lua"
 pattern = "if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK then"
 position = "before"
 payload = '''
-if next(find_joker('Seeker')) then
-	if G.deck.cards[#G.deck.cards]:get_id() == G.deck.cards[#G.deck.cards]:get_id() and G.deck.cards[#G.deck.cards].config.card.suit == G.deck.cards[#G.deck.cards].config.card.suit then
-		local card = draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
-		delay(0.7)
-		draw_card(G.hand,G.deck, i*100/hand_space, 'down', false, card)
-		delay(0.1)
-		G.deck:shuffle('see'..G.GAME.round_resets.ante)
-		delay(0.1)
-		draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
-		delay(0.7)
-	else
-		draw_card(G.deck,G.hand, i*100/hand_space,'up', true)
-	end
+if next(find_joker('Seeker')) and G.GAME.pool_flags.seeker_table then
+	G.play.config.card_limit = hand_space
+	G.play.T.y = G.play.T.y - 1.5/hand_space
+	draw_card(G.deck, G.play, i*100/hand_space, 'up', true);
 else
 '''
 match_indent = true
@@ -34,6 +25,36 @@ target = "functions/state_events.lua"
 pattern = "G.FUNCS.discard_cards_from_highlighted = function(e, hook)"
 position = "before"
 payload = '''
+	if next(find_joker('Seeker')) and G.GAME.pool_flags.seeker_table then
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			func = function()
+				for i, card in ipairs(G.play.cards) do
+					delay(0.7)
+					if card.base.value ~= G.GAME.pool_flags.seeker_table.rank and card.base.suit ~= G.GAME.pool_flags.seeker_table.suit then
+						draw_card(G.play, G.deck, i*100/hand_space,'up', false, card)
+						draw_card(G.deck, G.hand, i*100/hand_space,'up', true)
+					else
+						draw_card(G.play, G.hand, i*100/hand_space,'up', true, card)
+					end
+				end
+
+				for i, card in ipairs(G.play.cards) do
+					draw_card(G.play, G.deck, i*100/hand_space,'up', true)
+				end
+				
+				G.E_MANAGER:add_event(Event({
+					trigger = "after",
+					func = function () 
+						G.play.config.card_limit = 5
+						G.play.T.y = G.play.T.y + 1.5
+						G.deck:shuffle('see'..G.GAME.round_resets.ante)
+						save_run()
+						return true 
+					end}))
+				return true 
+			end }))
+	end
 end
 '''
 match_indent = true

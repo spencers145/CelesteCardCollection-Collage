@@ -3360,6 +3360,7 @@ end
 -- endregion brittle cloud
 
 -- region seeker
+--cursed idea
 
 local seeker = SMODS.Joker({
 	name = "Seeker",
@@ -3392,8 +3393,10 @@ local seeker = SMODS.Joker({
 		G.GAME.pool_flags.seeker_table = {
 			rank = card_table.ability.extra.rank,
 			suit = card_table.ability.extra.suit,
-			ref = card
 		}
+		for i, card in ipairs(G.play.cards) do
+			draw_card(G.play, G.deck, i*100/math.min(#G.deck.cards, G.hand.config.card_limit - #G.hand.cards),'up', true)
+		end
 	end,
 	remove_from_deck = function (self, card, from_debuff)
 		G.GAME.pool_flags.seeker_table = nil
@@ -3402,7 +3405,6 @@ local seeker = SMODS.Joker({
 				G.GAME.pool_flags.seeker_table = {
 					rank = v.ability.extra.rank,
 					suit = v.ability.extra.suit,
-					ref = v
 				}
 			end
 		end
@@ -3412,11 +3414,13 @@ local seeker = SMODS.Joker({
 seeker.get_common_suit_and_ranks = function (card)
 	local ranks = {}
 	local suits = {}
-	if G.playing_cards ~= nil then
-		for index, card in ipairs(G.playing_cards) do
-			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
-			suits[card.base.suit] = (ranks[card.base.suit] or 0) + 1
-		end
+	if G.playing_cards == nil then
+		G.GAME.pool_flags.seeker_table = nil
+		return
+	end
+	for index, card in ipairs(G.playing_cards) do
+		ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
+		suits[card.base.suit] = (suits[card.base.suit] or 0) + 1
 	end
 	local most_common_suit = {
 		key = "Hearts",
@@ -3444,7 +3448,6 @@ seeker.get_common_suit_and_ranks = function (card)
 	G.GAME.pool_flags.seeker_table = {
 		rank = card.ability.extra.rank,
 		suit = card.ability.extra.suit,
-		ref = card
 	}
 end
 
