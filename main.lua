@@ -7,7 +7,6 @@
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
---- ICON_ATLAS: ccc_icon
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -31,12 +30,12 @@ assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/editions.l
 assert(load(love.filesystem.read(SMODS.current_mod.path .. "lua_files/localization/en-us.lua")))()
 
 SMODS.Atlas({
-    key = "ccc_icon",
-    atlas = "ASSET_ATLAS",
+    key = "modicon",
     path = "ccc_icon.png",
     px = 34,
     py = 34
-})
+}):register()
+
 
 ----------------------------------------------
 ------------MOD CODE END----------------------
