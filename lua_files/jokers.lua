@@ -1077,15 +1077,17 @@ ominousmirror.calculate = function(self, card, context)
 		if not context.repetition and not context.individual and card.ability.extra.broken == false then
 			for k, v in ipairs(context.scoring_hand) do
 				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, func = function()
+					local _card = copy_card(v, nil, nil, G.playing_card)
+                           		_card.states.visible = nil
+					G.hand:emplace(_card)
+					G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.3, func = function()
 						card:juice_up()
 						v:juice_up()
-						local _card = copy_card(v, nil, nil, G.playing_card)
 						_card:add_to_deck()
 						_card:set_edition({mirrored = true}, true)
 						G.deck.config.card_limit = G.deck.config.card_limit + 1
 						table.insert(G.playing_cards, _card)
-						G.hand:emplace(_card)
+                                   		_card:start_materialize()
 						return {
 						playing_cards_created = {true}
 						}
