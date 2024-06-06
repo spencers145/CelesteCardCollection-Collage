@@ -28,6 +28,7 @@ Below is a list of everything this mod adds
 |Waterfall| Common | If played hand contains a Flush, convert a random card held in hand to the same suit |
 |Pointless Machines| Common | <secret> |
 |5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker purchased|
+|Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +8 Chips for each card in hand that shares the same suit |
@@ -38,6 +39,8 @@ Below is a list of everything this mod adds
 |Moon Berry| Uncommon | If round ends without playing a hand that contains a Pair, create its Planet card with Negative edition, poker hand changes at end of round |
 |To the Summit| Uncommon | Gains x0.25 Mult for each consecutive Blind selected with more money than the previous blind (starts at 1x)|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
+|Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
 |Ominous Mirror| Rare | 1/2 chance to create a copy of a scored card, adding Mirrored edition. 1/6 chance to break at end of round, leaving a Broken Mirror |
 |Bird| Rare | Whenever a Planet card is used, draw 3 cards |
 |Part Of You| Rare | If first played hand of round contains exactly 2 cards, convert both cards into their complements (e.g. King <-> Ace, 3 <-> Jack, 6 <-> 8) |
@@ -50,7 +53,6 @@ Below is a list of everything this mod adds
 | ---  | ---    | ---|
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
-|Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
 |Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
@@ -59,8 +61,6 @@ Below is a list of everything this mod adds
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
-|Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
-|Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit put it back in deck and draw again|

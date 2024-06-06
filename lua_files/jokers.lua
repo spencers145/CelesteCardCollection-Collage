@@ -2702,7 +2702,7 @@ local collapsingbridge = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	}
@@ -2789,7 +2789,7 @@ local switchgate = SMODS.Joker({
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	}
@@ -3515,7 +3515,7 @@ badeline.calculate = function(self, card, context)
 				}
 			end
 		elseif context.cardarea == G.hand then
-			if (context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card' and (next(context.card_effects[1]) or #context.card_effects > 1) then
+			if ((context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card') and (next(context.card_effects[1]) or #context.card_effects > 1) then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = 1,
