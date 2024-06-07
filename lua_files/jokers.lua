@@ -1914,7 +1914,7 @@ local bluespinner = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}
@@ -2006,7 +2006,7 @@ local purplespinner = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}
@@ -2097,7 +2097,7 @@ local redspinner = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}
@@ -2186,7 +2186,7 @@ local rainbowspinner = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}

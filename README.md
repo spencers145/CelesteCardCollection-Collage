@@ -38,7 +38,11 @@ Below is a list of everything this mod adds
 |Winged Golden Strawberry| Uncommon | Earn $15 at end of Boss Blind if beaten without playing a hand that contains a Pair, poker hand changes at end of round |
 |Moon Berry| Uncommon | If round ends without playing a hand that contains a Pair, create its Planet card with Negative edition, poker hand changes at end of round |
 |To the Summit| Uncommon | Gains x0.25 Mult for each consecutive Blind selected with more money than the previous blind (starts at 1x)|
+|Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
+|Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
+|Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
 |Ominous Mirror| Rare | 1/2 chance to create a copy of a scored card, adding Mirrored edition. 1/6 chance to break at end of round, leaving a Broken Mirror |
@@ -55,11 +59,7 @@ Below is a list of everything this mod adds
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
-|Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
-|Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
-|Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
