@@ -3207,7 +3207,7 @@ local hardlist = SMODS.Joker({
 
 
 hardlist.calculate = function(self, card, context)
-	if context.buying_card and context.card.config.center.set == "Joker" then
+	if context.buying_card and context.card.config.center.set == "Joker" and not (context.card == card) then
 		if not context.blueprint then
 			card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.sub
 			if card.ability.extra.mult <= 0 then
