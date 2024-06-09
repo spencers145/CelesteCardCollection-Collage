@@ -2662,7 +2662,7 @@ waterfall.calculate = function(self, card, context)
 				end
 			end
 		end
-		if #waterfall_card_candidates > 0 then  -- copying more bunco code... firch ily
+		if #waterfall_card_candidates > 0 then	-- this used to be bunco code but i changed it
 			local waterfall_card = pseudorandom_element(waterfall_card_candidates, pseudoseed('waterfall'))
 			if ccc_waterfall_flush_suit ~= 'Wild' then
 					waterfall_card:change_suit(ccc_waterfall_flush_suit)
@@ -3471,6 +3471,73 @@ function seeker.loc_vars(self, info_queue, card)
 end
 -- endregion seeker
 
+-- region Crystal Heart
+
+local crystalheart = SMODS.Joker({
+	name = "Crystal Heart",
+	key = "crystalheart",
+    config = {},
+	pos = {x = 7, y = 4},
+	loc_txt = {
+        name = 'Crystal Heart',
+        text = {
+			"If played hand is a",
+			"single {C:attention}Ace{} of {C:hearts}Hearts{},",
+			"apply a random {C:dark_edition}Edition{}",
+			"to a card held in hand",
+        }
+    },
+	rarity = 2,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+-- this is dumb, there's a bug with blueprints/copies triggering extra text. it's not gamebreaking i just don't know... how to fix it
+
+crystalheart.calculate = function(self, card, context)
+
+	if context.joker_main and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Hearts', true) then
+		local edition_card_candidates = {}
+		for i = 1, #G.hand.cards do
+			if not G.hand.cards[i].edition then
+				edition_card_candidates[#edition_card_candidates + 1] = G.hand.cards[i]
+			end
+		end
+		if #edition_card_candidates > 0 then
+			return {
+				G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
+					local edition_card_candidates_2 = {}
+					for i = 1, #G.hand.cards do
+						if not G.hand.cards[i].edition then
+							edition_card_candidates_2[#edition_card_candidates_2 + 1] = G.hand.cards[i]
+						end
+					end
+					if #edition_card_candidates_2 > 0 then
+						local edition_card = pseudorandom_element(edition_card_candidates_2, pseudoseed('crystal_heart'))
+						local edition = poll_edition('crystal_heart', nil, true, true)
+						edition_card:set_edition(edition, true)
+						card:juice_up()
+					end
+				return true end })),
+				message = "Applied",
+				colour = G.C.DARK_EDITION
+			}
+		end
+	end
+end
+
+
+-- endregion Crystal Heart
+
 -- region Badeline
 
 local badeline = SMODS.Joker({
@@ -3532,8 +3599,7 @@ function badeline.loc_vars(self, info_queue, card)
 	return {vars = {}}
 end
 
--- endregion Checkpoint
-
+-- endregion Badeline
 
 -- region Madeline
 
