@@ -42,7 +42,6 @@ Below is a list of everything this mod adds
 |Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
-|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand |
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
@@ -60,6 +59,7 @@ Below is a list of everything this mod adds
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
+|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand |
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
