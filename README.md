@@ -42,6 +42,7 @@ Below is a list of everything this mod adds
 |Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand |
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
