@@ -60,6 +60,7 @@ Below is a list of everything this mod adds
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand |
+|Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole |
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
