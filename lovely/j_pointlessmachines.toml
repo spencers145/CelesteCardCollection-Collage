@@ -11,7 +11,7 @@ target = "card.lua"
 pattern = "elseif self.ability.name == 'Banner' then loc_vars = {self.ability.extra}"
 position = "after"
 payload = '''
-elseif self.ability.name == 'Pointless Machines' then
+elseif self.ability.name == 'ccc_Pointless Machines' then
 	local r_strings = {}
 	local r_hearts_keymash = {"R<3EAST<3<H!", "ttt^a^reh.SS", "tera&*Ste&#raHH", "serT((H)).aa;"}
 	local r_spades_keymash = {"Spac:::SE>>D", "!a@spes&&Dd", "deesS*DAPD((AP", "ES.ad##PSP#"}

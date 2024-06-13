@@ -10,7 +10,7 @@ target = "functions/state_events.lua"
 pattern = "if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK then"
 position = "before"
 payload = '''
-if next(find_joker('Seeker')) and G.GAME.pool_flags.seeker_table then
+if next(find_joker('ccc_Seeker')) and G.GAME.pool_flags.seeker_table then
 	G.play.config.card_limit = hand_space
 	local stay_flipped = G.GAME and G.GAME.blind and G.GAME.blind:stay_flipped(G.hand, G.deck.cards[(#G.deck.cards - (i - 1))])	-- if card is face down, draw straight to hand
 	if G.GAME.modifiers.flipped_cards then
@@ -34,7 +34,7 @@ target = "functions/state_events.lua"
 pattern = "G.FUNCS.discard_cards_from_highlighted = function(e, hook)"
 position = "before"
 payload = '''
-	if next(find_joker('Seeker')) and G.GAME.pool_flags.seeker_table then
+	if next(find_joker('ccc_Seeker')) and G.GAME.pool_flags.seeker_table then
 		G.E_MANAGER:add_event(Event({
 			trigger = "after",
 			func = function()

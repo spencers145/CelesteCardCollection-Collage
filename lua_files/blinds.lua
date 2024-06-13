@@ -1,7 +1,7 @@
 -- region Snow
 
 local snow = SMODS.Blind{
-	name = "The Snow",
+	name = "ccc_The Snow",
 	slug = "snow", 
 	key = 'snow',
 	atlas = 'bl_ccc_blinds',
@@ -42,7 +42,7 @@ end
 -- region Stone
 
 local stone = SMODS.Blind{
-	name = "The Stone",
+	name = "ccc_The Stone",
 	slug = "stone", 
 	key = 'stone',
 	atlas = 'bl_ccc_blinds',
@@ -81,7 +81,7 @@ end
 -- region Crystal
 
 local crystal = SMODS.Blind{
-	name = "The Crystal",
+	name = "ccc_The Crystal",
 	slug = "crystal", 
 	key = 'crystal',
 	atlas = 'bl_ccc_blinds',
@@ -120,7 +120,7 @@ end
 -- region Berry
 
 local berry = SMODS.Blind{
-	name = "The Berry",
+	name = "ccc_The Berry",
 	slug = "berry", 
 	key = 'berry',
 	atlas = 'bl_ccc_blinds',
@@ -159,7 +159,7 @@ end
 -- region Fallacy
 
 local fallacy = SMODS.Blind{
-	name = "The Fallacy",
+	name = "ccc_The Fallacy",
 	slug = "fallacy", 
 	key = 'fallacy',
 	atlas = 'bl_ccc_blinds',

@@ -1,7 +1,7 @@
 -- region gondola
 
 local v_gondola = SMODS.Voucher({
-	name = "Fast Track",
+	name = "ccc_Fast Track",
 	key = "gondola",  -- ACTUAL KEY IS "v_ccc_gondola"
     config = {extra = 1},
 	pos = {x = 0, y = 0},
@@ -50,7 +50,7 @@ function ease_ante(mod)
 end
 
 local v_feather = SMODS.Voucher({
-	name = "Mindfulness",
+	name = "ccc_Mindfulness",
 	key = "feather", -- ACTUAL KEY IS "v_ccc_feather"
     config = {},
 	pos = {x = 0, y = 1},

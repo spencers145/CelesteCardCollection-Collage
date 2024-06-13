@@ -51,7 +51,7 @@ end
 table.insert(trigger_effect_callbacks, virus_effect)
 
 local virus = SMODS.Back({
-    name = "Virus Deck",
+    name = "ccc_Virus Deck",
     key = "virus",
 	config = {virus = true},
 	pos = {x = 0, y = 0},
@@ -122,7 +122,7 @@ end
 --table.insert(trigger_effect_callbacks, summit_effect)
 
 local summit = SMODS.Back({
-    name = "Summit Deck",
+    name = "ccc_Summit Deck",
     key = "summit",
 	config = {joker_slot = -4, add_slot_each_ante = 1},
 	pos = {x = 1, y = 0},
@@ -147,7 +147,7 @@ local summit = SMODS.Back({
 -- region B-Side deck
 
 local bside = SMODS.Back({
-    name = "B-Side Deck",
+    name = "ccc_B-Side Deck",
     key = "bside",
 	config = {everything_is_boss = true},
 	pos = {x = 2, y = 0},
@@ -240,7 +240,7 @@ table.insert(start_run_after_callbacks, bside_start_run)
 -- region Heartside Deck
 
 local heartside = SMODS.Back({
-    name = "Heartside Deck",
+    name = "ccc_Heartside Deck",
     key = "heartside",
 	config = {all_jokers_modded = true},
 	pos = {x = 3, y = 0},

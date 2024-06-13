@@ -49,7 +49,7 @@ end
 -- region Feather
 
 local feather = SMODS.Joker({
-	name = "Feather",
+	name = "ccc_Feather",
 	key = "feather",
     config = {},
 	pos = {x = 0, y = 0},
@@ -95,7 +95,7 @@ end
 -- region Zipper
 
 local zipper = SMODS.Joker({
-	name = "Zipper",
+	name = "ccc_Zipper",
 	key = "zipper",
     config = {extra = {chips = 0}},
 	pos = {x = 4, y = 0},
@@ -122,13 +122,13 @@ local zipper = SMODS.Joker({
 })
 
 zipper.set_ability = function(self, card, initial, delay_sprites)
-        if card.ability.name == 'Zipper' then
+        if card.ability.name == 'ccc_Zipper' then
             card.ability.extra.chips = G.GAME.skips*30
 	end
 end
 
 zipper.calculate = function(self, card, context)
-        if card.ability.name == 'Zipper' then
+        if card.ability.name == 'ccc_Zipper' then
             card.ability.extra.chips = G.GAME.skips*30
 	end
         if context.skip_blind then
@@ -166,7 +166,7 @@ end
 --region Temple Eyes
 
 local templeeyes = SMODS.Joker({
-	name = "Temple Eyes",
+	name = "ccc_Temple Eyes",
 	key = "templeeyes",
     config = {},
 	pos = {x = 1, y = 0},
@@ -224,7 +224,7 @@ end
 -- region Mini Heart
 
 local miniheart = SMODS.Joker({
-	name = "Mini Heart",
+	name = "ccc_Mini Heart",
 	key = "miniheart",
     config = {},
 	pos = {x = 5, y = 0},
@@ -278,7 +278,7 @@ end
 --region Bird
 
 local bird = SMODS.Joker({
-	name = "Bird",
+	name = "ccc_Bird",
 	key = "bird",
     config = {extra = {active = false}},
 	pos = {x = 2, y = 0},
@@ -334,7 +334,7 @@ end
 -- region Part Of You
 
 local partofyou = SMODS.Joker({
-	name = "Part Of You",
+	name = "ccc_Part Of You",
 	key = "partofyou",
     config = {},
 	pos = {x = 3, y = 0},
@@ -472,7 +472,7 @@ end
 -- region Huge Mess: Towels
 
 local towels = SMODS.Joker({
-	name = "Huge Mess: Towels",
+	name = "ccc_Huge Mess: Towels",
 	key = "towels",
     config = {extra = {chips = 0}},
 	pos = {x = 0, y = 3},
@@ -563,7 +563,7 @@ end
 -- region Huge Mess: Chests
 
 local chests = SMODS.Joker({
-	name = "Huge Mess: Chests",
+	name = "ccc_Huge Mess: Chests",
 	key = "chests",
     config = {extra = {mult = 0}},
 	pos = {x = 1, y = 3},
@@ -645,7 +645,7 @@ end
 -- region Huge Mess: Books
 
 local books = SMODS.Joker({
-	name = "Huge Mess: Books",
+	name = "ccc_Huge Mess: Books",
 	key = "books",
     config = {extra = {xmult = 1}},
 	pos = {x = 2, y = 3},
@@ -1025,7 +1025,7 @@ end
 -- region Ominous Mirror
 
 local ominousmirror = SMODS.Joker({
-	name = "Ominous Mirror",
+	name = "ccc_Ominous Mirror",
 	key = "ominousmirror",
     config = {extra = {broken = false, pos_override = {x = 0, y = 2}}},
 	pos = {x = 0, y = 2},
@@ -1145,7 +1145,7 @@ end
 -- region Strawberry
 
 local strawberry = SMODS.Joker({
-	name = "Strawberry",
+	name = "ccc_Strawberry",
 	key = "strawberry",
     config = {extra = {money = 8}},
 	pos = {x = 1, y = 1},
@@ -1210,7 +1210,7 @@ end
 -- region Winged Strawberry
 
 local wingedstrawberry = SMODS.Joker({
-	name = "Winged Strawberry",
+	name = "ccc_Winged Strawberry",
 	key = "wingedstrawberry",
     config = {extra = {winged_poker_hand = 'Pair'}},
 	pos = {x = 2, y = 1},
@@ -1287,7 +1287,7 @@ end
 -- region Golden Strawberry
 
 local goldenstrawberry = SMODS.Joker({
-	name = "Golden Strawberry",
+	name = "ccc_Golden Strawberry",
 	key = "goldenstrawberry",
     config = {extra = {after_boss = false}},
 	pos = {x = 3, y = 1},
@@ -1329,7 +1329,7 @@ end
 -- region Winged Golden Strawberry
 
 local wingedgoldenstrawberry = SMODS.Joker({
-	name = "Winged Golden Strawberry",
+	name = "ccc_Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
     config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false}},
 	pos = {x = 4, y = 1},
@@ -1406,7 +1406,7 @@ end
 -- region Moon Berry
 
 local moonberry = SMODS.Joker({
-	name = "Moon Berry",
+	name = "ccc_Moon Berry",
 	key = "moonberry",
     config = {extra = {condition_satisfied = false, winged_poker_hand = 'Pair'}},
 	pos = {x = 5, y = 1},
@@ -1510,7 +1510,7 @@ end
 -- region To The Summit
 
 local tothesummit = SMODS.Joker({
-	name = "To The Summit",
+	name = "ccc_To The Summit",
 	key = "tothesummit",
     config = {extra = {xmult = 1, min_money = 0}},	-- rip debt lovers
 	pos = {x = 0, y = 1},
@@ -1577,7 +1577,7 @@ end
 -- region Core Switch
 
 local coreswitch = SMODS.Joker({
-	name = "Core Switch",
+	name = "ccc_Core Switch",
 	key = "coreswitch",
     config = {extra = {pos_override = {x = 6, y = 0}}},
 	pos = {x = 6, y = 0},
@@ -1640,7 +1640,7 @@ end
 -- region Temple Rock
 
 local templerock = SMODS.Joker({
-	name = "Temple Rock",
+	name = "ccc_Temple Rock",
 	key = "templerock",
     config = {},
 	pos = {x = 8, y = 0},
@@ -1693,7 +1693,7 @@ end
 -- region Strong Winds
 
 local strongwinds = SMODS.Joker({
-	name = "Strong Winds",
+	name = "ccc_Strong Winds",
 	key = "strongwinds",
     config = {},
 	pos = {x = 4, y = 2},
@@ -1773,7 +1773,7 @@ end
 -- region Coyote Jump
 
 local coyotejump = SMODS.Joker({
-	name = "Coyote Jump",
+	name = "ccc_Coyote Jump",
 	key = "coyotejump",
     config = {},
 	pos = {x = 9, y = 0},
@@ -1857,7 +1857,7 @@ end
 -- region Climbing Gear
 
 local climbinggear = SMODS.Joker({
-	name = "Climbing Gear",
+	name = "ccc_Climbing Gear",
 	key = "climbinggear",
     config = {d_size = 4},
 	pos = {x = 6, y = 1},
@@ -1892,7 +1892,7 @@ local climbinggear = SMODS.Joker({
 -- region Blue Spinner
 
 local bluespinner = SMODS.Joker({
-	name = "Blue Spinner",
+	name = "ccc_Blue Spinner",
 	key = "bluespinner",
     config = {},
 	pos = {x = 0, y = 4},
@@ -1984,7 +1984,7 @@ end
 -- region Purple Spinner
 
 local purplespinner = SMODS.Joker({
-	name = "Purple Spinner",
+	name = "ccc_Purple Spinner",
 	key = "purplespinner",
     config = {},
 	pos = {x = 1, y = 4},
@@ -2075,7 +2075,7 @@ end
 -- region Red Spinner
 
 local redspinner = SMODS.Joker({
-	name = "Red Spinner",
+	name = "ccc_Red Spinner",
 	key = "redspinner",
     config = {},
 	pos = {x = 2, y = 4},
@@ -2167,7 +2167,7 @@ end
 -- region Rainbow Spinner
 
 local rainbowspinner = SMODS.Joker({
-	name = "Rainbow Spinner",
+	name = "ccc_Rainbow Spinner",
 	key = "rainbowspinner",
     config = {},
 	pos = {x = 3, y = 4},
@@ -2203,7 +2203,7 @@ end
 -- region Letting Go
 
 local lettinggo = SMODS.Joker({
-	name = "Letting Go",
+	name = "ccc_Letting Go",
 	key = "lettinggo",
     config = {extra = {mult = 0}},
 	pos = {x = 2, y = 2},
@@ -2322,7 +2322,7 @@ end
 -- region Green Bubble
 
 local greenbooster = SMODS.Joker({
-	name = "Green Booster",
+	name = "ccc_Green Booster",
 	key = "greenbooster",
     config = {},
 	pos = {x = 3, y = 2},
@@ -2361,7 +2361,7 @@ end
 -- region Red Booster
 
 local redbooster = SMODS.Joker({
-	name = "Red Booster",
+	name = "ccc_Red Booster",
 	key = "redbooster",
     config = {},
 	pos = {x = 3, y = 3},
@@ -2401,7 +2401,7 @@ end
 -- region Cassette Block
 
 local cassetteblock = SMODS.Joker({
-	name = "Cassette Block",
+	name = "ccc_Cassette Block",
 	key = "cassetteblock",
     config = {extra = {chips = 0, mult = 0, pink = false, pos_override = {x = 6, y = 2}}},
 	pos = {x = 6, y = 2},
@@ -2533,7 +2533,7 @@ end
 -- region Bumper
 
 local bumper = SMODS.Joker({
-	name = "Bumper",
+	name = "ccc_Bumper",
 	key = "bumper",
     config = {},
 	pos = {x = 7, y = 1},
@@ -2594,7 +2594,7 @@ end
 -- region Waterfall
 
 local waterfall = SMODS.Joker({
-	name = "Waterfall",
+	name = "ccc_Waterfall",
 	key = "waterfall",
     config = {},
 	pos = {x = 5, y = 2},
@@ -2681,7 +2681,7 @@ end
 -- region Collapsing Bridge
 
 local collapsingbridge = SMODS.Joker({
-	name = "Collapsing Bridge",
+	name = "ccc_Collapsing Bridge",
 	key = "collapsingbridge",
     config = {extra = {xmult = 5}},
 	pos = {x = 8, y = 1},
@@ -2765,7 +2765,7 @@ end
 -- region Switch Gate
 
 local switchgate = SMODS.Joker({
-	name = "Switch Gate",
+	name = "ccc_Switch Gate",
 	key = "switchgate",
 	config = {extra = {chips = 0, cards = {[1] = {rank = 'Ace', suit = 'Spades', id = 14}, [2] = {rank = 'Ace', suit = 'Hearts', id = 14}, [3] = {rank = 'Ace', suit = 'Clubs', id = 14}}}},
 	pos = {x = 4, y = 3},
@@ -2883,7 +2883,7 @@ end
 -- region Checkpoint
 
 local checkpoint = SMODS.Joker({
-	name = "Checkpoint",
+	name = "ccc_Checkpoint",
 	key = "checkpoint",
     config = {extra = {xmult = 1, did_you_discard = false, after_boss = false}},
 	pos = {x = 8, y = 2},
@@ -2959,7 +2959,7 @@ end
 -- region Theo Crystal
 
 local theocrystal = SMODS.Joker({
-	name = "Theo Crystal",
+	name = "ccc_Theo Crystal",
 	key = "theocrystal",
 	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
 	pos = {x = 9, y = 2},
@@ -3022,7 +3022,7 @@ end
 -- region Pointless Machines
 
 local pointlessmachines = SMODS.Joker({
-	name = "Pointless Machines",
+	name = "ccc_Pointless Machines",
 	key = "pointlessmachines",
     config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
 	pos = {x = 9, y = 1},
@@ -3110,7 +3110,7 @@ end
 -- region Lapidary
 
 local lapidary = SMODS.Joker({
-	name = "Lapidary",
+	name = "ccc_Lapidary",
 	key = "lapidary",
     config = {extra = 1.5},
 	pos = {x = 6, y = 3},
@@ -3178,7 +3178,7 @@ end
 -- region hardlist
 
 local hardlist = SMODS.Joker({
-	name = "hardlist",
+	name = "ccc_hardlist",
 	key = "hardlist",
     config = {extra = {mult = 25, sub = 5}}, -- mult should be a multiple of sub for this card
 	pos = {x = 5, y = 3},
@@ -3261,7 +3261,7 @@ end
 -- region cloud
 
 local cloud = SMODS.Joker({
-	name = "cloud",
+	name = "ccc_cloud",
 	key = "cloud",
     config = {extra = {chips = 0, add = 30}},
 	pos = {x = 4, y = 4},
@@ -3317,7 +3317,7 @@ end
 -- region brittle cloud
 
 local brittlecloud = SMODS.Joker({
-	name = "brittlecloud",
+	name = "ccc_brittlecloud",
 	key = "brittlecloud",
     config = {extra = {chips = 150}},
 	pos = {x = 5, y = 4},
@@ -3367,7 +3367,7 @@ end
 --cursed idea
 
 local seeker = SMODS.Joker({
-	name = "Seeker",
+	name = "ccc_Seeker",
 	key = "seeker",
     config = {extra = {suit = "Hearts", rank = "Ace"}},
 	pos = {x = 6, y = 4},
@@ -3404,7 +3404,7 @@ local seeker = SMODS.Joker({
 	remove_from_deck = function (self, card, from_debuff)
 		G.GAME.pool_flags.seeker_table = nil
 		for _, v in ipairs(G.jokers.cards) do
-			if v ~= card and v.ability.name == "Seeker" and not v.debuff then
+			if v ~= card and v.ability.name == "ccc_Seeker" and not v.debuff then
 				G.GAME.pool_flags.seeker_table = {
 					rank = v.ability.extra.rank,
 					suit = v.ability.extra.suit,
@@ -3474,7 +3474,7 @@ end
 -- region Crystal Heart
 
 local crystalheart = SMODS.Joker({
-	name = "Crystal Heart",
+	name = "ccc_Crystal Heart",
 	key = "crystalheart",
     config = {},
 	pos = {x = 7, y = 4},
@@ -3542,7 +3542,7 @@ end
 
 
 local eventhorizon = SMODS.Joker({
-	name = "Event Horizon",
+	name = "ccc_Event Horizon",
 	key = "eventhorizon",
     config = {extra = {uses = 0}},
 	pos = {x = 8, y = 4},
@@ -3616,7 +3616,7 @@ end
 -- region Badeline
 
 local badeline = SMODS.Joker({
-	name = "Badeline",
+	name = "ccc_Badeline",
 	key = "badeline",
     config = {extra = {}},
 	pos = {x = 7, y = 3},
@@ -3680,7 +3680,7 @@ end
 
 -- USES GLOBAL VARIABLE
 local madeline = SMODS.Joker({
-	name = "Madeline",
+	name = "ccc_Madeline",
 	key = "madeline",
     config = {},
 	pos = {x = 8, y = 3},
@@ -3710,7 +3710,7 @@ local madeline = SMODS.Joker({
 	remove_from_deck = function (self, card, from_debuff)
 		G.GAME.pool_flags.madeline_in_hand = nil
 		for _, v in ipairs(G.jokers.cards) do
-			if v ~= card and v.ability.name == "Madeline" and not v.debuff then
+			if v ~= card and v.ability.name == "ccc_Madeline" and not v.debuff then
 				G.GAME.pool_flags.madeline_in_hand = v
 			end
 		end

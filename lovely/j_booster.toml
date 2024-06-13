@@ -10,7 +10,7 @@ target = "card.lua"
 pattern = "for i = 1, _size do"
 position = "before"
 payload = '''
-if next(find_joker('Red Booster')) then
+if next(find_joker('ccc_Red Booster')) then
 	G.GAME.pack_choices = G.GAME.pack_choices + ccc_rrubble_bonus_choices
 end
 '''
@@ -23,7 +23,7 @@ target = "card.lua"
 pattern = "G.GAME.pack_choices = self.config.center.config.choose or 1"
 position = "before"
 payload = '''
-if next(find_joker('Green Booster')) then
+if next(find_joker('ccc_Green Booster')) then
 	if G.GAME.pack_size < 5 then
 		G.GAME.pack_size = G.GAME.pack_size + 1
 	end

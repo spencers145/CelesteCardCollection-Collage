@@ -10,7 +10,7 @@ target = "functions/state_events.lua"
 pattern = "draw_card(G.play,G.discard, it*100/play_count,'down', false, v)"
 position = "before"
 payload = '''
-if next(find_joker('Climbing Gear')) then
+if next(find_joker('ccc_Climbing Gear')) then
 	draw_card(G.play,G.deck, it*100/play_count,'down', false, v)
 	G.deck:shuffle('nr'..G.GAME.round_resets.ante)
 else
@@ -35,7 +35,7 @@ target = "functions/state_events.lua"
 pattern = "draw_card(G.hand, G.discard, i*100/highlighted_count, 'down', false, G.hand.highlighted[i])"
 position = "before"
 payload = '''
-if next(find_joker('Climbing Gear')) then
+if next(find_joker('ccc_Climbing Gear')) then
 	draw_card(G.hand, G.deck, i*100/highlighted_count, 'down', false, G.hand.highlighted[i])
 	G.deck:shuffle('nr'..G.GAME.round_resets.ante)
 else

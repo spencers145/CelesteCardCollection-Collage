@@ -12,7 +12,7 @@ position = "after"
 payload = '''
 	end
 end
-if self.ability.name == 'Theo Crystal' then
+if self.ability.name == 'ccc_Theo Crystal' then
 	local oops_factor = 1
 	if G.jokers ~= nil then
 		for i = 1, #G.jokers.cards do
@@ -36,7 +36,7 @@ pattern = "self.ability.mult = sell_cost"
 position = "after"
 payload = '''
 end
-if self.ability.name == 'Theo Crystal' then
+if self.ability.name == 'ccc_Theo Crystal' then
 	local oops_factor = 1
 	if G.jokers ~= nil then
 		for i = 1, #G.jokers.cards do
@@ -61,7 +61,7 @@ position = "after"
 payload = '''
 	end
 end
-if self.ability.name == 'Theo Crystal' then
+if self.ability.name == 'ccc_Theo Crystal' then
 	local oops_factor = 1
 	if G.jokers ~= nil then
 		for i = 1, #G.jokers.cards do
@@ -92,7 +92,7 @@ payload = '''
 local theo_crystal_override = false
 for i = 1, #G.jokers.cards do
 	if G.jokers.cards[i].ability.set == 'Joker' then
-		if G.jokers.cards[i].ability.name == 'Theo Crystal' then
+		if G.jokers.cards[i].ability.name == 'ccc_Theo Crystal' then
 			theo_crystal_override = true
 		end
 	end

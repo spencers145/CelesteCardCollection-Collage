@@ -11,15 +11,15 @@ target = "card.lua"
 pattern = "if self.ability.name == 'Golden Joker' then"
 position = "before"
 payload = '''
-if self.ability.name == 'Strawberry' then
+if self.ability.name == 'ccc_Strawberry' then
 	return self.ability.extra.money
 end
-if self.ability.name == 'Golden Strawberry' then
+if self.ability.name == 'ccc_Golden Strawberry' then
 	if self.ability.extra.after_boss == true then 
 		return 12
 	end
 end
-if self.ability.name == 'Winged Golden Strawberry' then
+if self.ability.name == 'ccc_Winged Golden Strawberry' then
 	if self.ability.extra.after_boss == true then
 		if self.ability.extra.condition_satisfied == true then
 			return 15
