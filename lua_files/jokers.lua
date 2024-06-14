@@ -1406,7 +1406,7 @@ end
 local moonberry = SMODS.Joker({
 	name = "ccc_Moon Berry",
 	key = "moonberry",
-    config = {extra = {condition_satisfied = false, winged_poker_hand = 'Pair'}},
+    config = {extra = {condition_satisfied = false, winged_poker_hand = 'Pair', old_winged_poker_hand = 'Pair'}},	-- old_winged_poker_hand is internal, winged_poker_hand is external
 	pos = {x = 5, y = 1},
 	loc_txt = {
         name = 'Moon Berry',
@@ -1440,9 +1440,13 @@ moonberry.set_ability = function(self, card, initial, delay_sprites)
 		end
 	end
 	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+	card.ability.extra.old_winged_poker_hand = card.ability.extra.winged_poker_hand
 end
 
 moonberry.calculate = function(self, card, context)
+	if context.setting_blind and not context.blueprint then
+		card.ability.extra.old_winged_poker_hand = card.ability.extra.winged_poker_hand		-- delay old_winged_poker_hand from changing due to brainstorm
+	end
 	if context.end_of_round and not context.repetition and not context.individual then
 		local card_type = 'Planet'
 		if card.ability.extra.condition_satisfied == true then
@@ -1452,7 +1456,7 @@ moonberry.calculate = function(self, card, context)
 			func = (function()
 				local _planet = 0
 				for k, v in pairs(G.P_CENTER_POOLS.Planet) do
-					if v.config.hand_type == card.ability.extra.winged_poker_hand then
+					if v.config.hand_type == card.ability.extra.old_winged_poker_hand then		-- use old_winged_poker_hand
 						_planet = v.key
 					end
 				end
@@ -1474,7 +1478,7 @@ moonberry.calculate = function(self, card, context)
 					_poker_hands[#_poker_hands+1] = k 
 				end
                     	end
-			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))	-- change winged_poker_hand
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 			return true
             		end)}))
