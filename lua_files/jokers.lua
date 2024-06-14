@@ -1219,8 +1219,7 @@ local wingedstrawberry = SMODS.Joker({
         text = {
 	"Earn {C:money}$3{} if {C:attention}poker hand{} does",
 	"not contain a {C:attention}#1#{},",
-	"poker hand changes",
-	"at end of round"
+	"{s:0.8}poker hand changes at end of round"
         }
     },
 	rarity = 1,
@@ -1339,8 +1338,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 	"Earn {C:money}$15{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
-	"poker hand changes",
-	"at end of round"
+	"{s:0.8}poker hand changes at end of round"
         }
     },
 	rarity = 2,
@@ -1417,8 +1415,7 @@ local moonberry = SMODS.Joker({
 	"hand that contains a {C:attention}#1#{},",
 	"create its {C:planet}Planet{} card with",
 	"added {C:dark_edition}Negative{} edition,",
-	"poker hand changes",
-	"at end of round"
+	"{s:0.8}poker hand changes at end of round"
         }
     },
 	rarity = 2,
@@ -1900,7 +1897,7 @@ local bluespinner = SMODS.Joker({
         name = 'Blue Spinner',
         text = {
 	"When a card with a {C:planet}Blue Seal{}",
-	"is scored, {C:green}#1# in 3{} chance",
+	"is scored, {C:green}#1# in 2{} chance",
 	"to add a {C:planet}Blue Seal{} to each",
 	"{C:attention}adjacent{} card in scored hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -1923,7 +1920,8 @@ local bluespinner = SMODS.Joker({
 bluespinner.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
-		if next(find_joker('Rainbow Spinner')) then
+		local rainbow_spinner_seal_override = false
+		if next(find_joker('ccc_Rainbow Spinner')) then
 			rainbow_spinner_seal_override = true
 		else
 			rainbow_spinner_seal_override = false
@@ -1933,7 +1931,7 @@ bluespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #context.scoring_hand then
 					if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-						if pseudorandom('bloo1') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('bloo1') < G.GAME.probabilities.normal/2 then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
@@ -1941,18 +1939,18 @@ bluespinner.calculate = function(self, card, context)
 			elseif k == #context.scoring_hand then
 				if k ~= 1 then
 					if context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-						if pseudorandom('bloo2') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('bloo2') < G.GAME.probabilities.normal/2 then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
 				end
 			else
 				if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-					if pseudorandom('bloo3') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('bloo3') < G.GAME.probabilities.normal/2 then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				elseif context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-					if pseudorandom('bloo4') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('bloo4') < G.GAME.probabilities.normal/2 then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				end
@@ -1993,7 +1991,7 @@ local purplespinner = SMODS.Joker({
         text = {
 	"When a card with a {C:tarot}Purple Seal{}",
 	"is {C:attention}held{} in hand at end of round,",
-	"{C:green}#1# in 3{} chance to add a {C:tarot}Purple Seal{}",
+	"{C:green}#1# in 2{} chance to add a {C:tarot}Purple Seal{}",
 	"to each {C:attention}adjacent{} card in hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
@@ -2015,7 +2013,8 @@ local purplespinner = SMODS.Joker({
 purplespinner.calculate = function(self, card, context)
 
 	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
-		if next(find_joker('Rainbow Spinner')) then
+		local rainbow_spinner_seal_override = false
+		if next(find_joker('ccc_Rainbow Spinner')) then
 			rainbow_spinner_seal_override = true
 		else
 			rainbow_spinner_seal_override = false
@@ -2025,7 +2024,7 @@ purplespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.cards then
 					if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-						if pseudorandom('purple1') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('purple1') < G.GAME.probabilities.normal/2 then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
@@ -2033,18 +2032,18 @@ purplespinner.calculate = function(self, card, context)
 			elseif k == #G.hand.cards then
 				if k ~= 1 then
 					if G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-						if pseudorandom('is2') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('is2') < G.GAME.probabilities.normal/2 then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
 				end
 			else
 				if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-					if pseudorandom('best3') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('best3') < G.GAME.probabilities.normal/2 then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				elseif G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-					if pseudorandom('colour4') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('colour4') < G.GAME.probabilities.normal/2 then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				end
@@ -2083,7 +2082,7 @@ local redspinner = SMODS.Joker({
         name = 'Red Spinner',
         text = {
 	"When a card with a {C:red}Red Seal{}",
-	"is {C:attention}discarded{}, {C:green}#1# in 3{} chance",
+	"is {C:attention}discarded{}, {C:green}#1# in 2{} chance",
 	"to add a {C:red}Red Seal{} to each",
 	"{C:attention}adjacent{} card in discarded hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -2106,7 +2105,8 @@ local redspinner = SMODS.Joker({
 redspinner.calculate = function(self, card, context)
 
 	if context.pre_discard and not context.blueprint then
-		if next(find_joker('Rainbow Spinner')) then
+		local rainbow_spinner_seal_override = false
+		if next(find_joker('ccc_Rainbow Spinner')) then
 			rainbow_spinner_seal_override = true
 		else
 			rainbow_spinner_seal_override = false
@@ -2116,7 +2116,7 @@ redspinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.highlighted then
 					if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-						if pseudorandom('RED1') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('RED1') < G.GAME.probabilities.normal/2 then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
@@ -2124,18 +2124,18 @@ redspinner.calculate = function(self, card, context)
 			elseif k == #G.hand.highlighted then
 				if k ~= 1 then
 					if G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-						if pseudorandom('redge2') < G.GAME.probabilities.normal/3 then
+						if pseudorandom('redge2') < G.GAME.probabilities.normal/2 then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
 				end
 			else
 				if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/2 then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				elseif G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/3 then
+					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/2 then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				end
@@ -2369,8 +2369,8 @@ local redbooster = SMODS.Joker({
         name = 'Red Booster',
         text = {
 	"Allows you to {C:attention}choose{}",
-	"{C:attention}1{} extra card",
-	"from all {C:attention}Booster Packs{}"
+	"{C:attention}1{} extra card from",
+	"all {C:attention}Booster Packs{}"
         }
     },
 	rarity = 3,
@@ -2408,13 +2408,13 @@ local cassetteblock = SMODS.Joker({
 	loc_txt = {
         name = ('Cassette Block'),
         text = {
-	"Gains {C:chips}+7{} Chips for each",
+	"Gains {C:chips}+8{} Chips for each",
 	"{C:attention}unused{} {C:chips}hand{} at end of round",
 	"{C:mult}Swaps{} at start of round",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
         }
     },
-	rarity = 3,
+	rarity = 2,
 	cost = 8,
 	discovered = true,
 	blueprint_compat = false,
@@ -2431,7 +2431,7 @@ local cassetteblock = SMODS.Joker({
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
 				name = ('Cassette Block'),
 				text = {
-					"Gains {C:mult}+2{} Mult for each",
+					"Gains {C:mult}+3{} Mult for each",
 					"{C:attention}unused{} {C:mult}discard{} at end of round",
 					"{C:chips}Swaps{} at start of round",
 					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
@@ -2482,7 +2482,7 @@ cassetteblock.calculate = function(self, card, context)
 
 		if card.ability.extra.pink == false then
 			if G.GAME.current_round.hands_left > 0 then
-				card.ability.extra.chips = card.ability.extra.chips + 7*G.GAME.current_round.hands_left
+				card.ability.extra.chips = card.ability.extra.chips + 8*G.GAME.current_round.hands_left
 
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
@@ -2490,7 +2490,7 @@ cassetteblock.calculate = function(self, card, context)
 			end
 		else
 			if G.GAME.current_round.discards_left > 0 then
-				card.ability.extra.mult = card.ability.extra.mult + 2*G.GAME.current_round.discards_left
+				card.ability.extra.mult = card.ability.extra.mult + 3*G.GAME.current_round.discards_left
 
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
@@ -3485,6 +3485,7 @@ local crystalheart = SMODS.Joker({
 			"single {C:attention}Ace{} of {C:hearts}Hearts{},",
 			"apply a random {C:dark_edition}Edition{}",
 			"to a card held in hand",
+			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
     },
 	rarity = 2,

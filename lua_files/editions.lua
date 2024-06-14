@@ -34,7 +34,6 @@ function Card.set_edition(self, edition, immediate, silent)
     end
 end
 
--- remember to implement the shader properly!
 local card_draw_ref = Card.draw
 function Card.draw(self, layer)
     card_draw_ref(self, layer)
@@ -60,12 +59,22 @@ function Card.draw(self, layer)
                 end
             end
 
-            -- copied directly from original functions, seals will get overidden visual otherwise!
             if self.seal then
                 G.shared_seals[self.seal].role.draw_major = self
                 G.shared_seals[self.seal]:draw_shader('dissolve', nil, nil, nil, self.children.center)
                 if self.seal == 'Gold' then G.shared_seals[self.seal]:draw_shader('voucher', nil, self.ARGS.send_to_shader, nil, self.children.center) end
             end
+		if self.debuff then
+                    self.children.center:draw_shader('debuff', nil, self.ARGS.send_to_shader)
+                    if self.children.front and self.ability.effect ~= 'Stone Card' then
+                        self.children.front:draw_shader('debuff', nil, self.ARGS.send_to_shader)	-- draw front here because otherwise debuff looks bad
+                    end
+                end
+		if self.greyed then
+                    self.children.center:draw_shader('played', nil, self.ARGS.send_to_shader)
+                    if self.children.front and self.ability.effect ~= 'Stone Card' then		-- don't draw front here
+                    end
+                end
         end
     end
 end
