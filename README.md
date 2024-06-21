@@ -24,7 +24,6 @@ Below is a list of everything this mod adds
 |Strawberry| Common | Earn $8 at end of round, reduces by $1 at the start of each round |
 |Winged Strawberry| Common | Earn $3 if played poker hand does not contain a Pair, poker hand changes at end of round |
 |Core Switch| Common | Swap hands and discards at the start of round +1 discard after swap|
-|Climbing Gear| Common | +4 discards; Discarded cards are reshuffled into deck |
 |Waterfall| Common | If played hand contains a Flush, convert a random card held in hand to the same suit |
 |Pointless Machines| Common | <secret> |
 |5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker purchased|
@@ -38,10 +37,14 @@ Below is a list of everything this mod adds
 |Winged Golden Strawberry| Uncommon | Earn $15 at end of Boss Blind if beaten without playing a hand that contains a Pair, poker hand changes at end of round |
 |Moon Berry| Uncommon | If round ends without playing a hand that contains a Pair, create its Planet card with Negative edition, poker hand changes at end of round |
 |To the Summit| Uncommon | Gains x0.25 Mult for each consecutive Blind selected with more money than the previous blind (starts at 1x)|
-|Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 3 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
-|Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 3 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
-|Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 3 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
+|Climbing Gear| Uncommon | +4 discards; Discarded cards are reshuffled into deck |
+|Blue Spinner| Uncommon |When a card with a Blue Seal is scored, 1 in 2 chance to add a Blue Seal to each adjacent card in scored hand (Unaffected by retriggers)|
+|Purple Spinner| Uncommon | When a card with a Purple Seal is held in hand at end of round, 1 in 2 chance to add a Purple Seal to each adjacent card in hand (Unaffected by retriggers) |
+|Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 2 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
+|Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
+|Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
 |Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
@@ -59,10 +62,8 @@ Below is a list of everything this mod adds
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand |
-|Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole |
-|Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
-|Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
+|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
+|Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit put it back in deck and draw again|

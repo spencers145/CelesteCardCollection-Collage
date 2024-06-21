@@ -21,6 +21,12 @@ G.localization.descriptions.Other.e_mirrored = {
 		"at end of round"
 	}
 }
+G.localization.descriptions.Other.ccc_acts_as_mirror = {
+	name = "n2",
+	text = {
+		"{C:inactive,s:0.9}(Acts as a {C:attention,s:0.9}Mirror{C:inactive,s:0.9})"
+	}
+}
 	G.localization.descriptions.Edition.e_mirrored = {
 		name = "Mirrored",
 		text = {

@@ -1084,7 +1084,7 @@ ominousmirror.calculate = function(self, card, context)
 						card:juice_up()
 						v:juice_up()
 						_card:add_to_deck()
-						_card:set_edition({mirrored = true}, true)
+						_card:set_edition({ccc_mirrored = true}, true, true)
 						G.deck.config.card_limit = G.deck.config.card_limit + 1
 						table.insert(G.playing_cards, _card)
                                    		_card:start_materialize()
@@ -2385,7 +2385,7 @@ local redbooster = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "bein",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}
@@ -3568,7 +3568,7 @@ local eventhorizon = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "sunsetquasar + toneblock",
 		code = "toneblock",
 		concept = "Fytos"
 	}
@@ -3654,7 +3654,7 @@ badeline.yes_pool_flag = 'preventsoulspawn'
 badeline.calculate = function(self, card, context)
 	if context.repetition then
 		if context.cardarea == G.play then
-			if (context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card' then
+			if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or context.other_card.ability.effect == 'Glass Card' then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = 1,
@@ -3662,7 +3662,7 @@ badeline.calculate = function(self, card, context)
 				}
 			end
 		elseif context.cardarea == G.hand then
-			if ((context.other_card.edition and context.other_card.edition.mirrored) or context.other_card.ability.effect == 'Glass Card') and (next(context.card_effects[1]) or #context.card_effects > 1) then
+			if ((context.other_card.edition and context.other_card.edition.ccc_mirrored) or context.other_card.ability.effect == 'Glass Card') and (next(context.card_effects[1]) or #context.card_effects > 1) then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = 1,

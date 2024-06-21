@@ -9,7 +9,7 @@ priority = 0
 target = "functions/UI_definitions.lua"
 pattern = "pinned_left = G.C.ORANGE,"
 position = "after"
-payload = "mirrored = G.C.DARK_EDITION,"
+payload = "ccc_mirrored = G.C.DARK_EDITION,"
 match_indent = true
 
 # injecting mirrored desc into info_queue
@@ -18,7 +18,7 @@ match_indent = true
 target = "functions/common_events.lua"
 pattern = "if v == 'foil' then info_queue[#info_queue+1] = G.P_CENTERS['e_foil'] end"
 position = "after"
-payload = "if v == 'mirrored' then info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'} end"
+payload = "if v == 'ccc_mirrored' then info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'} end"
 match_indent = true
 
 # Do not draw front of card if mirrored
@@ -27,7 +27,7 @@ match_indent = true
 target = "card.lua"
 pattern = "elseif not self.greyed then"
 position = "at"
-payload = "elseif not self.greyed and (not self.edition or not self.edition.mirrored) then"
+payload = "elseif not self.greyed and (not self.edition or not self.edition.ccc_mirrored) then"
 match_indent = true
 
 # overwrite if statement to prevent the edition eval block from triggering if no value modifier is defined (tl;dr, no ugly blank trigger on mirrored cards)
@@ -48,8 +48,8 @@ position = "before"
 payload = '''
 for i = 1, #G.discard.cards do
 	if G.discard.cards[i].edition ~= nil then
-		if G.discard.cards[i].edition.mirrored == true then
-			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) then
+		if G.discard.cards[i].edition.ccc_mirrored == true then
+			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) and not next(find_joker('ccc_Part Of You')) then
 				G.discard.cards[i]:start_dissolve()
 			end
 		end
@@ -57,8 +57,8 @@ for i = 1, #G.discard.cards do
 end
 for i = 1, #G.deck.cards do
 	if G.deck.cards[i].edition ~= nil then
-		if G.deck.cards[i].edition.mirrored == true then
-			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) then
+		if G.deck.cards[i].edition.ccc_mirrored == true then
+			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) and not next(find_joker('ccc_Part Of You')) then
 				G.deck.cards[i]:start_dissolve()
 			end
 		end
@@ -75,8 +75,8 @@ pattern = "local effects = {G.hand.cards[i]:get_end_of_round_effect()}"
 position = "after"
 payload = '''
 	if G.hand.cards[i].edition ~= nil then
-		if G.hand.cards[i].edition.mirrored == true then
-			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) then
+		if G.hand.cards[i].edition.ccc_mirrored == true then
+			if not next(find_joker('ccc_Ominous Mirror')) and not next(find_joker('ccc_Badeline')) and not next(find_joker('ccc_Part Of You')) then
 				if G.hand.cards[i].ability.name == 'Glass Card' then 
                     			G.hand.cards[i]:shatter()
 				else
