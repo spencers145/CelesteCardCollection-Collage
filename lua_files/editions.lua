@@ -1,6 +1,6 @@
 -- region Mirrored
 
-local mirrored_shader = SMODS.Shader({key = 'mirrored', path = SMODS.current_mod.path.."assets/", file_name = 'mirrored.fs'})
+SMODS.Shader({key = 'mirrored', path = "mirrored.fs"})
 local mirrored = SMODS.Edition({
     key = "mirrored",
     loc_txt = {

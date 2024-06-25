@@ -203,7 +203,7 @@ fallacy.press_play = function(self)
 		delay(0.23)
         end
         return true end }))
-	self.triggered = true
+	G.GAME.blind.triggered = true
         return true
 end
 
