@@ -195,22 +195,23 @@ local templeeyes = SMODS.Joker({
 
 templeeyes.calculate = function(self, card, context)
 	if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-	if G.GAME.dollars <= 4 then
-        G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-            return {
-		G.E_MANAGER:add_event(Event({
-                    func = (function()
-                        G.E_MANAGER:add_event(Event({
-                            func = function() 
-                                local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_hanged_man', 'see')
-                                card:add_to_deck()
-                                G.consumeables:emplace(card)
-                                G.GAME.consumeable_buffer = 0
-                                return true
-                            end}))   
-                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
-                        return true
-                    end)}))}
+		if G.GAME.dollars <= 4 then
+			G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+			return {
+				G.E_MANAGER:add_event(Event({
+					func = (function()
+					G.E_MANAGER:add_event(Event({
+						func = function() 
+						local card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_hanged_man', 'see')
+						card:add_to_deck()
+						G.consumeables:emplace(card)
+						G.GAME.consumeable_buffer = 0
+						return true
+					end}))   
+					card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})                       
+					return true
+				end)}))
+			}
 		end
         end
 end
@@ -232,14 +233,13 @@ local miniheart = SMODS.Joker({
         name = 'Mini Heart',
         text = {
 	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
-	"edition to scored cards",
-	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+	"edition to scored cards"
         }
     },
 	rarity = 1,
 	cost = 5,
 	discovered = true,
-	blueprint_compat = false,
+	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
@@ -251,17 +251,21 @@ local miniheart = SMODS.Joker({
 })
 
 miniheart.calculate = function(self, card, context)
-	if context.cardarea == G.jokers then
-		if context.joker_main then
-			if not context.blueprint then
-				for k, v in ipairs(context.scoring_hand) do
-					if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-							v:set_edition({foil = true}, true)
-							card:juice_up()
-							v:juice_up()
-						return true end}))
-					end
+	if context.individual then
+		if context.cardarea == G.play then
+			if not context.other_card.edition then
+				if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+					G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
+						if not context.other_card.edition then
+							context.other_card:set_edition({foil = true}, true)
+							if context.blueprint then	-- idk why i need to put blueprint check here, should work without? but it doesn't
+								context.blueprint_card:juice_up()
+							else
+								card:juice_up()
+							end
+							context.other_card:juice_up()
+						end
+					return true end}))
 				end
 			end
 		end
@@ -1032,7 +1036,7 @@ local ominousmirror = SMODS.Joker({
 	loc_txt = {
         name = ('Ominous Mirror'),
         text = {
-	"{C:green}#1# in 2{} chance to copy a",
+	"{C:green}#1# in 2{} chance to copy each",
 	"scored card to your hand,",
 	"adding {C:dark_edition}Mirrored{} edition",
 	"{C:green}#1# in 6{} chance to {C:inactive}break{}",
@@ -3617,6 +3621,52 @@ function eventhorizon.loc_vars(self, info_queue, card)
 end
 
 -- endregion Event Horizon
+
+-- region Intro Car
+
+local introcar = SMODS.Joker({
+	name = "ccc_Intro Car",
+	key = "introcar",
+    config = {},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Intro Car',
+        text = {
+			"Before each {C:attention}5{} or {C:attention}8{} is",
+			"scored, {C:attention}swap{} current",
+			"{C:chips}Chips{} and {C:mult}Mult{}"
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Bred + Fytos"
+	}
+})
+
+introcar.calculate = function(self, card, context)
+	if context.individual then
+		if context.cardarea == G.play then
+			if context.other_card:get_id() == 5 or context.other_card:get_id() == 8 then	-- this is all faked with delays and stuff because it simply does not work with event manager
+				delay(0.2)
+				local temp_chips = hand_chips
+				local temp_mult = mult
+				hand_chips = mod_chips(temp_mult)
+				mult = mod_mult(temp_chips)
+				update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.FILTER})
+				delay(0.2)
+			end
+		end
+	end
+end
 
 -- region Badeline
 
