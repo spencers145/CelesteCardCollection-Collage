@@ -598,31 +598,31 @@ local chests = SMODS.Joker({
 chests.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
-	boxes_rank_array = {}
-	boxes_card_array_length = 0
-	boxes_pair_amounts = 0
-	boxes_card_pair_candidate = 0
+	card.boxes_rank_array = {}
+	card.boxes_card_array_length = 0
+	card.boxes_pair_amounts = 0
+	card.boxes_card_pair_candidate = 0
 	end
 
 	if context.individual and context.poker_hands ~= nil and ((next(context.poker_hands['Three of a Kind']) or next(context.poker_hands['Full House']) or next(context.poker_hands['Four of a Kind']) or next(context.poker_hands['Five of a Kind']) or next(context.poker_hands['Flush Five']))) and not context.blueprint then
        		if context.cardarea == G.hand then
-			boxes_card_array_length = boxes_card_array_length + 1
-			boxes_rank_array[boxes_card_array_length] = context.other_card:get_id()
+			card.boxes_card_array_length = card.boxes_card_array_length + 1
+			card.boxes_rank_array[card.boxes_card_array_length] = context.other_card:get_id()
 		end
 	end
 
 	if context.joker_main and not context.blueprint then
 		for v = 1, 13 do
-			boxes_card_pair_candidate = 0
-			for i = 1, boxes_card_array_length do
-				if boxes_rank_array[i] == v + 1 then
-					boxes_card_pair_candidate = boxes_card_pair_candidate + 1
+			card.boxes_card_pair_candidate = 0
+			for i = 1, card.boxes_card_array_length do
+				if card.boxes_rank_array[i] == v + 1 then
+					card.boxes_card_pair_candidate = card.boxes_card_pair_candidate + 1
 				end
 			end
-			boxes_pair_amounts = boxes_pair_amounts + ((boxes_card_pair_candidate - 1)*(boxes_card_pair_candidate)) / 2
+			card.boxes_pair_amounts = card.boxes_pair_amounts + ((card.boxes_card_pair_candidate - 1)*(card.boxes_card_pair_candidate)) / 2
 		end
-		if boxes_pair_amounts > 0 then
-			card.ability.extra.mult = card.ability.extra.mult + (boxes_pair_amounts)*3
+		if card.boxes_pair_amounts > 0 then
+			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts)*3
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -692,317 +692,317 @@ local books = SMODS.Joker({
 books.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
-	books_rank_array = {}
-	books_card_array_length = 0
-	books_pair_amounts = 0
-	books_card_pair_candidate = 0
-	books_scoring_straight_array = {}
-	books_scoring_pair = false
-	books_highest_rank_found = false
-	books_lowest_rank_found = false
-	books_additional_sequence_cards = 0
-	books_straight_border_high = 0
-	books_straight_border_low = 0
-	books_ace_high_scored = false
-	books_ace_high_scored_in_hand = false
-	books_ace_low_scored = false
-	books_skipped_ranks = false
-	books_allowed_skipped_ranks = {}
-	books_repeat_non_shortcut = true
+	card.books_rank_array = {}
+	card.books_card_array_length = 0
+	card.books_pair_amounts = 0
+	card.books_card_pair_candidate = 0
+	card.books_scoring_straight_array = {}
+	card.books_scoring_pair = false
+	card.books_highest_rank_found = false
+	card.books_lowest_rank_found = false
+	card.books_additional_sequence_cards = 0
+	card.books_straight_border_high = 0
+	card.books_straight_border_low = 0
+	card.books_ace_high_scored = false
+	card.books_ace_high_scored_in_hand = false
+	card.books_ace_low_scored = false
+	card.books_skipped_ranks = false
+	card.books_allowed_skipped_ranks = {}
+	card.books_repeat_non_shortcut = true
 	end
 
 	if context.individual and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
        		if context.cardarea == G.hand then
-			books_card_array_length = books_card_array_length + 1
-			books_rank_array[books_card_array_length] = context.other_card:get_id()
-			table.sort(books_rank_array)
+			card.books_card_array_length = card.books_card_array_length + 1
+			card.books_rank_array[card.books_card_array_length] = context.other_card:get_id()
+			table.sort(card.books_rank_array)
 		end
 	end
 
 	if context.joker_main and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
 		for i = 1, #context.scoring_hand do
-			books_scoring_straight_array[i] = context.scoring_hand[i]:get_id()
+			card.books_scoring_straight_array[i] = context.scoring_hand[i]:get_id()
 		end
-		table.sort(books_scoring_straight_array)
+		table.sort(card.books_scoring_straight_array)
 
 		if not next(find_joker('Four Fingers')) then
 			if not next(find_joker('Shortcut')) then
-				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-					if books_scoring_straight_array[1] == 2 then
-						books_ace_low_scored = true
-						books_scoring_straight_array[#books_scoring_straight_array] = 1
-						table.sort(books_scoring_straight_array)
+				if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+					if card.books_scoring_straight_array[1] == 2 then
+						card.books_ace_low_scored = true
+						card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+						table.sort(card.books_scoring_straight_array)
 					else
-						books_ace_high_scored = true
+						card.books_ace_high_scored = true
 					end
 				end
 			else
-				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-					if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
-						books_ace_low_scored = true
-						books_scoring_straight_array[#books_scoring_straight_array] = 1
-						table.sort(books_scoring_straight_array)
+				if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+					if card.books_scoring_straight_array[1] == 2 or card.books_scoring_straight_array[1] == 3 then
+						card.books_ace_low_scored = true
+						card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+						table.sort(card.books_scoring_straight_array)
 					else
-						books_ace_high_scored = true
+						card.books_ace_high_scored = true
 					end
 				end
 			end
 		end
 
 		if next(find_joker('Four Fingers')) then 	-- things get a whole lot more complicated, that's what :(
-			for i = 1, (#books_scoring_straight_array - 1) do
-				if books_scoring_straight_array[i] == books_scoring_straight_array[i + 1] then
-					books_scoring_pair = true	
+			for i = 1, (#card.books_scoring_straight_array - 1) do
+				if card.books_scoring_straight_array[i] == card.books_scoring_straight_array[i + 1] then
+					card.books_scoring_pair = true	
 				end
 			end
-			if books_scoring_pair ~= true then
+			if card.books_scoring_pair ~= true then
 				if not next(find_joker('Shortcut')) then
-					if books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 1 then
-						table.remove(books_scoring_straight_array, 1)
+					if card.books_scoring_straight_array[1] ~= card.books_scoring_straight_array[2] - 1 then
+						table.remove(card.books_scoring_straight_array, 1)
 					end
-					if books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1 then
-						if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-							if books_scoring_straight_array[1] == 2 then
-								books_ace_low_scored = true
-								books_scoring_straight_array[#books_scoring_straight_array] = 1
-								table.sort(books_scoring_straight_array)
-								if books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1 then
-									books_scoring_straight_array[#books_scoring_straight_array] = nil
+					if card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 1 then
+						if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+							if card.books_scoring_straight_array[1] == 2 then
+								card.books_ace_low_scored = true
+								card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+								table.sort(card.books_scoring_straight_array)
+								if card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 1 then
+									card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 								end
 							else
-								books_scoring_straight_array[#books_scoring_straight_array] = nil
+								card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 							end
 						else
-							books_scoring_straight_array[#books_scoring_straight_array] = nil
+							card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 						end
 					end
-					if books_ace_low_scored == false and books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-						books_ace_high_scored = true
+					if card.books_ace_low_scored == false and card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+						card.books_ace_high_scored = true
 					end
 				else
-					if (books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 1) and (books_scoring_straight_array[1] ~= books_scoring_straight_array[2] - 2) then
-						table.remove(books_scoring_straight_array, 1)
+					if (card.books_scoring_straight_array[1] ~= card.books_scoring_straight_array[2] - 1) and (card.books_scoring_straight_array[1] ~= card.books_scoring_straight_array[2] - 2) then
+						table.remove(card.books_scoring_straight_array, 1)
 					end
-					if (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1) and (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 2) then
-						if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-							if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
-								books_ace_low_scored = true
-								books_scoring_straight_array[#books_scoring_straight_array] = 1
-								table.sort(books_scoring_straight_array)
-								if (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 1) and (books_scoring_straight_array[#books_scoring_straight_array] ~= books_scoring_straight_array[#books_scoring_straight_array - 1] + 2) then
-									books_scoring_straight_array[#books_scoring_straight_array] = nil
+					if (card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 1) and (card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 2) then
+						if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+							if card.books_scoring_straight_array[1] == 2 or card.books_scoring_straight_array[1] == 3 then
+								card.books_ace_low_scored = true
+								card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+								table.sort(card.books_scoring_straight_array)
+								if (card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 1) and (card.books_scoring_straight_array[#card.books_scoring_straight_array] ~= card.books_scoring_straight_array[#card.books_scoring_straight_array - 1] + 2) then
+									card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 								end
 							else
-								books_scoring_straight_array[#books_scoring_straight_array] = nil
+								card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 							end
 						else
-							books_scoring_straight_array[#books_scoring_straight_array] = nil
+							card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 						end
 					end
-					if books_ace_low_scored == false and books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-						books_ace_high_scored = true
+					if card.books_ace_low_scored == false and card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+						card.books_ace_high_scored = true
 					end
 				end
 			else
-				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-					if books_scoring_straight_array[1] == 2 then
-						books_ace_low_scored = true
-						books_scoring_straight_array[#books_scoring_straight_array] = 1
-						table.sort(books_scoring_straight_array)
+				if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+					if card.books_scoring_straight_array[1] == 2 then
+						card.books_ace_low_scored = true
+						card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+						table.sort(card.books_scoring_straight_array)
 					else
-						books_ace_high_scored = true
+						card.books_ace_high_scored = true
 					end
 				end
-				if books_scoring_straight_array[#books_scoring_straight_array] == 14 then
-					if books_scoring_straight_array[1] == 2 or books_scoring_straight_array[1] == 3 then
-						books_ace_low_scored = true
-						books_scoring_straight_array[#books_scoring_straight_array] = 1
-						table.sort(books_scoring_straight_array)
+				if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 then
+					if card.books_scoring_straight_array[1] == 2 or card.books_scoring_straight_array[1] == 3 then
+						card.books_ace_low_scored = true
+						card.books_scoring_straight_array[#card.books_scoring_straight_array] = 1
+						table.sort(card.books_scoring_straight_array)
 					else
-						books_ace_high_scored = true
+						card.books_ace_high_scored = true
 					end
 				end
 			end			
-			if books_scoring_straight_array[#books_scoring_straight_array] == 14 and books_ace_low_scored == true then 	-- have to check if the player played another fucking ace in a low ace straight for whatever reason
-				books_scoring_straight_array[#books_scoring_straight_array] = nil
+			if card.books_scoring_straight_array[#card.books_scoring_straight_array] == 14 and card.books_ace_low_scored == true then 	-- have to check if the player played another fucking ace in a low ace straight for whatever reason
+				card.books_scoring_straight_array[#card.books_scoring_straight_array] = nil
 			end
 		end
 		
 		-- now we have an accurate books_scoring_straight_array! woo i sure hope there aren't any other problems!
 		
 		if next(find_joker('Shortcut')) then
-			if (books_scoring_straight_array[#books_scoring_straight_array] - books_scoring_straight_array[1]) > (#books_scoring_straight_array - 1) then
-				books_skipped_ranks = true
-				for i = 1, (#books_scoring_straight_array - 1) do
-					if books_scoring_straight_array[i] == (books_scoring_straight_array[i + 1] - 2) then
-						books_allowed_skipped_ranks[#books_allowed_skipped_ranks + 1] = books_scoring_straight_array[i] + 1
+			if (card.books_scoring_straight_array[#card.books_scoring_straight_array] - card.books_scoring_straight_array[1]) > (#card.books_scoring_straight_array - 1) then
+				card.books_skipped_ranks = true
+				for i = 1, (#card.books_scoring_straight_array - 1) do
+					if card.books_scoring_straight_array[i] == (card.books_scoring_straight_array[i + 1] - 2) then
+						card.books_allowed_skipped_ranks[#card.books_allowed_skipped_ranks + 1] = card.books_scoring_straight_array[i] + 1
 					end
 				end
 			end
 		end
 		
-		books_straight_border_low = books_scoring_straight_array[1]
-		books_straight_border_high = books_scoring_straight_array[#books_scoring_straight_array]
+		card.books_straight_border_low = card.books_scoring_straight_array[1]
+		card.books_straight_border_high = card.books_scoring_straight_array[#card.books_scoring_straight_array]
 		
 		if not next(find_joker('Shortcut')) then
-			while books_highest_rank_found == false do
-				books_highest_rank_found = true
-				for i = 1, books_card_array_length do
-					if books_rank_array[i] == books_straight_border_high + 1 then
-						if books_rank_array[i] == 14 and books_ace_high_scored == false then
-							books_ace_high_scored = true
-							books_ace_high_scored_in_hand = true
-							books_straight_border_high = books_rank_array[i]
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
+			while card.books_highest_rank_found == false do
+				card.books_highest_rank_found = true
+				for i = 1, card.books_card_array_length do
+					if card.books_rank_array[i] == card.books_straight_border_high + 1 then
+						if card.books_rank_array[i] == 14 and card.books_ace_high_scored == false then
+							card.books_ace_high_scored = true
+							card.books_ace_high_scored_in_hand = true
+							card.books_straight_border_high = card.books_rank_array[i]
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 						end
-						if books_rank_array[i] ~= 14 then
-							books_highest_rank_found = false
-							books_straight_border_high = books_rank_array[i]
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
+						if card.books_rank_array[i] ~= 14 then
+							card.books_highest_rank_found = false
+							card.books_straight_border_high = card.books_rank_array[i]
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 						end
 					end
 				end
 			end
-			while books_lowest_rank_found == false do
-				books_lowest_rank_found = true
-				for i = 1, books_card_array_length do
-					if books_rank_array[i] == books_straight_border_low - 1 then
-						if books_rank_array[i] ~= 14 then
-							books_lowest_rank_found = false
-							books_straight_border_low = books_rank_array[i]
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
+			while card.books_lowest_rank_found == false do
+				card.books_lowest_rank_found = true
+				for i = 1, card.books_card_array_length do
+					if card.books_rank_array[i] == card.books_straight_border_low - 1 then
+						if card.books_rank_array[i] ~= 14 then
+							card.books_lowest_rank_found = false
+							card.books_straight_border_low = card.books_rank_array[i]
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 						end
 					end
 				end
-				if books_straight_border_low - 1 == 1 then
-					if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
-						if books_ace_high_scored_in_hand == true then
-							if books_rank_array[#books_rank_array - 1] == 14 then
-								books_ace_low_scored = true
-								books_straight_border_low = 1
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+				if card.books_straight_border_low - 1 == 1 then
+					if card.books_rank_array[#card.books_rank_array] == 14 and card.books_ace_low_scored == false then
+						if card.books_ace_high_scored_in_hand == true then
+							if card.books_rank_array[#card.books_rank_array - 1] == 14 then
+								card.books_ace_low_scored = true
+								card.books_straight_border_low = 1
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						else
-							books_ace_low_scored = true
-							books_straight_border_low = 1
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
+							card.books_ace_low_scored = true
+							card.books_straight_border_low = 1
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 						end
 					end	
 				end		
 			end
 		else
-			while books_highest_rank_found == false do
-				books_highest_rank_found = true
-				while books_repeat_non_shortcut == true do
-					books_repeat_non_shortcut = false
-					for i = 1, books_card_array_length do
-						if books_rank_array[i] == books_straight_border_high + 1 then
-							if books_rank_array[i] == 14 and books_ace_high_scored == false then
-								books_ace_high_scored = true
-								books_ace_high_scored_in_hand = true
-								books_straight_border_high = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+			while card.books_highest_rank_found == false do
+				card.books_highest_rank_found = true
+				while card.books_repeat_non_shortcut == true do
+					card.books_repeat_non_shortcut = false
+					for i = 1, card.books_card_array_length do
+						if card.books_rank_array[i] == card.books_straight_border_high + 1 then
+							if card.books_rank_array[i] == 14 and card.books_ace_high_scored == false then
+								card.books_ace_high_scored = true
+								card.books_ace_high_scored_in_hand = true
+								card.books_straight_border_high = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
-							if books_rank_array[i] ~= 14 then
-								books_highest_rank_found = false
-								books_repeat_non_shortcut = true
-								books_straight_border_high = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							if card.books_rank_array[i] ~= 14 then
+								card.books_highest_rank_found = false
+								card.books_repeat_non_shortcut = true
+								card.books_straight_border_high = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						end
 					end
 				end
-				for i = 1, books_card_array_length do
-					if books_repeat_non_shortcut == false then
-						if books_rank_array[i] == (books_straight_border_high + 2) then
-							if books_rank_array[i] == 14 and books_ace_high_scored == false then
-								books_ace_high_scored = true
-								books_ace_high_scored_in_hand = true
-								books_straight_border_high = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+				for i = 1, card.books_card_array_length do
+					if card.books_repeat_non_shortcut == false then
+						if card.books_rank_array[i] == (card.books_straight_border_high + 2) then
+							if card.books_rank_array[i] == 14 and card.books_ace_high_scored == false then
+								card.books_ace_high_scored = true
+								card.books_ace_high_scored_in_hand = true
+								card.books_straight_border_high = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
-							if books_rank_array[i] ~= 14 then
-								books_highest_rank_found = false
-								books_repeat_non_shortcut = true
-								books_straight_border_high = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+							if card.books_rank_array[i] ~= 14 then
+								card.books_highest_rank_found = false
+								card.books_repeat_non_shortcut = true
+								card.books_straight_border_high = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end				
 						end
 					end
 				end
 			end
-			books_repeat_non_shortcut = true
-			while books_lowest_rank_found == false do
-				books_lowest_rank_found = true
-				while books_repeat_non_shortcut == true do
-					books_repeat_non_shortcut = false
-					for i = 1, books_card_array_length do
-						if books_rank_array[i] == books_straight_border_low - 1 then
-							if books_rank_array[i] ~= 14 then
-								books_lowest_rank_found = false
-								books_repeat_non_shortcut = true
-								books_straight_border_low = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+			card.books_repeat_non_shortcut = true
+			while card.books_lowest_rank_found == false do
+				card.books_lowest_rank_found = true
+				while card.books_repeat_non_shortcut == true do
+					card.books_repeat_non_shortcut = false
+					for i = 1, card.books_card_array_length do
+						if card.books_rank_array[i] == card.books_straight_border_low - 1 then
+							if card.books_rank_array[i] ~= 14 then
+								card.books_lowest_rank_found = false
+								card.books_repeat_non_shortcut = true
+								card.books_straight_border_low = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						end
 					end
-					if books_straight_border_low - 1 == 1 then
-						if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
-							if books_ace_high_scored_in_hand == true then
-								if books_rank_array[#books_rank_array - 1] == 14 then
-									books_ace_low_scored = true
-									books_straight_border_low = 1
-									books_additional_sequence_cards = books_additional_sequence_cards + 1
+					if card.books_straight_border_low - 1 == 1 then
+						if card.books_rank_array[#card.books_rank_array] == 14 and card.books_ace_low_scored == false then
+							if card.books_ace_high_scored_in_hand == true then
+								if card.books_rank_array[#card.books_rank_array - 1] == 14 then
+									card.books_ace_low_scored = true
+									card.books_straight_border_low = 1
+									card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 								end
 							else
-								books_ace_low_scored = true
-								books_straight_border_low = 1
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+								card.books_ace_low_scored = true
+								card.books_straight_border_low = 1
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						end
 					end
 				end
-				for i = 1, books_card_array_length do
-					if books_repeat_non_shortcut == false then
-						if books_rank_array[i] == books_straight_border_low - 2 then
-							if books_rank_array[i] ~= 14 then
-								books_lowest_rank_found = false
-								books_repeat_non_shortcut = true
-								books_straight_border_low = books_rank_array[i]
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+				for i = 1, card.books_card_array_length do
+					if card.books_repeat_non_shortcut == false then
+						if card.books_rank_array[i] == card.books_straight_border_low - 2 then
+							if card.books_rank_array[i] ~= 14 then
+								card.books_lowest_rank_found = false
+								card.books_repeat_non_shortcut = true
+								card.books_straight_border_low = card.books_rank_array[i]
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						end				
 					end
 				end
-				if books_straight_border_low - 1 == 1 then
-					if books_rank_array[#books_rank_array] == 14 and books_ace_low_scored == false then
-						if books_ace_high_scored_in_hand == true then
-							if books_rank_array[#books_rank_array - 1] == 14 then
-								books_ace_low_scored = true
-								books_straight_border_low = 1
-								books_additional_sequence_cards = books_additional_sequence_cards + 1
+				if card.books_straight_border_low - 1 == 1 then
+					if card.books_rank_array[#card.books_rank_array] == 14 and card.books_ace_low_scored == false then
+						if card.books_ace_high_scored_in_hand == true then
+							if card.books_rank_array[#card.books_rank_array - 1] == 14 then
+								card.books_ace_low_scored = true
+								card.books_straight_border_low = 1
+								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							end
 						else
-							books_ace_low_scored = true
-							books_straight_border_low = 1
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
+							card.books_ace_low_scored = true
+							card.books_straight_border_low = 1
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 						end
 					end
 				end
 			end
-			if books_skipped_ranks == true then
-				for i = 1, #books_allowed_skipped_ranks do
-					for v = 1, #books_rank_array do
-						if books_rank_array[v] == books_allowed_skipped_ranks[i] then
-							books_additional_sequence_cards = books_additional_sequence_cards + 1
-							books_allowed_skipped_ranks[i] = 0
+			if card.books_skipped_ranks == true then
+				for i = 1, #card.books_allowed_skipped_ranks do
+					for v = 1, #card.books_rank_array do
+						if card.books_rank_array[v] == card.books_allowed_skipped_ranks[i] then
+							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_allowed_skipped_ranks[i] = 0
 						end
 					end
 				end
 			end
 		end
-		if books_additional_sequence_cards > 0 then
-			card.ability.extra.xmult = card.ability.extra.xmult + (0.14*(books_additional_sequence_cards))
+		if card.books_additional_sequence_cards > 0 then
+			card.ability.extra.xmult = card.ability.extra.xmult + (0.14*(card.books_additional_sequence_cards))
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -1615,7 +1615,7 @@ coreswitch.calculate = function(self, card, context)
 	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 	if context.first_hand_drawn and not card.getting_sliced and not context.blueprint and not context.individual then
 		G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
-			coreswitch_hand_juggle = G.GAME.current_round.discards_left
+			local coreswitch_hand_juggle = G.GAME.current_round.discards_left
 			ease_discard(1 + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
 			ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
@@ -1626,15 +1626,7 @@ coreswitch.calculate = function(self, card, context)
 			end
 			
 			if coreswitch_hand_juggle == 0 then  -- you're a dumbass lol
-				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
-					G.STATE = G.STATES.GAME_OVER
-                			if not G.GAME.won and not G.GAME.seeded and not G.GAME.challenge then 
-						G.PROFILES[G.SETTINGS.profile].high_scores.current_streak.amt = 0
-					end
-					G:save_settings()
-					G.FILE_HANDLER.force = true
-					G.STATE_COMPLETE = false
-				return true end }))
+				end_round()
 			end
 		return true end }))
 	end
@@ -3667,6 +3659,163 @@ introcar.calculate = function(self, card, context)
 		end
 	end
 end
+
+-- endregion Intro Car
+
+-- region Secret Shrine
+
+local secretshrine = SMODS.Joker({
+	name = "ccc_Secret Shrine",
+	key = "secretshrine",
+    config = {extra = {seven_tally = 4}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Secret Shrine',
+        text = {
+			"Gives {C:mult}Mult{} equal to",
+			"{C:attention}triple{} the amount of",
+			"{C:attention}7{}s in your {C:attention}full deck{}",
+			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}"
+        }
+    },
+	rarity = 1,
+	cost = 7,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Aurora Aquir"
+	}
+})
+
+-- lovely used to update seven_tally
+
+secretshrine.calculate = function(self, card, context)
+	if context.joker_main then
+		if card.ability.extra.seven_tally ~= 0 then
+                	return {
+                   	message = localize {
+                  		type = 'variable',
+                   		key = 'a_mult',
+                  		vars = { 3*card.ability.extra.seven_tally }
+                		},
+                	mult_mod = 3*card.ability.extra.seven_tally
+                	}
+		end
+	end
+end
+
+function secretshrine.loc_vars(self, info_queue, card)
+	return {vars = {3*card.ability.extra.seven_tally}}
+end
+
+-- endregion Secret Shrine
+
+-- region Kevin
+
+local kevin = SMODS.Joker({
+	name = "ccc_Kevin",
+	key = "kevin",
+    config = {},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Kevin',
+        text = {
+			"Scoring {C:attention}face cards{} act",
+			"as a copy of the",
+			"{C:attention}rightmost{} scoring card",
+        }
+    },
+	rarity = 3,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+-- all code done in lovely
+
+-- endregion Kevin
+
+-- region Strawberry Pie
+
+local strawberrypie = SMODS.Joker({
+	name = "ccc_Strawberry Pie",
+	key = "strawberrypie",
+    config = {extra = {mult = 60, chips = 140, xmult = 8}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Strawberry Pie',
+        text = {
+			"Grants a large bonus",
+			"based on current {C:money}money{}:",	-- scuffed text centering
+			"  {C:white}ii{}{C:money}$30{}-{C:money}$79{}: {C:chips}+140{} Chips",
+			"{C:money}$80{}-{C:money}$174{}: {C:mult}+60{} Mult",
+			"   {C:money}$175+{}: {X:mult,C:white} X8 {} Mult{C:white}i{}",
+        }
+    },
+	rarity = 3,
+	cost = 12,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Kol_Oss"
+	}
+})
+
+strawberrypie.calculate = function(self, card, context)
+
+	if context.joker_main then
+
+		if (math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) >= 30) and (math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) < 80) then
+			return {
+			message = localize {
+				type = 'variable',
+				key = 'a_chips',
+				vars = { card.ability.extra.chips }
+				},
+			chip_mod = card.ability.extra.chips
+                	}
+		elseif (math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) >= 80) and (math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) < 175) then
+                	return {
+			message = localize {
+				type = 'variable',
+				key = 'a_mult',
+				vars = { card.ability.extra.mult }
+				},
+			mult_mod = card.ability.extra.mult
+                	}
+		elseif (math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) >= 175) then
+			return {
+			message = localize {
+				type = 'variable',
+				key = 'a_xmult',
+				vars = { card.ability.extra.xmult }
+				},
+			Xmult_mod = card.ability.extra.xmult
+                	}
+		end
+
+	end
+end
+
+-- endregion Strawberry Pie
 
 -- region Badeline
 

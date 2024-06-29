@@ -1,0 +1,105 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+
+# kevin time (this is dumb)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''local effects = {eval_card(scoring_hand[i], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, poker_hand = text})}'''
+position = "after"
+payload = '''
+if next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face() then
+	effects = {eval_card(scoring_hand[#scoring_hand], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, poker_hand = text})}
+end
+'''
+match_indent = true
+
+# kevin time pt.2 (this is still dumb) (HOW DOES THIS JUST WORK)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''local eval = G.jokers.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], individual = true})'''
+position = "after"
+payload = '''
+if next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face() then
+	eval = G.jokers.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[#scoring_hand], individual = true})
+end
+'''
+match_indent = true
+
+# kevin time pt.3 (return of the glass)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''if scoring_hand[i].ability.name == 'Glass Card' and not scoring_hand[i].debuff and pseudorandom('glass') < G.GAME.probabilities.normal/scoring_hand[i].ability.extra then'''
+position = "before"
+payload = '''
+if not (next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face()) then
+'''
+match_indent = true
+
+# kevin time pt.4 (the glass mimics die)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''if destroyed then'''
+position = "before"
+payload = '''
+else
+	if scoring_hand[#scoring_hand].ability.name == 'Glass Card' and not scoring_hand[#scoring_hand].debuff and pseudorandom('glass') < G.GAME.probabilities.normal/scoring_hand[#scoring_hand].ability.extra then
+		destroyed = true
+	end
+end
+'''
+match_indent = true
+
+# kevin time pt.5 (retrigger catching for red seals)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''local eval = eval_card(scoring_hand[i], {repetition_only = true,cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, repetition = true})'''
+position = "after"
+payload = '''
+if next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face() then
+	eval = eval_card(scoring_hand[#scoring_hand], {repetition_only = true,cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, repetition = true})
+end
+'''
+match_indent = true
+
+# kevin time pt.6 (retrigger catching joker version)
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''local eval = eval_card(G.jokers.cards[j], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], repetition = true})'''
+position = "after"
+payload = '''
+if next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face() then
+	eval = eval_card(G.jokers.cards[j], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[#scoring_hand], repetition = true})
+end
+'''
+match_indent = true
+
+# kevin time pt.7 (retrigger text at correct card... i don't like how this absolute bullshit works... WHY DOES IT WORK)
+[[patches]]
+[patches.regex]
+target = "functions/state_events.lua"
+pattern = '''for j=1,#reps do\n\s+percent \= percent \+ percent_delta\n\s+if reps\[j\] ~= 1 then\n\s+card_eval_status_text\(\(reps\[j\]\.jokers or reps\[j\]\.seals\)\.card, 'jokers', nil, nil, nil, \(reps\[j\]\.jokers or reps\[j\]\.seals\)\)\n\s+end\n\s+--calculate the hand effects\n\s+local effects = \{eval_card\(scoring_hand\[i\], \{cardarea = G\.play, full_hand = G\.play\.cards, scoring_hand = scoring_hand, poker_hand = text\}\)\}'''
+position = "at"
+payload = '''
+for j=1,#reps do
+	percent = percent + percent_delta
+	if reps[j] ~= 1 then
+		if (not (next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face())) or reps[j].jokers then
+			card_eval_status_text((reps[j].jokers or reps[j].seals).card, 'jokers', nil, nil, nil, (reps[j].jokers or reps[j].seals))
+		else
+			card_eval_status_text(scoring_hand[i], 'jokers', nil, nil, nil, {message = localize('k_again_ex'), colour = G.C.FILTER})
+		end
+	end
+                    
+	--calculate the hand effects
+	local effects = {eval_card(scoring_hand[i], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, poker_hand = text})}
+'''
+match_indent = true

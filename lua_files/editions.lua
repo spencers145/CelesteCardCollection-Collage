@@ -1,6 +1,7 @@
 -- region Mirrored
 
 SMODS.Shader({key = 'mirrored', path = "mirrored.fs"})
+
 local mirrored = SMODS.Edition({
     key = "mirrored",
     loc_txt = {
@@ -18,5 +19,4 @@ local mirrored = SMODS.Edition({
     config = {},
     in_shop = false
 })
-
 -- endregion Mirrored
