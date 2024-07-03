@@ -62,11 +62,15 @@ Below is a list of everything this mod adds
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
+|Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
+|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
-|Seeker| Rare | If drawn card is not most owned Rank or most owned Suit put it back in deck and draw again|
+|Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
+|Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
+|Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|
 |Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
 |Madeline| Legendary | Joker values cannot go down through their own ability|
 
