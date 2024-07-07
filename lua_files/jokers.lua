@@ -51,12 +51,12 @@ end
 local feather = SMODS.Joker({
 	name = "ccc_Feather",
 	key = "feather",
-    config = {},
+    config = {extra = {mult_scale = 0.05}},
 	pos = {x = 0, y = 0},
 	loc_txt = {
         name = 'Feather',
         text = {
-	"Gains {X:mult,C:white} X0.05 {} Mult for",
+	"Gains {X:mult,C:white} X#1# {} Mult for",
 	"each card {C:attention}drawn{} from",
 	"deck during round",
 	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
@@ -79,15 +79,15 @@ local feather = SMODS.Joker({
 feather.calculate = function(self, card, context)
         if context.joker_main then
                             return {
-                                message = localize{type='variable',key='a_xmult',vars={1+(0.05*(#G.playing_cards - #G.deck.cards))}},
-                                Xmult_mod = 1+(0.05*(#G.playing_cards - #G.deck.cards)), 
+                                message = localize{type='variable',key='a_xmult',vars={1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards))}},
+                                Xmult_mod = 1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards)), 
                                 colour = G.C.MULT
                             }
         end
 end
 
 function feather.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra, 1+(0.05*((G.deck and G.deck.cards and G.playing_cards) and #G.playing_cards - #G.deck.cards or 0))}}
+	return {vars = {card.ability.extra.mult_scale, 1+(card.ability.extra.mult_scale*((G.deck and G.deck.cards and G.playing_cards) and #G.playing_cards - #G.deck.cards or 0))}}
 end
 
 --endregion Feather
@@ -97,12 +97,12 @@ end
 local zipper = SMODS.Joker({
 	name = "ccc_Zipper",
 	key = "zipper",
-    config = {extra = {chips = 0}},
+    config = {extra = {chips = 0, chips_scale = 30}},
 	pos = {x = 4, y = 0},
 	loc_txt = {
         name = 'Zipper',
         text = {
-	"Gains {C:chips}+30{} Chips for each",
+	"Gains {C:chips}+#2#{} Chips for each",
 	"{C:attention}Blind{} skipped this run",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
         }
@@ -123,13 +123,13 @@ local zipper = SMODS.Joker({
 
 zipper.set_ability = function(self, card, initial, delay_sprites)
         if card.ability.name == 'ccc_Zipper' then
-            card.ability.extra.chips = G.GAME.skips*30
+            card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
 	end
 end
 
 zipper.calculate = function(self, card, context)
         if card.ability.name == 'ccc_Zipper' then
-            card.ability.extra.chips = G.GAME.skips*30
+            card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
 	end
         if context.skip_blind then
             if not context.blueprint then
@@ -158,7 +158,7 @@ end
 end
 
 function zipper.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.chips}}
+	return {vars = {card.ability.extra.chips, card.ability.extra.chips_scale}}
 end
 
 -- endregion Zipper
@@ -168,13 +168,13 @@ end
 local templeeyes = SMODS.Joker({
 	name = "ccc_Temple Eyes",
 	key = "templeeyes",
-    config = {},
+    config = {extra = {max_money = 4}},
 	pos = {x = 1, y = 0},
 	loc_txt = {
         name = 'Temple Eyes',
         text = {
 	"If {C:attention}Blind{} is selected with",
-	"{C:money}$4{} or less, create a",
+	"{C:money}$#1#{} or less, create a",
 	"{C:tarot}Hanged Man{}",
 	"{C:inactive}(Must have room)"
         }
@@ -195,7 +195,7 @@ local templeeyes = SMODS.Joker({
 
 templeeyes.calculate = function(self, card, context)
 	if context.setting_blind and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-		if G.GAME.dollars <= 4 then
+		if G.GAME.dollars <= card.ability.extra.max_money then
 			G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 			return {
 				G.E_MANAGER:add_event(Event({
@@ -218,6 +218,7 @@ end
 
 function templeeyes.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = G.P_CENTERS.c_hanged_man
+	return {vars = {card.ability.extra.max_money}}
 end
 
 -- endregion Temple Eyes
@@ -227,12 +228,12 @@ end
 local miniheart = SMODS.Joker({
 	name = "ccc_Mini Heart",
 	key = "miniheart",
-    config = {},
+    config = {extra = {prob_success = 20}},
 	pos = {x = 5, y = 0},
 	loc_txt = {
         name = 'Mini Heart',
         text = {
-	"{C:green}#1# in 20{} chance to add {C:dark_edition}Foil{}",
+	"{C:green}#1# in #2#{} chance to add {C:dark_edition}Foil{}",
 	"edition to scored cards"
         }
     },
@@ -254,7 +255,7 @@ miniheart.calculate = function(self, card, context)
 	if context.individual then
 		if context.cardarea == G.play then
 			if not context.other_card.edition then
-				if pseudorandom('crystal') < G.GAME.probabilities.normal/20 then
+				if pseudorandom('crystal') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
 						if not context.other_card.edition then
 							context.other_card:set_edition({foil = true}, true)
@@ -274,7 +275,7 @@ end
 
 function miniheart.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = G.P_CENTERS.e_foil
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
 -- endregion Mini Heart
@@ -284,13 +285,13 @@ end
 local bird = SMODS.Joker({
 	name = "ccc_Bird",
 	key = "bird",
-    config = {extra = {active = false}},
+    config = {extra = {draw = 4, active = false}},
 	pos = {x = 2, y = 0},
 	loc_txt = {
         name = 'Bird',
         text = {
 	"Whenever a {C:planet}Planet{} card",
-	"is used, draw {C:attention}4{} cards"
+	"is used, draw {C:attention}#1#{} cards"
         }
     },
 	rarity = 3,
@@ -331,6 +332,10 @@ bird.calculate = function(self, card, context)
             end
         end
     end
+end
+
+function bird.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.draw}}
 end
 
 -- endregion Bird
@@ -478,13 +483,13 @@ end
 local towels = SMODS.Joker({
 	name = "ccc_Huge Mess: Towels",
 	key = "towels",
-    config = {extra = {chips = 0}},
+    config = {extra = {chips = 0, chips_scale = 8}},
 	pos = {x = 0, y = 3},
 	loc_txt = {
         name = 'Huge Mess: Towels',
         text = {
 	"When played hand contains a",
-	"{C:attention}Flush{}, gains {C:chips}+8{} Chips for",
+	"{C:attention}Flush{}, gains {C:chips}+#2#{} Chips for",
 	"each card held in hand that",
 	"shares the same {C:attention}suit{}",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
@@ -536,7 +541,7 @@ towels.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
-                        card.ability.extra.chips = card.ability.extra.chips + 8
+                        card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
                         	    return {
                             message = localize('k_upgrade_ex'),
                             colour = G.C.CHIPS
@@ -559,7 +564,7 @@ towels.calculate = function(self, card, context)
 end
 
 function towels.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.chips}}
+	return {vars = {card.ability.extra.chips, card.ability.extra.chips_scale}}
 end
 
 -- endregion Huge Mess: Towels
@@ -569,14 +574,14 @@ end
 local chests = SMODS.Joker({
 	name = "ccc_Huge Mess: Chests",
 	key = "chests",
-    config = {extra = {mult = 0}},
+    config = {extra = {mult = 0, mult_scale = 3}},
 	pos = {x = 1, y = 3},
 	loc_txt = {
         name = 'Huge Mess: Chests',
         text = {
 	"When played hand contains a",
 	"{C:attention}Three of a Kind{}, gains",
-	"{C:mult}+3{} Mult for each possible",
+	"{C:mult}+#2#{} Mult for each possible",
 	"{C:attention}Pair{} held in hand",
 	"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
         }
@@ -622,7 +627,7 @@ chests.calculate = function(self, card, context)
 			card.boxes_pair_amounts = card.boxes_pair_amounts + ((card.boxes_card_pair_candidate - 1)*(card.boxes_card_pair_candidate)) / 2
 		end
 		if card.boxes_pair_amounts > 0 then
-			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts)*3
+			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts)*card.ability.extra.mult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -641,7 +646,7 @@ chests.calculate = function(self, card, context)
 end
 
 function chests.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.mult}}
+	return {vars = {card.ability.extra.mult, card.ability.extra.mult_scale}}
 end
 
 -- endregion Huge Mess: Chests
@@ -651,14 +656,14 @@ end
 local books = SMODS.Joker({
 	name = "ccc_Huge Mess: Books",
 	key = "books",
-    config = {extra = {xmult = 1}},
+    config = {extra = {xmult = 1, xmult_scale = 0.14}},
 	pos = {x = 2, y = 3},
 	loc_txt = {
 	default = {
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X0.14 {} Mult",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult",
 	"for each additional card in",
 	"the {C:attention}sequence{} held in hand",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
@@ -668,7 +673,7 @@ local books = SMODS.Joker({
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X0.14 {} Mult",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult",
 	"for each additional card in",
 	"the {C:attention}sequence{} held in hand",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
@@ -1002,7 +1007,7 @@ books.calculate = function(self, card, context)
 			end
 		end
 		if card.books_additional_sequence_cards > 0 then
-			card.ability.extra.xmult = card.ability.extra.xmult + (0.14*(card.books_additional_sequence_cards))
+			card.ability.extra.xmult = card.ability.extra.xmult + (card.ability.extra.xmult_scale*(card.books_additional_sequence_cards))
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
 		end
 	end
@@ -1021,7 +1026,7 @@ books.calculate = function(self, card, context)
 end
 
 function books.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.xmult}}
+	return {vars = {card.ability.extra.xmult, card.ability.extra.xmult_scale}}
 end
 
 -- endregion Huge Mess: Books
@@ -1031,15 +1036,15 @@ end
 local ominousmirror = SMODS.Joker({
 	name = "ccc_Ominous Mirror",
 	key = "ominousmirror",
-    config = {extra = {broken = false, pos_override = {x = 0, y = 2}}},
+    config = {extra = {broken = false, pos_override = {x = 0, y = 2}, prob_success = 2, prob_break = 6}},
 	pos = {x = 0, y = 2},
 	loc_txt = {
         name = ('Ominous Mirror'),
         text = {
-	"{C:green}#1# in 2{} chance to copy each",
+	"{C:green}#1# in #3#{} chance to copy each",
 	"scored card to your hand,",
 	"adding {C:dark_edition}Mirrored{} edition",
-	"{C:green}#1# in 6{} chance to {C:inactive}break{}",
+	"{C:green}#1# in #4#{} chance to {C:inactive}break{}",
 	"at end of round, leaving",
 	"a {C:attention}Broken Mirror{}"
         }
@@ -1139,7 +1144,7 @@ end
 
 function ominousmirror.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'}
-	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken}}
+	return {key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.prob_success, card.ability.extra.prob_break}}
 end
 
 -- endregion Ominous Mirror
@@ -1151,18 +1156,18 @@ end
 local strawberry = SMODS.Joker({
 	name = "ccc_Strawberry",
 	key = "strawberry",
-    config = {extra = {money = 8}},
+    config = {extra = {money = 7, money_reduce = 1}},
 	pos = {x = 1, y = 1},
 	loc_txt = {
         name = 'Strawberry',
         text = {
 	"Earn {C:money}$#1#{} at end of",
-	"round, reduces by {C:money}$1{}",
-	"at end of shop"
+	"round, reduces by {C:money}$#2#{}",
+	"upon cashing out"
         }
     },
 	rarity = 1,
-	cost = 7,
+	cost = 6,
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = false,
@@ -1178,10 +1183,10 @@ local strawberry = SMODS.Joker({
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
 
 strawberry.calculate = function(self, card, context)
-	if context.ending_shop and not context.blueprint then
-		if card.ability.extra.money > 1 then
-			card.ability.extra.money = card.ability.extra.money - 1
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-$1", colour = G.C.MONEY})
+	if context.ccc_cash_out and not context.blueprint then	-- custom cashout context in lovely
+		if card.ability.extra.money > card.ability.extra.money_reduce then
+			card.ability.extra.money = card.ability.extra.money - card.ability.extra.money_reduce
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-$"..card.ability.extra.money_reduce, colour = G.C.MONEY})
 		else
 			G.E_MANAGER:add_event(Event({
 				func = function()
@@ -1205,7 +1210,7 @@ strawberry.calculate = function(self, card, context)
 end
 
 function strawberry.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.money}}
+	return {vars = {card.ability.extra.money, card.ability.extra.money_reduce}}
 end
 
 
@@ -1216,12 +1221,12 @@ end
 local wingedstrawberry = SMODS.Joker({
 	name = "ccc_Winged Strawberry",
 	key = "wingedstrawberry",
-    config = {extra = {winged_poker_hand = 'Pair'}},
+    config = {extra = {winged_poker_hand = 'Pair', money = 3}},
 	pos = {x = 2, y = 1},
 	loc_txt = {
         name = 'Winged Strawberry',
         text = {
-	"Earn {C:money}$3{} if {C:attention}poker hand{} does",
+	"Earn {C:money}$#2#{} if {C:attention}poker hand{} does",
 	"not contain a {C:attention}#1#{},",
 	"{s:0.8}poker hand changes at end of round"
         }
@@ -1266,12 +1271,12 @@ wingedstrawberry.calculate = function(self, card, context)
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
 			if not next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
-				ease_dollars(3)
-				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + 3
+				ease_dollars(card.ability.extra.money)
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money
 				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
 				return {
-					message = localize('$')..3,
-					dollars = 3,
+					message = localize('$')..card.ability.extra.money,
+					dollars = card.ability.extra.money,
 					colour = G.C.MONEY
 					}
 			end
@@ -1282,7 +1287,7 @@ end
 	
 
 function wingedstrawberry.loc_vars(self, info_queue, card)
-	return {vars = {(card.ability.extra.winged_poker_hand)}}
+	return {vars = {card.ability.extra.winged_poker_hand, card.ability.extra.money}}
 end
 
 -- endregion Winged Strawberry
@@ -1292,12 +1297,12 @@ end
 local goldenstrawberry = SMODS.Joker({
 	name = "ccc_Golden Strawberry",
 	key = "goldenstrawberry",
-    config = {extra = {after_boss = false}},
+    config = {extra = {after_boss = false, money = 12}},
 	pos = {x = 3, y = 1},
 	loc_txt = {
         name = 'Golden Strawberry',
         text = {
-	"Earn {C:money}$12{} at end of",
+	"Earn {C:money}$#1#{} at end of",
 	"{C:attention}Boss Blind{}"
         }
     },
@@ -1327,6 +1332,10 @@ goldenstrawberry.calculate = function(self, card, context)
 	end
 end
 
+function goldenstrawberry.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.money}}
+end
+
 -- endregion Golden Strawberry
 
 -- region Winged Golden Strawberry
@@ -1334,12 +1343,12 @@ end
 local wingedgoldenstrawberry = SMODS.Joker({
 	name = "ccc_Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false}},
+    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false, money = 15}},
 	pos = {x = 4, y = 1},
 	loc_txt = {
         name = 'Winged Golden Strawberry',
         text = {
-	"Earn {C:money}$15{} at end of {C:attention}Boss Blind{} if",
+	"Earn {C:money}$#2#{} at end of {C:attention}Boss Blind{} if",
 	"beaten without playing a hand",
 	"that contains a {C:attention}#1#{},",
 	"{s:0.8}poker hand changes at end of round"
@@ -1400,7 +1409,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 end
 
 function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.winged_poker_hand}}
+	return {vars = {card.ability.extra.winged_poker_hand, card.ability.extra.money}}
 end
 
 -- endregion Winged Golden Strawberry
@@ -1517,12 +1526,12 @@ end
 local tothesummit = SMODS.Joker({
 	name = "ccc_To The Summit",
 	key = "tothesummit",
-    config = {extra = {xmult = 1, min_money = 0}},	-- rip debt lovers
+    config = {extra = {xmult = 1, min_money = 0, xmult_scale = 0.25}},	-- rip debt lovers
 	pos = {x = 0, y = 1},
 	loc_txt = {
         name = 'To The Summit',
         text = {
-	"Gains {X:mult,C:white} X0.25 {} Mult for each",
+	"Gains {X:mult,C:white} X#3# {} Mult for each",
 	"{C:attention}consecutive Blind{} selected",
 	"with more {C:money}money{} than",
 	"the {C:attention}previous Blind{}",
@@ -1554,7 +1563,7 @@ tothesummit.calculate = function(self, card, context)
 			end
 			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		elseif card.ability.extra.min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
-			card.ability.extra.xmult = card.ability.extra.xmult + 0.25
+			card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
 			card.ability.extra.min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		end
@@ -1574,7 +1583,7 @@ tothesummit.calculate = function(self, card, context)
 end
 
 function tothesummit.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.xmult, card.ability.extra.min_money}}
+	return {vars = {card.ability.extra.xmult, card.ability.extra.min_money, card.ability.extra.xmult_scale}}
 end
 
 -- endregion To The Summit
@@ -1584,14 +1593,14 @@ end
 local coreswitch = SMODS.Joker({
 	name = "ccc_Core Switch",
 	key = "coreswitch",
-    config = {extra = {pos_override = {x = 6, y = 0}}},
+    config = {extra = {pos_override = {x = 6, y = 0}, discards = 1}},
 	pos = {x = 6, y = 0},
 	loc_txt = {
         name = 'Core Switch',
         text = {
 	"Swap {C:blue}hands{} and {C:red}discards{}",
 	"at start of round",
-	"{C:red}+1{} discard after swap"
+	"{C:red}+#1#{} discard after swap"
         }
     },
 	rarity = 1,
@@ -1616,7 +1625,7 @@ coreswitch.calculate = function(self, card, context)
 	if context.first_hand_drawn and not card.getting_sliced and not context.blueprint and not context.individual then
 		G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 			local coreswitch_hand_juggle = G.GAME.current_round.discards_left
-			ease_discard(1 + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
+			ease_discard(card.ability.extra.discards + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil, true)
 			ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swapped", colour = G.C.FILTER})
 			if card.ability.extra.pos_override.x == 6 then 
@@ -1632,6 +1641,10 @@ coreswitch.calculate = function(self, card, context)
 	end
 end
 
+function coreswitch.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.discards}}
+end
+
 -- endregion Core Switch
 
 -- region Temple Rock
@@ -1639,13 +1652,13 @@ end
 local templerock = SMODS.Joker({
 	name = "ccc_Temple Rock",
 	key = "templerock",
-    config = {},
+    config = {extra = {chips = 50}},
 	pos = {x = 8, y = 0},
 	loc_txt = {
         name = 'Temple Rock',
         text = {
 	"Each {C:attention}Stone Card{} held",
-	"in hand gives {C:chips}+50{} chips"
+	"in hand gives {C:chips}+#1#{} chips"
         }
     },
 	rarity = 1,
@@ -1666,15 +1679,15 @@ templerock.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil then
         	if context.cardarea == G.hand then
 	         	if context.other_card.ability.name == 'Stone Card' then
-				hand_chips = mod_chips(hand_chips + 50)
+				hand_chips = mod_chips(hand_chips + card.ability.extra.chips)
                         	update_hand_text({delay = 0}, {chips = hand_chips})
                         	return {
                     			message = localize {
                         			type = 'variable',
                         			key = 'a_chips',
-                        			vars = { 50 }
+                        			vars = { card.ability.extra.chips }
                     				},
-					chip_mod = 50
+					chip_mod = card.ability.extra.chips
 				}
 			end
         	end
@@ -1683,6 +1696,7 @@ end
 
 function templerock.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+	return {vars = {card.ability.extra.chips}}
 end
 
 -- endregion Temple Rock
@@ -1692,12 +1706,12 @@ end
 local strongwinds = SMODS.Joker({
 	name = "ccc_Strong Winds",
 	key = "strongwinds",
-    config = {},
+    config = {extra = {xmult = 2.22}},
 	pos = {x = 4, y = 2},
 	loc_txt = {
         name = 'Strong Winds',
         text = {
-	"{X:mult,C:white} X2.22 {} Mult",
+	"{X:mult,C:white} X#1# {} Mult",
 	"Card of the highest {C:attention}rank{} in",
 	"scoring hand is {C:red}destroyed{}"
         }
@@ -1721,50 +1735,55 @@ strongwinds.calculate = function(self, card, context)
 		if context.joker_main then
 			if not context.blueprint then
 				local cards_destroyed = {}
-				YOU_CANNOT_STOP_THE_WIND_BITCH = context.scoring_hand[1]
+				local bitch = context.scoring_hand[1]
 				for k = 1, #context.scoring_hand do
 					if context.scoring_hand[k].ability.name ~= 'Stone Card' then
-						if context.scoring_hand[k]:get_id() > YOU_CANNOT_STOP_THE_WIND_BITCH:get_id() then
-							YOU_CANNOT_STOP_THE_WIND_BITCH = context.scoring_hand[k]
+						if context.scoring_hand[k]:get_id() > bitch:get_id() then
+							bitch = context.scoring_hand[k]
 						end
 					end
 				end
-            			highlight_card(YOU_CANNOT_STOP_THE_WIND_BITCH,(1-0.999)/(#context.scoring_hand-0.998),'down') -- i copied literally the entire goddamn card destruction code to fix this stupid bug... it's probably just this line that i was missing but oh my god i don't care at this point
-				if YOU_CANNOT_STOP_THE_WIND_BITCH.ability.name == 'Glass Card' then 
-					YOU_CANNOT_STOP_THE_WIND_BITCH.shattered = true
-				else 
-					YOU_CANNOT_STOP_THE_WIND_BITCH.destroyed = true
-				end 
-				cards_destroyed[#cards_destroyed+1] = YOU_CANNOT_STOP_THE_WIND_BITCH
-       				for j=1, #G.jokers.cards do
-					eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
-				end
-				for i=1, #cards_destroyed do
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							if cards_destroyed[i].ability.name == 'Glass Card' then 
-								cards_destroyed[i]:shatter()
-							else
-								cards_destroyed[i]:start_dissolve()
+				if bitch then
+            				highlight_card(bitch,(1-0.999)/(#context.scoring_hand-0.998),'down') -- i copied literally the entire goddamn card destruction code to fix this stupid bug... it's probably just this line that i was missing but oh my god i don't care at this point
+					if bitch.ability.name == 'Glass Card' then 
+						bitch.shattered = true
+					else 
+						bitch.destroyed = true
+					end 
+					cards_destroyed[#cards_destroyed+1] = bitch
+       					for j=1, #G.jokers.cards do
+						eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
+					end
+					for i=1, #cards_destroyed do
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								if cards_destroyed[i].ability.name == 'Glass Card' then 
+									cards_destroyed[i]:shatter()
+								else
+									cards_destroyed[i]:start_dissolve()
+								end
+							return true
 							end
-						return true
-						end
-					}))
+						}))
+					end
 				end
 			end
 			return {
 				message = localize {
 					type = 'variable',
 					key = 'a_xmult',
-					vars = { 2.22 }
+					vars = { card.ability.extra.xmult }
 				},
-				Xmult_mod = 2.22
+				Xmult_mod = card.ability.extra.xmult
 			}
 		end
 	end
 end
 
-			
+function strongwinds.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.xmult}}
+end
+		
 -- endregion Strong Winds
 
 -- region Coyote Jump
@@ -1772,7 +1791,7 @@ end
 local coyotejump = SMODS.Joker({
 	name = "ccc_Coyote Jump",
 	key = "coyotejump",
-    config = {},
+    config = {extra = {discards = 1}},
 	pos = {x = 9, y = 0},
 	loc_txt = {
         name = 'Coyote Jump',
@@ -1780,7 +1799,7 @@ local coyotejump = SMODS.Joker({
 	"If cards held in hand",
 	"do not form a {C:attention}Pair{},",
 	"{C:attention}Straight{}, or {C:attention}Flush{},",
-	"gain {C:red}+1{} discard"
+	"gain {C:red}+#1#{} discard"
         }
     },
 	rarity = 3,
@@ -1849,6 +1868,10 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 	end
 end
 
+function coyotejump.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.discards}}
+end
+
 -- endregion Coyote Jump
 
 -- region Climbing Gear
@@ -1861,7 +1884,7 @@ local climbinggear = SMODS.Joker({
 	loc_txt = {
         name = 'Climbing Gear',
         text = {
-	"{C:red}+4{} discards",
+	"{C:red}+#1#{} discards",
 	"Discarded cards are",
 	"reshuffled into deck"
         }
@@ -1882,6 +1905,10 @@ local climbinggear = SMODS.Joker({
 
 -- literally NO code needs to be here, it's all done in lovely patches
 
+function climbinggear.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.d_size}}
+end
+
 -- endregion Climbing Gear
 
 -- all 3 spinners have basically the same code lol
@@ -1891,13 +1918,13 @@ local climbinggear = SMODS.Joker({
 local bluespinner = SMODS.Joker({
 	name = "ccc_Blue Spinner",
 	key = "bluespinner",
-    config = {},
+    config = {extra = {prob_success = 2}},
 	pos = {x = 0, y = 4},
 	loc_txt = {
         name = 'Blue Spinner',
         text = {
 	"When a card with a {C:planet}Blue Seal{}",
-	"is scored, {C:green}#1# in 2{} chance",
+	"is scored, {C:green}#1# in #2#{} chance",
 	"to add a {C:planet}Blue Seal{} to each",
 	"{C:attention}adjacent{} card in scored hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -1931,7 +1958,7 @@ bluespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #context.scoring_hand then
 					if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-						if pseudorandom('bloo1') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('bloo1') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
@@ -1939,18 +1966,18 @@ bluespinner.calculate = function(self, card, context)
 			elseif k == #context.scoring_hand then
 				if k ~= 1 then
 					if context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-						if pseudorandom('bloo2') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('bloo2') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 						end
 					end
 				end
 			else
 				if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-					if pseudorandom('bloo3') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('bloo3') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				elseif context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-					if pseudorandom('bloo4') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('bloo4') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				end
@@ -1974,7 +2001,7 @@ end
 
 function bluespinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'blue_seal', set = 'Other'}
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
 -- endregion Blue Spinner
@@ -1984,14 +2011,14 @@ end
 local purplespinner = SMODS.Joker({
 	name = "ccc_Purple Spinner",
 	key = "purplespinner",
-    config = {},
+    config = {extra = {prob_success = 2}},
 	pos = {x = 1, y = 4},
 	loc_txt = {
         name = 'Purple Spinner',
         text = {
 	"When a card with a {C:tarot}Purple Seal{}",
 	"is {C:attention}held{} in hand at end of round,",
-	"{C:green}#1# in 2{} chance to add a {C:tarot}Purple Seal{}",
+	"{C:green}#1# in #2#{} chance to add a {C:tarot}Purple Seal{}",
 	"to each {C:attention}adjacent{} card in hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
@@ -2024,7 +2051,7 @@ purplespinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.cards then
 					if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-						if pseudorandom('purple1') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('purple1') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
@@ -2032,18 +2059,18 @@ purplespinner.calculate = function(self, card, context)
 			elseif k == #G.hand.cards then
 				if k ~= 1 then
 					if G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-						if pseudorandom('is2') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('is2') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 						end
 					end
 				end
 			else
 				if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-					if pseudorandom('best3') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('best3') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				elseif G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-					if pseudorandom('colour4') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('colour4') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				end
@@ -2067,7 +2094,7 @@ end
 
 function purplespinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'purple_seal', set = 'Other'}
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
 
@@ -2076,13 +2103,13 @@ end
 local redspinner = SMODS.Joker({
 	name = "ccc_Red Spinner",
 	key = "redspinner",
-    config = {},
+    config = {extra = {prob_success = 2}},
 	pos = {x = 2, y = 4},
 	loc_txt = {
         name = 'Red Spinner',
         text = {
 	"When a card with a {C:red}Red Seal{}",
-	"is {C:attention}discarded{}, {C:green}#1# in 2{} chance",
+	"is {C:attention}discarded{}, {C:green}#1# in #2#{} chance",
 	"to add a {C:red}Red Seal{} to each",
 	"{C:attention}adjacent{} card in discarded hand",
 	"{C:inactive,s:0.87}(Unaffected by retriggers){}"
@@ -2116,7 +2143,7 @@ redspinner.calculate = function(self, card, context)
 			if k == 1 then
 				if k ~= #G.hand.highlighted then
 					if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-						if pseudorandom('RED1') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('RED1') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
@@ -2124,18 +2151,18 @@ redspinner.calculate = function(self, card, context)
 			elseif k == #G.hand.highlighted then
 				if k ~= 1 then
 					if G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-						if pseudorandom('redge2') < G.GAME.probabilities.normal/2 then
+						if pseudorandom('redge2') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 						end
 					end
 				end
 			else
 				if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				elseif G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/2 then
+					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				end
@@ -2159,7 +2186,7 @@ end
 
 function redspinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'red_seal', set = 'Other'}
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1)}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
 -- endregion Red Spinner
@@ -2175,7 +2202,7 @@ local rainbowspinner = SMODS.Joker({
         name = 'Rainbow Spinner',
         text = {
 	"{C:money}Gold Seals{} act as",
-	"{C:red,s:1.2,E:1}ev{C:tarot,s:1.2,E:1}e{C:planet,s:1.2,E:1}ry{} seal"
+	"{C:red}ev{C:tarot}e{C:planet}ry{} seal"
         }
     },
 	rarity = 3,
@@ -2205,15 +2232,15 @@ end
 local lettinggo = SMODS.Joker({
 	name = "ccc_Letting Go",
 	key = "lettinggo",
-    config = {extra = {mult = 0}},
+    config = {extra = {mult = 0, prob_success = 2, mult_scale = 4}},
 	pos = {x = 2, y = 2},
 	loc_txt = {
         name = 'Letting Go',
         text = {
 	"When a card is destroyed,",
-	"{C:green}#1# in 2{} chance to create",
+	"{C:green}#1# in #3#{} chance to create",
 	"a {C:tarot}Death{}",
-	"Gains {C:mult}+4{} Mult for each",
+	"Gains {C:mult}+#4#{} Mult for each",
 	"{C:tarot}Death{} used",
 	"{C:inactive}(Must have room)",
 	"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
@@ -2242,7 +2269,7 @@ lettinggo.calculate = function(self, card, context)
                 end
 		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
                     			func = (function()
@@ -2269,7 +2296,7 @@ lettinggo.calculate = function(self, card, context)
                 end
 		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/2 then
+				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
                     			func = (function()
@@ -2292,7 +2319,7 @@ lettinggo.calculate = function(self, card, context)
 	if context.using_consumeable then
 		if context.consumeable.ability.name == 'Death' then
 			if not context.blueprint then
-				card.ability.extra.mult = card.ability.extra.mult + 4
+				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_scale
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {card.ability.extra.mult}}})
 			end
 		end
@@ -2314,7 +2341,7 @@ end
 
 function lettinggo.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = G.P_CENTERS.c_death
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.mult}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.mult, card.ability.extra.prob_success, card.ability.extra.mult_scale}}
 end
 
 -- endregion Letting Go
@@ -2403,12 +2430,12 @@ end
 local cassetteblock = SMODS.Joker({
 	name = "ccc_Cassette Block",
 	key = "cassetteblock",
-    config = {extra = {chips = 0, mult = 0, pink = false, pos_override = {x = 6, y = 2}}},
+    config = {extra = {chips = 0, mult = 0, chips_scale = 8, mult_scale = 3, pink = false, pos_override = {x = 6, y = 2}}},
 	pos = {x = 6, y = 2},
 	loc_txt = {
         name = ('Cassette Block'),
         text = {
-	"Gains {C:chips}+8{} Chips for each",
+	"Gains {C:chips}+#3#{} Chips for each",
 	"{C:attention}unused{} {C:chips}hand{} at end of round",
 	"{C:mult}Swaps{} at start of round",
 	"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
@@ -2431,7 +2458,7 @@ local cassetteblock = SMODS.Joker({
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
 				name = ('Cassette Block'),
 				text = {
-					"Gains {C:mult}+3{} Mult for each",
+					"Gains {C:mult}+#4#{} Mult for each",
 					"{C:attention}unused{} {C:mult}discard{} at end of round",
 					"{C:chips}Swaps{} at start of round",
 					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
@@ -2482,7 +2509,7 @@ cassetteblock.calculate = function(self, card, context)
 
 		if card.ability.extra.pink == false then
 			if G.GAME.current_round.hands_left > 0 then
-				card.ability.extra.chips = card.ability.extra.chips + 8*G.GAME.current_round.hands_left
+				card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale*G.GAME.current_round.hands_left
 
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
@@ -2490,7 +2517,7 @@ cassetteblock.calculate = function(self, card, context)
 			end
 		else
 			if G.GAME.current_round.discards_left > 0 then
-				card.ability.extra.mult = card.ability.extra.mult + 3*G.GAME.current_round.discards_left
+				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_scale*G.GAME.current_round.discards_left
 
 				G.E_MANAGER:add_event(Event({func = function()
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
@@ -2527,7 +2554,7 @@ cassetteblock.calculate = function(self, card, context)
 end
 
 function cassetteblock.loc_vars(self, info_queue, card)
-	return {key = (card.ability.extra.pink and "Cassette Block" or card.config.center.key), vars = {card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.pink}}
+	return {key = (card.ability.extra.pink and "Cassette Block" or card.config.center.key), vars = {card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.chips_scale, card.ability.extra.mult_scale, card.ability.extra.pink}}
 end
 
 -- region Bumper
@@ -2535,13 +2562,13 @@ end
 local bumper = SMODS.Joker({
 	name = "ccc_Bumper",
 	key = "bumper",
-    config = {},
+    config = {extra = {mult = 16, chips = 60}},
 	pos = {x = 7, y = 1},
 	loc_txt = {
         name = 'Bumper',
         text = {
-	"If {C:mult}discards{} {C:attention}>{} {C:chips}hands{}, {C:mult}+16{} Mult",
-	"If {C:chips}hands{} {C:attention}>{} {C:mult}discards{}, {C:chips}+60{} Chips",
+	"If {C:mult}discards{} {C:attention}>{} {C:chips}hands{}, {C:mult}+#1#{} Mult",
+	"If {C:chips}hands{} {C:attention}>{} {C:mult}discards{}, {C:chips}+#2#{} Chips",
 	"If both are {C:attention}equal{}, does {C:inactive}nothing{}"
         }
     },
@@ -2568,18 +2595,18 @@ bumper.calculate = function(self, card, context)
                   	 message = localize {
                   		type = 'variable',
                    		key = 'a_chips',
-                  		vars = { 60 }
+                  		vars = { card.ability.extra.chips }
                 		},
-                	chip_mod = 60
+                	chip_mod = card.ability.extra.chips
                 	}
 		elseif G.GAME.current_round.discards_left > G.GAME.current_round.hands_left then
                 	return {
                   	 message = localize {
                   		type = 'variable',
                    		key = 'a_mult',
-                  		vars = { 16 }
+                  		vars = { card.ability.extra.mult }
                 		},
-                	mult_mod = 16
+                	mult_mod = card.ability.extra.mult
                 	}
 		else
 			if not context.blueprint then
@@ -2587,6 +2614,10 @@ bumper.calculate = function(self, card, context)
 			end
 		end
 	end
+end
+
+function bumper.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips, card.ability.extra.mult}}
 end
 
 -- endregion Bumper
@@ -2683,14 +2714,14 @@ end
 local collapsingbridge = SMODS.Joker({
 	name = "ccc_Collapsing Bridge",
 	key = "collapsingbridge",
-    config = {extra = {xmult = 5}},
+    config = {extra = {xmult = 5, prob_success = 5}},
 	pos = {x = 8, y = 1},
 	loc_txt = {
         name = 'Collapsing Bridge',
         text = {
 	"{X:mult,C:white} X#2# {} Mult when played hand",
 	"contains a {C:attention}Straight{}",
-	"All played cards have a {C:green}#1# in 5{}",
+	"All played cards have a {C:green}#1# in #3#{}",
 	"chance of being {C:red}destroyed{}"
         }
     },
@@ -2715,7 +2746,7 @@ collapsingbridge.calculate = function(self, card, context)
 		if not context.blueprint then
 			local cards_destroyed = {}
 			for k, v in ipairs(context.full_hand) do
-				if pseudorandom('bridge') < G.GAME.probabilities.normal/5 then
+				if pseudorandom('bridge') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					cards_destroyed[#cards_destroyed+1] = v
 					if v.ability.name == 'Glass Card' then 
 						v.shattered = true
@@ -2757,7 +2788,7 @@ collapsingbridge.calculate = function(self, card, context)
 end
 
 function collapsingbridge.loc_vars(self, info_queue, card)
-	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.xmult}}
+	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.xmult, card.ability.extra.prob_success}}
 end
 
 -- endregion Collapsing Bridge
@@ -2767,12 +2798,12 @@ end
 local switchgate = SMODS.Joker({
 	name = "ccc_Switch Gate",
 	key = "switchgate",
-	config = {extra = {chips = 0, cards = {[1] = {rank = 'Ace', suit = 'Spades', id = 14}, [2] = {rank = 'Ace', suit = 'Hearts', id = 14}, [3] = {rank = 'Ace', suit = 'Clubs', id = 14}}}},
+	config = {extra = {chips = 0, chips_scale = 10, cards = {[1] = {rank = 'Ace', suit = 'Spades', id = 14}, [2] = {rank = 'Ace', suit = 'Hearts', id = 14}, [3] = {rank = 'Ace', suit = 'Clubs', id = 14}}}},
 	pos = {x = 4, y = 3},
 	loc_txt = {
 	name = 'Switch Gate',
 	text = {
-	"Gains {C:chips}+10{} Chips if {C:attention}any{} of the",
+	"Gains {C:chips}+#8#{} Chips if {C:attention}any{} of the",
 	"following cards are scored:",
 	"{C:attention}#2#{} of {V:1}#3#{}",
 	"{C:attention}#4#{} of {V:2}#5#{}",
@@ -2839,7 +2870,7 @@ switchgate.calculate = function(self, card, context)
 		if context.cardarea == G.play then
 			for i = 1, 3 do
 				if context.other_card:get_id() == card.ability.extra.cards[i].id and context.other_card:is_suit(card.ability.extra.cards[i].suit) then
-					card.ability.extra.chips = card.ability.extra.chips + 10
+					card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
 					card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
 				end
 			end
@@ -2862,13 +2893,14 @@ end
 
 function switchgate.loc_vars(self, info_queue, card)	-- what a mess
 	return {vars = {
-		card.ability.extra.chips, 
+		card.ability.extra.chips,
 		localize(card.ability.extra.cards[1].rank, 'ranks'), 
 		localize(card.ability.extra.cards[1].suit, 'suits_plural'), 
 		localize(card.ability.extra.cards[2].rank, 'ranks'), 
 		localize(card.ability.extra.cards[2].suit, 'suits_plural'), 
 		localize(card.ability.extra.cards[3].rank, 'ranks'), 
 		localize(card.ability.extra.cards[3].suit, 'suits_plural'),
+		card.ability.extra.chips_scale,
 		colours = {
 			G.C.SUITS[card.ability.extra.cards[1].suit], 
 			G.C.SUITS[card.ability.extra.cards[2].suit], 
@@ -2885,12 +2917,12 @@ end
 local checkpoint = SMODS.Joker({
 	name = "ccc_Checkpoint",
 	key = "checkpoint",
-    config = {extra = {xmult = 1, did_you_discard = false, after_boss = false}},
+    config = {extra = {xmult = 1, xmult_scale = 1, did_you_discard = false, after_boss = false}},
 	pos = {x = 8, y = 2},
 	loc_txt = {
         name = 'Checkpoint',
         text = {
-	"Gains {X:mult,C:white} X1#{} Mult if",
+	"Gains {X:mult,C:white} X#2#{} Mult if",
 	"{C:attention}Boss Blind{} is defeated",
 	"without {C:red}discarding{}",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
@@ -2931,7 +2963,7 @@ checkpoint.calculate = function(self, card, context)
 	
 	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
 		if card.ability.extra.after_boss == true and card.ability.extra.did_you_discard == false then
-			card.ability.extra.xmult = card.ability.extra.xmult + 1
+			card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
 		end
 	end
@@ -2951,7 +2983,7 @@ checkpoint.calculate = function(self, card, context)
 end
 
 function checkpoint.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.xmult}}
+	return {vars = {card.ability.extra.xmult, card.ability.extra.xmult_scale}}
 end
 
 -- endregion Checkpoint
@@ -3135,14 +3167,6 @@ local lapidary = SMODS.Joker({
 		concept = "Aurora Aquir"
 	}
 })
-
-
-function lapidary.loc_vars(self, info_queue, card)
-	return {vars = {
-		card.ability.extra,
-	}
-}
-end
 
 lapidary.calculate = function(self, card, context)
 	if context.other_joker then
@@ -3422,8 +3446,10 @@ seeker.get_common_suit_and_ranks = function (card)
 		return
 	end
 	for index, card in ipairs(G.playing_cards) do
-		ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
-		suits[card.base.suit] = (suits[card.base.suit] or 0) + 1
+		if card.ability.effect ~= 'Stone Card' then
+			ranks[card.base.value] = (ranks[card.base.value] or 0) + 1
+			suits[card.base.suit] = (suits[card.base.suit] or 0) + 1
+		end
 	end
 	local most_common_suit = {
 		key = "Hearts",
@@ -3459,7 +3485,47 @@ seeker.set_ability = function(self, card, initial, delay_sprites)
 end
 
 seeker.calculate = function(self, card, context)
-	seeker.get_common_suit_and_ranks(card)
+	seeker.get_common_suit_and_ranks(card)		-- could possibly just put this function into Card:update instead of calling it frequently? similar to secret shrine
+
+	if context.ccc_hand_drawn and not context.blueprint and not ccc_GLOBAL_seeker_proc == true then		-- custom context created in lovely
+		
+		ccc_GLOBAL_seeker_proc = true		-- global variable to prevent multiple copies of seeker from triggering
+		local card_pos = {}
+		local card_redraw_candidates = {}
+		local hand_size = G.hand.config.card_limit - #G.hand.cards
+		G.deck:shuffle('see'..G.GAME.round_resets.ante)			-- shuffle is early, otherwise card drawing gets messed up
+		if hand_size > #G.deck.cards then
+			hand_size = #G.deck.cards
+		end
+		for i = 1, hand_size do
+			local future_card = G.deck.cards[(#G.deck.cards - (i - 1))]		-- end of G.deck.cards currently has the cards that are about to be drawn
+			local stay_flipped = G.GAME and G.GAME.blind and G.GAME.blind:stay_flipped(G.hand, G.deck.cards[(#G.deck.cards - (i - 1))])
+			if ((not (future_card.base.value == G.GAME.pool_flags.seeker_table.rank or future_card.base.suit == G.GAME.pool_flags.seeker_table.suit)) 
+			or (future_card.ability.name == 'Stone Card')) and (not stay_flipped == true) then	-- note that the only exclusion is stone cards, wild/smeared affect :is_suit() rather than base.suit
+				card_redraw_candidates[#card_redraw_candidates + 1] = future_card
+				card_pos[#card_pos + 1] = i
+			end
+		end
+		if #card_redraw_candidates > 0 then
+			G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			func = function () 
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Redraw", colour = G.C.FILTER})
+				local hand_count = #card_redraw_candidates
+				for i=1, hand_count do
+					draw_card(G.hand, G.deck, i*100/hand_count,'down', nil, card_redraw_candidates[i],  0.08)
+				end
+				G.FUNCS.draw_from_deck_to_hand(hand_count)
+				return true 
+			end}))
+		end
+		G.E_MANAGER:add_event(Event({
+		trigger = "after",
+		func = function ()
+			ccc_GLOBAL_seeker_proc = false
+			return true 
+		end}))
+	end
 end
 
 function seeker.loc_vars(self, info_queue, card)
@@ -3469,6 +3535,7 @@ function seeker.loc_vars(self, info_queue, card)
 		colours = {
 			G.C.SUITS[card.ability.extra.suit], }}}
 end
+
 -- endregion seeker
 
 -- region Crystal Heart
@@ -3667,13 +3734,13 @@ end
 local secretshrine = SMODS.Joker({
 	name = "ccc_Secret Shrine",
 	key = "secretshrine",
-    config = {extra = {seven_tally = 4}},
+    config = {extra = {seven_tally = 4, factor = 3}},
 	pos = {x = 9, y = 4},
 	loc_txt = {
         name = 'Secret Shrine',
         text = {
 			"Gives {C:mult}Mult{} equal to",
-			"{C:attention}triple{} the amount of",
+			"{C:attention}X#2#{} the amount of",
 			"{C:attention}7{}s in your {C:attention}full deck{}",
 			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}"
         }
@@ -3701,16 +3768,16 @@ secretshrine.calculate = function(self, card, context)
                    	message = localize {
                   		type = 'variable',
                    		key = 'a_mult',
-                  		vars = { 3*card.ability.extra.seven_tally }
+                  		vars = { card.ability.extra.factor*card.ability.extra.seven_tally }
                 		},
-                	mult_mod = 3*card.ability.extra.seven_tally
+                	mult_mod = card.ability.extra.factor*card.ability.extra.seven_tally
                 	}
 		end
 	end
 end
 
 function secretshrine.loc_vars(self, info_queue, card)
-	return {vars = {3*card.ability.extra.seven_tally}}
+	return {vars = {card.ability.extra.factor*card.ability.extra.seven_tally, card.ability.extra.factor}}
 end
 
 -- endregion Secret Shrine
@@ -3760,9 +3827,9 @@ local strawberrypie = SMODS.Joker({
         text = {
 			"Grants a large bonus",
 			"based on current {C:money}money{}:",	-- scuffed text centering
-			"  {C:white}ii{}{C:money}$30{}-{C:money}$79{}: {C:chips}+140{} Chips",
-			"{C:money}$80{}-{C:money}$174{}: {C:mult}+60{} Mult",
-			"   {C:money}$175+{}: {X:mult,C:white} X8 {} Mult{C:white}i{}",
+			"  {C:white}ii{}{C:money}$30{}-{C:money}$79{}: {C:chips}+#1#{} Chips",
+			"{C:money}$80{}-{C:money}$174{}: {C:mult}+#2#{} Mult",
+			"   {C:money}$175+{}: {X:mult,C:white} X#3# {} Mult{C:white}i{}",
         }
     },
 	rarity = 3,
@@ -3813,6 +3880,10 @@ strawberrypie.calculate = function(self, card, context)
 		end
 
 	end
+end
+
+function strawberrypie.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.xmult}}
 end
 
 -- endregion Strawberry Pie

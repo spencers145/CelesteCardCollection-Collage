@@ -16,15 +16,28 @@ if self.ability.name == 'ccc_Strawberry' then
 end
 if self.ability.name == 'ccc_Golden Strawberry' then
 	if self.ability.extra.after_boss == true then 
-		return 12
+		return self.ability.extra.money
 	end
 end
 if self.ability.name == 'ccc_Winged Golden Strawberry' then
 	if self.ability.extra.after_boss == true then
 		if self.ability.extra.condition_satisfied == true then
-			return 15
+			return self.ability.extra.money
 		end
 	end
+end
+'''
+match_indent = true
+
+# ccc_cash_out calculate
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "G.deck:shuffle('cashout'..G.GAME.round_resets.ante)"
+position = "after"
+payload = '''
+for i = 1, #G.jokers.cards do
+	G.jokers.cards[i]:calculate_joker({ccc_cash_out = true})
 end
 '''
 match_indent = true
