@@ -324,8 +324,8 @@ bird.calculate = function(self, card, context)
                 return {
                         G.E_MANAGER:add_event(Event({
                                             func = function() 
-                                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+4 Cards", colour = G.C.FILTER})
-                                G.FUNCS.draw_from_deck_to_hand(4)          
+                                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw.." Cards", colour = G.C.FILTER})
+                                G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw)          
                                                 return true
                                 end}))
                         }
@@ -1085,7 +1085,7 @@ ominousmirror.calculate = function(self, card, context)
 	if context.before and card.ability.extra.broken == false then
 		if not context.repetition and not context.individual and card.ability.extra.broken == false then
 			for k, v in ipairs(context.scoring_hand) do
-				if pseudorandom('ominous') < G.GAME.probabilities.normal/2 then
+				if pseudorandom('ominous') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					local _card = copy_card(v, nil, nil, G.playing_card)
                            		_card.states.visible = nil
 					G.hand:emplace(_card)
@@ -1106,7 +1106,7 @@ ominousmirror.calculate = function(self, card, context)
 		end
 	end
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
-		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/6 then 
+		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal/card.ability.extra.prob_break then 
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, 
 				func = function()
 				play_sound('glass'..math.random(1, 6), math.random()*0.2 + 0.9,0.5)
@@ -1861,8 +1861,8 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 			return true end }))
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
-				ease_discard(1, nil, true)
-				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+1 Discard", colour = G.C.RED})
+				ease_discard(card.ability.extra.discards, nil, true)
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.discards.." Discard", colour = G.C.RED})
 			return true end }))
 		end
 	end

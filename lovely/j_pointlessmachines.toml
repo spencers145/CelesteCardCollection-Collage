@@ -18,13 +18,15 @@ elseif self.ability.name == 'ccc_Pointless Machines' then
 	local r_diamonds_keymash = {"di##MDOsn", "osdDIA.N&M!!", "M*MaM,dins!^O", "NE%%id%OO^aMD"}
 	local r_clubs_keymash = {"CUL&SL*BB", "sbluc!!((*@!)", "UC@bsLL]L", "PL!!)C**UBUBS"}
 	local r_clear_keymash = {"<<.PLAY)", "&@!PLAY;;", "]PLAY/@&", "__PLAY.@>#"}
-	local r_red_keymash = {"dsg x3c!!!O!]", "?d[{j,>.<fsA.Gg.<", "lAgsx,k##rf", "::R^E*AL**GL]", "es12_21sDLç", "++1UPp:-"}
+	local r_red_keymash = {"dsg x3c!!!O!]", "?d[{j,>.<fsA.Gg.<", "lAgsx,k##rf", "::R^E*AL**GL]", "es12_21sDLç", "++UPp:-", "O-We woul}}:1[", "10 Th!*e4", "W28Wne**er"}
 	local sequence_progress = 1
 	r_strings[#r_strings+1] = pseudorandom_element(r_clear_keymash, pseudoseed('4starorderbytheway'))
 	local last_used_element = r_strings[#r_strings]
+	local non_herring_chance = 0.45
 	while sequence_progress < 6 do
-		if pseudorandom(pseudoseed('randomthing'), 0, 1) > 0.7 then 
+		if pseudorandom(pseudoseed('randomthing'), 0, 1) > non_herring_chance then 
 			r_strings[#r_strings+1] = pseudorandom_element(r_red_keymash, pseudoseed('redherring'))
+			non_herring_chance = non_herring_chance + 0.25
 		else
 			if self.ability.extra.suits[sequence_progress] == 'Hearts' then
 				r_strings[#r_strings+1] = pseudorandom_element(r_hearts_keymash, pseudoseed('hertas<3'))
@@ -47,6 +49,7 @@ elseif self.ability.name == 'ccc_Pointless Machines' then
 					sequence_progress = sequence_progress + 1
 				end
 			end
+			non_herring_chance = 0.45
 		end
 		if r_strings[#r_strings] == last_used_element then
 			r_strings[#r_strings] = nil
