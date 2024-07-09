@@ -542,9 +542,10 @@ towels.calculate = function(self, card, context)
         	if context.cardarea == G.hand then
 	         	if context.other_card:is_suit(towels_flush_suit, true) or towels_flush_suit == 'Wild' then
                         card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
-                        	    return {
-                            message = localize('k_upgrade_ex'),
-                            colour = G.C.CHIPS
+                        return {
+                            	message = localize('k_upgrade_ex'),
+                            	colour = G.C.CHIPS,
+				card = card
                         }
         		end
 	        end
@@ -714,17 +715,16 @@ books.calculate = function(self, card, context)
 	card.books_skipped_ranks = false
 	card.books_allowed_skipped_ranks = {}
 	card.books_repeat_non_shortcut = true
+	card.books_ranks_used = {}
+	card.books_vip_cards = {}
 	end
 
-	if context.individual and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
-       		if context.cardarea == G.hand then
+	if context.before and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
+       		for i = 1, #G.hand.cards do
 			card.books_card_array_length = card.books_card_array_length + 1
-			card.books_rank_array[card.books_card_array_length] = context.other_card:get_id()
+			card.books_rank_array[card.books_card_array_length] = G.hand.cards[i]:get_id()
 			table.sort(card.books_rank_array)
 		end
-	end
-
-	if context.joker_main and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
 		for i = 1, #context.scoring_hand do
 			card.books_scoring_straight_array[i] = context.scoring_hand[i]:get_id()
 		end
@@ -859,11 +859,13 @@ books.calculate = function(self, card, context)
 							card.books_ace_high_scored_in_hand = true
 							card.books_straight_border_high = card.books_rank_array[i]
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 						end
 						if card.books_rank_array[i] ~= 14 then
 							card.books_highest_rank_found = false
 							card.books_straight_border_high = card.books_rank_array[i]
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 						end
 					end
 				end
@@ -876,6 +878,7 @@ books.calculate = function(self, card, context)
 							card.books_lowest_rank_found = false
 							card.books_straight_border_low = card.books_rank_array[i]
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 						end
 					end
 				end
@@ -886,11 +889,13 @@ books.calculate = function(self, card, context)
 								card.books_ace_low_scored = true
 								card.books_straight_border_low = 1
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = 1
 							end
 						else
 							card.books_ace_low_scored = true
 							card.books_straight_border_low = 1
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_ranks_used[#card.books_ranks_used + 1] = 1
 						end
 					end	
 				end		
@@ -907,12 +912,14 @@ books.calculate = function(self, card, context)
 								card.books_ace_high_scored_in_hand = true
 								card.books_straight_border_high = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end
 							if card.books_rank_array[i] ~= 14 then
 								card.books_highest_rank_found = false
 								card.books_repeat_non_shortcut = true
 								card.books_straight_border_high = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end
 						end
 					end
@@ -925,12 +932,14 @@ books.calculate = function(self, card, context)
 								card.books_ace_high_scored_in_hand = true
 								card.books_straight_border_high = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end
 							if card.books_rank_array[i] ~= 14 then
 								card.books_highest_rank_found = false
 								card.books_repeat_non_shortcut = true
 								card.books_straight_border_high = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end				
 						end
 					end
@@ -948,6 +957,7 @@ books.calculate = function(self, card, context)
 								card.books_repeat_non_shortcut = true
 								card.books_straight_border_low = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end
 						end
 					end
@@ -958,11 +968,13 @@ books.calculate = function(self, card, context)
 									card.books_ace_low_scored = true
 									card.books_straight_border_low = 1
 									card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+									card.books_ranks_used[#card.books_ranks_used + 1] = 1
 								end
 							else
 								card.books_ace_low_scored = true
 								card.books_straight_border_low = 1
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = 1
 							end
 						end
 					end
@@ -975,6 +987,7 @@ books.calculate = function(self, card, context)
 								card.books_repeat_non_shortcut = true
 								card.books_straight_border_low = card.books_rank_array[i]
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[i]
 							end
 						end				
 					end
@@ -986,11 +999,13 @@ books.calculate = function(self, card, context)
 								card.books_ace_low_scored = true
 								card.books_straight_border_low = 1
 								card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+								card.books_ranks_used[#card.books_ranks_used + 1] = 1
 							end
 						else
 							card.books_ace_low_scored = true
 							card.books_straight_border_low = 1
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
+							card.books_ranks_used[#card.books_ranks_used + 1] = 1
 						end
 					end
 				end
@@ -1001,15 +1016,43 @@ books.calculate = function(self, card, context)
 						if card.books_rank_array[v] == card.books_allowed_skipped_ranks[i] then
 							card.books_additional_sequence_cards = card.books_additional_sequence_cards + 1
 							card.books_allowed_skipped_ranks[i] = 0
+							card.books_ranks_used[#card.books_ranks_used + 1] = card.books_rank_array[v] 
 						end
 					end
 				end
 			end
 		end
-		if card.books_additional_sequence_cards > 0 then
-			card.ability.extra.xmult = card.ability.extra.xmult + (card.ability.extra.xmult_scale*(card.books_additional_sequence_cards))
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.MULT}) 
-		end
+	end
+	
+	if context.individual and context.poker_hands ~= nil and next(context.poker_hands['Straight']) and not context.blueprint then	-- there is totally a better way to do this... it's fine... i think
+        	if context.cardarea == G.hand then
+			local triggered = false
+			for i = 1, #card.books_ranks_used do
+	         		if (context.other_card:get_id() == card.books_ranks_used[i]) or (context.other_card:get_id() == 14 and card.books_ranks_used[i] == 1) then
+					table.remove(card.books_ranks_used,i)
+					card.books_vip_cards[#card.books_vip_cards + 1] = context.other_card
+					card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_scale
+					triggered = true
+                        		return {
+						message = localize('k_upgrade_ex'),
+						colour = G.C.MULT,
+						card = card
+					}
+				end
+			end
+			if triggered == false then
+				for k = 1, #card.books_vip_cards do
+					if context.other_card == card.books_vip_cards[k] then
+						card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_scale
+						return {
+							message = localize('k_upgrade_ex'),
+							colour = G.C.MULT,
+							card = card
+						}
+					end
+				end
+			end
+	        end
 	end
 	if context.joker_main then
 		if card.ability.extra.xmult ~= 1 then
