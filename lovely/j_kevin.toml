@@ -22,10 +22,13 @@ match_indent = true
 [patches.pattern]
 target = "functions/state_events.lua"
 pattern = '''local eval = G.jokers.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], individual = true})'''
-position = "after"
+position = "at"
 payload = '''
+local eval = G.jokers.cards[k]:calculate_joker({})
 if next(find_joker('ccc_Kevin')) and scoring_hand[i]:is_face() then
 	eval = G.jokers.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[#scoring_hand], individual = true})
+else
+	eval = G.jokers.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], individual = true})
 end
 '''
 match_indent = true
