@@ -1604,7 +1604,7 @@ tothesummit.calculate = function(self, card, context)
 			if last_xmult > 1 then
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 			end
-			ccc_tothesummit_min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
+			card.ability.extra.min_money = math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		elseif card.ability.extra.min_money < math.max(0,(G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then
 			card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.extra.xmult}}})
@@ -2394,12 +2394,12 @@ end
 local greenbooster = SMODS.Joker({
 	name = "ccc_Green Booster",
 	key = "greenbooster",
-    config = {},
+    config = {extra = {choices = 1}},
 	pos = {x = 3, y = 2},
 	loc_txt = {
         name = 'Green Booster',
         text = {
-	"Adds an {C:attention}extra{} card",
+	"Adds {C:attention}#1# extra{} card",
 	"to all {C:attention}Booster Packs{}"
         }
     },
@@ -2421,10 +2421,15 @@ local greenbooster = SMODS.Joker({
 
 greenbooster.calculate = function(self, card, context)
 	if context.open_booster then
-		ccc_grubble_bonus_choices = (ccc_grubble_bonus_choices or 0) + 1
+		ccc_grubble_bonus_choices = (ccc_grubble_bonus_choices or 0) + card.ability.extra.choices
 		card:juice_up()
 	end
 end
+
+function greenbooster.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.choices}}
+end
+
 
 -- endregion Green Booster
 
@@ -2433,13 +2438,13 @@ end
 local redbooster = SMODS.Joker({
 	name = "ccc_Red Booster",
 	key = "redbooster",
-    config = {},
+    config = {extra = {choices = 1}},
 	pos = {x = 3, y = 3},
 	loc_txt = {
         name = 'Red Booster',
         text = {
-	"Allows you to {C:attention}choose{}",
-	"{C:attention}1{} extra card from",
+	"Allows you to {C:attention}pick{}",
+	"{C:attention}#1#{} extra card from",
 	"all {C:attention}Booster Packs{}"
         }
     },
@@ -2461,9 +2466,13 @@ local redbooster = SMODS.Joker({
 
 redbooster.calculate = function(self, card, context)
 	if context.open_booster then
-		ccc_rrubble_bonus_choices = (ccc_rrubble_bonus_choices or 0) + 1
+		ccc_rrubble_bonus_choices = (ccc_rrubble_bonus_choices or 0) + card.ability.extra.choices
 		card:juice_up()
 	end
+end
+
+function redbooster.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.choices}}
 end
 
 -- endregion Red Booster
@@ -2914,7 +2923,11 @@ switchgate.calculate = function(self, card, context)
 			for i = 1, 3 do
 				if context.other_card:get_id() == card.ability.extra.cards[i].id and context.other_card:is_suit(card.ability.extra.cards[i].suit) then
 					card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
-					card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Upgrade!", colour = G.C.FILTER})
+					return {
+						extra = {focus = card, message = localize('k_upgrade_ex')},
+						colour = G.C.CHIPS,	-- why doesn't this work???????? it's fine but it should really be chip coloured
+						card = card
+					}
 				end
 			end
 		end

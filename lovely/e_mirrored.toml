@@ -3,24 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# injecting mirrored edition into badge colour area
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = "pinned_left = G.C.ORANGE,"
-position = "after"
-payload = "ccc_mirrored = G.C.DARK_EDITION,"
-match_indent = true
-
-# injecting mirrored desc into info_queue
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = "if v == 'foil' then info_queue[#info_queue+1] = G.P_CENTERS['e_foil'] end"
-position = "after"
-payload = "if v == 'ccc_mirrored' then info_queue[#info_queue+1] = {key = 'e_mirrored', set = 'Other'} end"
-match_indent = true
-
 # Do not draw front of card if mirrored
 [[patches]]
 [patches.pattern]
@@ -28,15 +10,6 @@ target = "card.lua"
 pattern = "elseif not self.greyed then"
 position = "at"
 payload = "elseif not self.greyed and (not self.edition or not self.edition.ccc_mirrored) then"
-match_indent = true
-
-# overwrite if statement to prevent the edition eval block from triggering if no value modifier is defined (tl;dr, no ugly blank trigger on mirrored cards)
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = "if effects[ii].edition then"
-position = "at"
-payload = "if effects[ii].edition and not (effects[ii].edition.chip_mod == nil and effects[ii].edition.mult_mod == nil and effects[ii].edition.x_mult_mod == nil) then"
 match_indent = true
 
 # mirrored effect on cards in deck and discard pile
