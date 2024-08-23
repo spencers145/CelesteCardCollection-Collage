@@ -3266,8 +3266,8 @@ local hardlist = SMODS.Joker({
         name = '5-Star Hardlist',
         text = {
 			"{C:mult}+#1#{} Mult",
-			"{C:mult}-#2#{} Mult for every",
-			"{C:attention}Joker{} purchased"
+			"{C:mult}-#2#{} Mult on purchase of a",
+			"{C:attention}Joker{} or {C:attention}Buffoon Pack{}",
         }
     },
 	rarity = 1,
@@ -3287,7 +3287,7 @@ local hardlist = SMODS.Joker({
 
 
 hardlist.calculate = function(self, card, context)
-	if context.buying_card and context.card.config.center.set == "Joker" and not (context.card == card) then
+	if (context.buying_card and context.card.config.center.set == "Joker" and not (context.card == card)) or (context.ccc_paid_booster and context.card.ability.name:find('Buffoon')) then		-- raaaah thunk giving us too little info
 		if not context.blueprint then
 			card.ability.extra.mult = card.ability.extra.mult - card.ability.extra.sub
 			if card.ability.extra.mult <= 0 then
