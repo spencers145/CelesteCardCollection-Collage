@@ -41,3 +41,16 @@ for i = 1, #G.jokers.cards do
 end
 '''
 match_indent = true
+
+# ccc_paid_booster calculate
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "if self.cost > 0 then"
+position = "after"
+payload = '''
+for i = 1, #G.jokers.cards do
+	G.jokers.cards[i]:calculate_joker({ccc_paid_booster = true, card = self})
+end
+'''
+match_indent = true
