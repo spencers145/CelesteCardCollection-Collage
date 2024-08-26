@@ -1712,7 +1712,7 @@ local templerock = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "sunsetquasar"
 	}
@@ -1722,7 +1722,7 @@ templerock.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil then
         	if context.cardarea == G.hand then
 	         	if context.other_card.ability.name == 'Stone Card' then
-				hand_chips = mod_chips(hand_chips + card.ability.extra.chips)
+				hand_chips = mod_chips(hand_chips + card.ability.extra.chips)	-- what was i cooking here
                         	update_hand_text({delay = 0}, {chips = hand_chips})
                         	return {
                     			message = localize {
@@ -2501,7 +2501,7 @@ local cassetteblock = SMODS.Joker({
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	},
@@ -3362,7 +3362,7 @@ local cloud = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	}
@@ -3416,7 +3416,7 @@ local brittlecloud = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	}

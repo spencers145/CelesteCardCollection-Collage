@@ -28,6 +28,9 @@ Below is a list of everything this mod adds
 |Pointless Machines| Common | <secret> |
 |5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker purchased|
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
+|Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
+|Cloud| Common | +30 chips for each hand played this round|
+|Brittle Cloud| Common |+150 chips on the first hand played this round|
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +8 Chips for each card in hand that shares the same suit |
@@ -46,6 +49,7 @@ Below is a list of everything this mod adds
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
+|Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
 |Collapsing Bridge| Rare |x5 Mult when played hand contains a straight; All played cards have a 1 in 5 chance of being destroyed|
 |Checkpoint| Rare |Gains x1 mult if boss blind is defeated without discarding (starts at x1)|
 |Ominous Mirror| Rare | 1/2 chance to create a copy of a scored card, adding Mirrored edition. 1/6 chance to break at end of round, leaving a Broken Mirror |
@@ -58,16 +62,12 @@ Below is a list of everything this mod adds
 
 | Name | Rarity | Ability|
 | ---  | ---    | ---|
-|Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
-|Cloud| Common | +30 chips for each hand played this round|
-|Brittle Cloud| Common |+150 chips on the first hand played this round|
 |Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
 |Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
-|Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1  to all listed probabilities at round end (2 in 7 -> 3 in 7)|
-|Cassette Block| Rare | BLUE { Gains + 8 Chips for each unused hand at end of round } RED { Gains +3 Mult for each unused discard at end of round}; Swaps at start of round, Starts with 0 chips and 0 mult.|
+|Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
 |Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
 |Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|

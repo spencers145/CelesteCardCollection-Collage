@@ -26,8 +26,6 @@ local v_gondola = SMODS.Voucher({
 	}
 })
 
-v_gondola:register()
-
 function v_gondola.redeem(center_table)
     -- if G.GAME.round_resets.blind_ante == G.GAME.win_ante then
     --     G.GAME.win_ante = G.GAME.win_ante + 1
@@ -38,6 +36,10 @@ function v_gondola.redeem(center_table)
     G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante or G.GAME.round_resets.ante
     G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante + 1
     G.GAME.starting_params.ante_scaling = G.GAME.starting_params.ante_scaling * 0.7
+end
+
+function v_gondola.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra}}	-- desc is hardcoded anyway lol... it still crashes when indexing center_table.extra
 end
 
 
