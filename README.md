@@ -69,7 +69,6 @@ Below is a list of everything this mod adds
 | ---  | ---    | ---|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
-|1UP| Uncommon | Earn $2 at end of round, increases by $4 when a Strawberry is purchased |
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|

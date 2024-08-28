@@ -89,7 +89,7 @@ match_indent = true
 [[patches]]
 [patches.regex]
 target = "functions/state_events.lua"
-pattern = '''for j=1,#reps do\n\s+percent \= percent \+ percent_delta\n\s+if reps\[j\] ~= 1 then\n\s+card_eval_status_text\(\(reps\[j\]\.jokers or reps\[j\]\.seals\)\.card, 'jokers', nil, nil, nil, \(reps\[j\]\.jokers or reps\[j\]\.seals\)\)\n\s+end\n\s+--calculate the hand effects\n\s+local effects = \{eval_card\(scoring_hand\[i\], \{cardarea = G\.play, full_hand = G\.play\.cards, scoring_hand = scoring_hand, poker_hand = text\}\)\}'''
+pattern = '''for j=1,#reps do\n\s+percent \= percent \+ percent_delta\n\s+if reps\[j\] ~= 1 then\n\s+card_eval_status_text\(\(reps\[j\]\.jokers or reps\[j\]\.seals\)\.card, 'jokers', nil, nil, nil, \(reps\[j\]\.jokers or reps\[j\]\.seals\)\)'''
 position = "at"
 payload = '''
 for j=1,#reps do
@@ -100,9 +100,4 @@ for j=1,#reps do
 		else
 			card_eval_status_text(scoring_hand[i], 'jokers', nil, nil, nil, {message = localize('k_again_ex'), colour = G.C.FILTER})
 		end
-	end
-                    
-	--calculate the hand effects
-	local effects = {eval_card(scoring_hand[i], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, poker_hand = text})}
 '''
-match_indent = true
