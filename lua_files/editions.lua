@@ -15,6 +15,8 @@ local mirrored = SMODS.Edition({
     },
     discovered = true,
     unlocked = true,
+    disable_base_shader = true,
+    disable_shadow = true,
     shader = 'mirrored',
     config = {},
     in_shop = false

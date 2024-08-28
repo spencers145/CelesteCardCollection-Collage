@@ -3,15 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# Do not draw front of card if mirrored
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = "elseif not self.greyed then"
-position = "at"
-payload = "elseif not self.greyed and (not self.edition or not self.edition.ccc_mirrored) then"
-match_indent = true
-
 # mirrored effect on cards in deck and discard pile
 [[patches]]
 [patches.pattern]

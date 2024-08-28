@@ -1767,7 +1767,7 @@ local strongwinds = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "goose!"
 	}
@@ -2698,7 +2698,7 @@ local waterfall = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "toneblock",
 		code = "toneblock",
 		concept = "Bred"
 	}
@@ -3070,7 +3070,7 @@ local theocrystal = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "toneblock"
 	}
@@ -3743,7 +3743,7 @@ local introcar = SMODS.Joker({
 	name = "ccc_Intro Car",
 	key = "introcar",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 7, y = 3},
 	loc_txt = {
         name = 'Intro Car',
         text = {
@@ -3760,7 +3760,7 @@ local introcar = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Bred + Fytos"
 	}
@@ -3844,7 +3844,7 @@ local kevin = SMODS.Joker({
 	name = "ccc_Kevin",
 	key = "kevin",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 8, y = 3},
 	loc_txt = {
         name = 'Kevin',
         text = {
@@ -3861,7 +3861,7 @@ local kevin = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	}
@@ -3944,13 +3944,70 @@ end
 
 -- endregion Strawberry Pie
 
+-- region 1UP
+
+local oneup = SMODS.Joker({
+	name = "ccc_1UP",
+	key = "1up",
+    config = {extra = {money = 2, money_mod = 4}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = '1UP',
+        text = {
+			"Earn {C:money}$#1#{} at end of round,",
+			"increases by {C:money}$#2#{} when a",
+			"{C:attention}Strawberry{} is purchased"
+        }
+    },
+	rarity = 2,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Kol_Oss"
+	}
+})
+
+oneup.calculate = function(self, card, context)
+
+	if (context.buying_card and context.card.config.center.set == "Joker" and not (context.card == card)) then
+		local correct_names = {"ccc_Strawberry", 
+			"ccc_Winged Strawberry", 
+			"ccc_Golden Strawberry", 
+			"ccc_Winged Golden Strawberry", 
+			"ccc_Moon Berry", 
+			"ccc_Strawberry Pie",
+		}
+		for i = 1, #correct_names do 	-- technically it's faster to do the comparisons in the first if, but this is cleaner
+			if context.card.config.center.name == correct_names[i] then
+				card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_mod
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_upgrade_ex'), colour = G.C.FILTER})
+				break
+			end
+		end
+	end
+
+end
+
+function oneup.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.money, card.ability.extra.money_mod}}
+end
+
+-- endregion 1UP
+
 -- region Badeline
 
 local badeline = SMODS.Joker({
 	name = "ccc_Badeline",
 	key = "badeline",
     config = {extra = {}},
-	pos = {x = 7, y = 3},
+	pos = {x = 0, y = 5},
+	soul_pos = {x = 0, y = 6},
 	loc_txt = {
         name = 'Badeline',
         text = {
@@ -3967,7 +4024,7 @@ local badeline = SMODS.Joker({
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	}
@@ -4014,7 +4071,8 @@ local madeline = SMODS.Joker({
 	name = "ccc_Madeline",
 	key = "madeline",
     config = {},
-	pos = {x = 8, y = 3},
+	pos = {x = 1, y = 5},
+	soul_pos = {x = 1, y = 6},
 	loc_txt = {
         name = 'Madeline',
         text = {
@@ -4031,7 +4089,7 @@ local madeline = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	},

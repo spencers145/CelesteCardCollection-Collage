@@ -31,7 +31,8 @@ Below is a list of everything this mod adds
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less
+|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
+|Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less|
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +8 Chips for each card in hand that shares the same suit |
 |Huge Mess: Chests| Uncommon | When played hand contains a Three of a Kind, gains +3 Mult for each possible Pair held in hand |
@@ -46,6 +47,8 @@ Below is a list of everything this mod adds
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 2 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
+|Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
 |Rainbow Spinner| Rare |Gold Seals act as every seal|
@@ -57,6 +60,8 @@ Below is a list of everything this mod adds
 |Part Of You| Rare | If first played hand of round contains exactly 2 cards, convert both cards into their complements (e.g. King <-> Ace, 3 <-> Jack, 6 <-> 8) |
 |Strong Winds| Rare | x2.22 Mult; Card of the highest rank in scoring hand is destroyed|
 |Letting Go| Rare |When a card is destroyed, 1 in 2 chance to create a Death; Gains +4 Mult for each Death used (starts at 0)|
+|Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
+|Madeline| Legendary | Joker values cannot go down through their own ability|
 
 ## Do not have art
 
@@ -64,15 +69,10 @@ Below is a list of everything this mod adds
 | ---  | ---    | ---|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
-|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
-|Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
-|Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
 |Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|
-|Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
-|Madeline| Legendary | Joker values cannot go down through their own ability|
 
 
 || Common | |

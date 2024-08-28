@@ -5,6 +5,7 @@ priority = 0
 
 
 # yes this is an entire lovely injection just for strawberries... you have a problem with that?
+# i do now, fuck you past toneblock
 [[patches]]
 [patches.pattern]
 target = "card.lua"
@@ -25,6 +26,9 @@ if self.ability.name == 'ccc_Winged Golden Strawberry' then
 			return self.ability.extra.money
 		end
 	end
+end
+if self.ability.name == 'ccc_1UP' then
+	return self.ability.extra.money
 end
 '''
 match_indent = true
