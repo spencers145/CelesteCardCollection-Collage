@@ -291,7 +291,7 @@ local bird = SMODS.Joker({
         name = 'Bird',
         text = {
 	"Whenever a {C:planet}Planet{} card",
-	"is used, draw {C:attention}#1#{} cards"
+	"is used, {C:purple}force draw{} {C:attention}#1#{} cards"
         }
     },
 	rarity = 3,
@@ -2399,7 +2399,7 @@ local greenbooster = SMODS.Joker({
 	loc_txt = {
         name = 'Green Booster',
         text = {
-	"Adds {C:attention}#1# extra{} card",
+	"Adds {C:attention}#1#{} extra option",
 	"to all {C:attention}Booster Packs{}"
         }
     },
@@ -2705,7 +2705,7 @@ local waterfall = SMODS.Joker({
 })
 
 waterfall.calculate = function(self, card, context)
-	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) and not context.blueprint then
+	if context.before and context.poker_hands ~= nil and next(context.poker_hands['Flush']) then
 
 		local suits = {}
 		local used_suits = {}
@@ -2746,15 +2746,21 @@ waterfall.calculate = function(self, card, context)
 			end
 		end
 		if #waterfall_card_candidates > 0 then	-- this used to be bunco code but i changed it
-			local waterfall_card = pseudorandom_element(waterfall_card_candidates, pseudoseed('waterfall'))
-			if ccc_waterfall_flush_suit ~= 'Wild' then
-					waterfall_card:change_suit(ccc_waterfall_flush_suit)
-			else
-					waterfall_card:set_ability(G.P_CENTERS.m_wild)
-			end
-			waterfall_card:juice_up()
-			card:juice_up()
-			play_sound('tarot1', 0.8, 0.4)
+			return {
+				message = "Applied",
+				G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
+					if #waterfall_card_candidates > 0 then
+						local waterfall_card = pseudorandom_element(waterfall_card_candidates, pseudoseed('waterfall'))
+						if ccc_waterfall_flush_suit ~= 'Wild' then
+							waterfall_card:change_suit(ccc_waterfall_flush_suit)
+						else
+							waterfall_card:set_ability(G.P_CENTERS.m_wild)
+						end
+						waterfall_card:juice_up()
+						play_sound('tarot1', 0.8, 0.4)
+					end
+				return true end }))
+			}
 		end
 	end
 end
@@ -3457,7 +3463,7 @@ local seeker = SMODS.Joker({
 			"If card is drawn {C:attention}face up{} and",
 			"is not most owned {C:attention}rank{} ({C:attention}#1#{})",
 			"or {C:attention}suit{} ({V:1}#2#{}), reshuffle",
-			"it into {C:attention}deck{} and redraw"
+			"it into {C:attention}deck{} and {C:purple}force redraw"
         }
     },
 	rarity = 3,
@@ -3840,6 +3846,8 @@ end
 
 -- region Kevin
 
+-- we out here disabling
+--[[
 local kevin = SMODS.Joker({
 	name = "ccc_Kevin",
 	key = "kevin",
@@ -3866,8 +3874,7 @@ local kevin = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
-
--- all code done in lovely
+]]
 
 -- endregion Kevin
 
@@ -4167,6 +4174,61 @@ end
 
 -- endregion Madeline
 
+-- region Theo
 
+-- endregion Theo
+
+-- region Granny
+
+local granny = SMODS.Joker({
+	name = "ccc_Granny",
+	key = "granny",
+    config = {extra = {draw = 1}},
+	pos = {x = 0, y = 5},
+	soul_pos = {x = 0, y = 6},
+	loc_txt = {
+        name = 'Granny',
+        text = {
+	"After {C:red}discarding{} cards,",
+	"{C:purple}force draw{} {C:attention}#1#{} additional card",
+	"for each card discarded"
+        }
+    },
+	rarity = 4,
+	cost = 20,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+granny.calculate = function(self, card, context)
+	if context.discard and not context.blueprint then
+		G.GAME.ccc_after_discard = #context.full_hand
+	end
+	if context.ccc_hand_drawn and (G.GAME.ccc_after_discard and G.GAME.ccc_after_discard > 0) and #G.deck.cards > 0 then
+		G.GAME.ccc_after_discard_buffer = G.GAME.ccc_after_discard
+		return {
+			G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw*G.GAME.ccc_after_discard_buffer.." Cards", colour = G.C.FILTER})
+				G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw*G.GAME.ccc_after_discard_buffer)
+				G.GAME.ccc_after_discard = 0
+			return true end }))
+		}
+		
+	end
+end
+
+function granny.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.draw}}
+end
+
+-- endregion Granny
 
 sendDebugMessage("[CCC] Jokers loaded")
