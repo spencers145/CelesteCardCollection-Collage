@@ -3224,7 +3224,7 @@ local lapidary = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "Aurora Aquir",
 		concept = "Aurora Aquir"
 	}
@@ -3625,7 +3625,7 @@ local crystalheart = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Gappie"
 	}
@@ -3957,7 +3957,7 @@ local oneup = SMODS.Joker({
 	name = "ccc_1UP",
 	key = "1up",
     config = {extra = {money = 2, money_mod = 4}},
-	pos = {x = 9, y = 4},
+	pos = {x = 9, y = 3},
 	loc_txt = {
         name = '1UP',
         text = {
@@ -3974,7 +3974,7 @@ local oneup = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Kol_Oss"
 	}

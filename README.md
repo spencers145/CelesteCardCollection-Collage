@@ -47,6 +47,9 @@ Below is a list of everything this mod adds
 |Red Spinner| Uncommon |When a card with a Red Seal is discarded, 1 in 2 chance to add a Red Seal to each adjacent card in discarded hand (Unaffected by retriggers)|
 |Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
+|1UP| Uncommon | Earn $2 at end of round, increases by $4 when a Strawberry is purchased |
+|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
+|Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
 |Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
@@ -69,9 +72,6 @@ Below is a list of everything this mod adds
 | ---  | ---    | ---|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
 |Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
-|1UP| Uncommon | Earn $2 at end of round, increases by $4 when a Strawberry is purchased |
-|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
-|Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
 |Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|
 |Granny| Legendary | After discarding cards, force draw 1 additional card for each card discarded|
