@@ -2530,13 +2530,13 @@ cassetteblock.calculate = function(self, card, context)
 			return {
 			G.E_MANAGER:add_event(Event({func = function()
 			
-			G.E_MANAGER:add_event(Event({func = function()
+				G.E_MANAGER:add_event(Event({func = function()
 			
-			card.ability.extra.pink = true
-			card.ability.extra.pos_override.x = 7
-			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
+				card.ability.extra.pink = true
+				card.ability.extra.pos_override.x = 7
+				card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 			
-			return true end }))
+				return true end }))
 			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.RED})
 			return true end }))
 			}
@@ -2544,13 +2544,13 @@ cassetteblock.calculate = function(self, card, context)
 			return {
 			G.E_MANAGER:add_event(Event({func = function()
 			
-			G.E_MANAGER:add_event(Event({func = function()
+				G.E_MANAGER:add_event(Event({func = function()
 			
-			card.ability.extra.pink = false
-			card.ability.extra.pos_override.x = 6
-			card.children.center:set_sprite_pos(card.ability.extra.pos_override)
+				card.ability.extra.pink = false
+				card.ability.extra.pos_override.x = 6
+				card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 			
-			return true end }))
+				return true end }))
 			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.BLUE})
 			return true end }))
 			}
@@ -3149,7 +3149,7 @@ end
 pointlessmachines.calculate = function(self, card, context)
 	if context.before and not context.blueprint then
 		card.ability.extra.incorrect = false
-		if #context.full_hand == 5 then
+		if #context.full_hand >= 5 then
 			for i = 1, 5 do
 				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
 					card.ability.extra.incorrect = true
@@ -3213,7 +3213,7 @@ local lapidary = SMODS.Joker({
         text = {
 	"Jokers with a",
 	"{C:attention}unique{} rarity each",
-	"give {X:mult,C:white}X#1#{} Mult"
+	"give {X:mult,C:white}X#1#{} Mult",
         }
     },
 	rarity = 2,
@@ -3642,7 +3642,8 @@ crystalheart.calculate = function(self, card, context)
 				edition_card_candidates[#edition_card_candidates + 1] = G.hand.cards[i]
 			end
 		end
-		if #edition_card_candidates > 0 then
+		if #edition_card_candidates > (G.GAME.ccc_edition_buffer and G.GAME.ccc_edition_buffer or 0) then
+			G.GAME.ccc_edition_buffer = (G.GAME.ccc_edition_buffer and G.GAME.ccc_edition_buffer or 0) + 1 
 			return {
 				G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
 					local edition_card_candidates_2 = {}
@@ -3657,6 +3658,7 @@ crystalheart.calculate = function(self, card, context)
 						edition_card:set_edition(edition, true)
 						card:juice_up()
 					end
+					G.GAME.ccc_edition_buffer = G.GAME.ccc_edition_buffer - 1 
 				return true end })),
 				message = "Applied",
 				colour = G.C.DARK_EDITION
@@ -3748,14 +3750,15 @@ end
 local introcar = SMODS.Joker({
 	name = "ccc_Intro Car",
 	key = "introcar",
-    config = {},
+    config = {extra = {add = 5}},
 	pos = {x = 7, y = 3},
 	loc_txt = {
         name = 'Intro Car',
         text = {
 			"Before each {C:attention}5{} or {C:attention}8{} is",
 			"scored, {C:attention}swap{} current",
-			"{C:chips}Chips{} and {C:mult}Mult{}"
+			"{C:chips}Chips{} and {C:mult}Mult{} and",
+			"add {C:chips}+{C:mult}#1#{} to both"
         }
     },
 	rarity = 2,
@@ -3779,14 +3782,18 @@ introcar.calculate = function(self, card, context)
 				delay(0.2)
 				local temp_chips = hand_chips
 				local temp_mult = mult
-				hand_chips = mod_chips(temp_mult)
-				mult = mod_mult(temp_chips)
+				hand_chips = mod_chips(temp_mult+card.ability.extra.add)
+				mult = mod_mult(temp_chips+card.ability.extra.add)
 				update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.FILTER})
 				delay(0.2)
 			end
 		end
 	end
+end
+
+function introcar.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.add}}
 end
 
 -- endregion Intro Car
@@ -3802,7 +3809,7 @@ local secretshrine = SMODS.Joker({
         name = 'Secret Shrine',
         text = {
 			"Gives {C:mult}Mult{} equal to",
-			"{C:attention}X#2#{} the amount of",
+			"{C:attention}#2#x{} the amount of",
 			"{C:attention}7{}s in your {C:attention}full deck{}",
 			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}"
         }
@@ -3847,7 +3854,7 @@ end
 -- region Kevin
 
 -- we out here disabling
---[[
+
 local kevin = SMODS.Joker({
 	name = "ccc_Kevin",
 	key = "kevin",
@@ -3858,7 +3865,7 @@ local kevin = SMODS.Joker({
         text = {
 			"Scoring {C:attention}face cards{} act",
 			"as a copy of the",
-			"{C:attention}rightmost{} scoring card",
+			"{C:attention}rightmost{} played card",
         }
     },
 	rarity = 3,
@@ -3874,7 +3881,15 @@ local kevin = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
-]]
+
+local evalcard_ref = eval_card
+function eval_card(card, context)
+	local ccard = card
+	if context.cardarea == G.play and card:is_face() and #SMODS.find_card('j_ccc_kevin') >= 1 then
+		ccard = G.play.cards[#G.play.cards]
+	end
+	return evalcard_ref(ccard, context)
+end
 
 -- endregion Kevin
 
@@ -4040,6 +4055,7 @@ local badeline = SMODS.Joker({
 badeline.yes_pool_flag = 'preventsoulspawn'
 
 -- huge jank on calculate but i don't even know tbh... card = card????????? it shouldn't need that...
+-- apparently you're passing card (the object) to card (the return value) so you do need that
 
 badeline.calculate = function(self, card, context)
 	if context.repetition then
@@ -4202,7 +4218,7 @@ local granny = SMODS.Joker({
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "Gappie",
+		art = "N/A",
 		code = "toneblock",
 		concept = "Fytos"
 	}
@@ -4230,5 +4246,6 @@ function granny.loc_vars(self, info_queue, card)
 end
 
 -- endregion Granny
+
 
 sendDebugMessage("[CCC] Jokers loaded")

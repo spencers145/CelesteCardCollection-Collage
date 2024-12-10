@@ -31,7 +31,7 @@ Below is a list of everything this mod adds
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
+|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult and add +5 to both|
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less|
 |Feather| Uncommon | Gains X0.05 for each card drawn this round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +8 Chips for each card in hand that shares the same suit |
@@ -50,7 +50,7 @@ Below is a list of everything this mod adds
 |1UP| Uncommon | Earn $2 at end of round, increases by $4 when a Strawberry is purchased |
 |Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
-|Kevin| Rare | Scoring face cards act as a copy of the rightmost scoring card|
+|Kevin| Rare | Scoring face cards act as a copy of the rightmost played card|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
 |Coyote Jump| Rare |If cards held in hand do not form a Pair, Straight or Flush, gain +1 discard|
