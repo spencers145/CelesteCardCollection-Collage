@@ -129,6 +129,7 @@ local summit = SMODS.Back({
 	loc_txt = {
         name = "Summit Deck",
         text = {
+	"{C:attention}-4{} Joker slots",
             "{C:attention}+1{} Joker slot each Ante",
 			"without a {C:red}final boss{}",
 	    	"{s:0.75}(if Ante has not been reached before){}"
