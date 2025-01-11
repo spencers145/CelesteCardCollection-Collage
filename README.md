@@ -64,7 +64,7 @@ Below is a list of everything this mod adds
 |Strong Winds| Rare | X2.22 Mult; Card of the highest rank in scoring hand is destroyed|
 |Letting Go| Rare |When a card is destroyed, 1 in 2 chance to create a Death; Gains +4 Mult for each Death used (starts at 0)|
 |Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|
-|Strawberry Pie| Rare | If played hand contains a Five of a Kind; X5 Mult, and create the played poker hand's Planet|
+|The Crowd| Rare | If played hand contains a Five of a Kind; X5 Mult, and create the played poker hand's Planet|
 |Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
 |Madeline| Legendary | Prevents reductions and resets of Joker values through their own abilities|
 
