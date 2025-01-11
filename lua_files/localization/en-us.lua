@@ -13,9 +13,12 @@ G.localization.descriptions.Other.partofyou_complements = {
 	}
 }
 
+-- ok this isn't really how a localisation file works...
+
 G.localization.descriptions.Other.e_mirrored = {
 	name = "Mirrored",
 	text = {
+		"{C:attention}Retrigger{} this card",
 		"If a {C:attention}Mirror{} is not",
 		"present, {C:red}self-destructs{}",
 		"at end of round"
@@ -27,14 +30,5 @@ G.localization.descriptions.Other.ccc_acts_as_mirror = {
 		"{C:inactive,s:0.9}(Acts as a {C:attention,s:0.9}Mirror{C:inactive,s:0.9})"
 	}
 }
-	G.localization.descriptions.Edition.e_mirrored = {
-		name = "Mirrored",
-		text = {
-			"If a {C:attention}Mirror{} is not",
-			"present, {C:red}self-destructs{}",
-			"at end of round"
-		}
-	}
-    G.localization.misc.labels.mirrored = 'Mirrored'
 
 end
