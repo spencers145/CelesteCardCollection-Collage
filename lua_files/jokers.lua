@@ -77,13 +77,15 @@ local feather = SMODS.Joker({
 })
 
 feather.calculate = function(self, card, context)
+	
         if context.joker_main then
-                            return {
-                                message = localize{type='variable',key='a_xmult',vars={1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards))}},
-                                Xmult_mod = 1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards)), 
-                                colour = G.C.MULT
-                            }
+		return {
+			message = localize{type='variable',key='a_xmult',vars={1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards))}},
+			Xmult_mod = 1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards)), 
+			colour = G.C.MULT
+		}
         end
+	
 end
 
 function feather.loc_vars(self, info_queue, card)
@@ -267,6 +269,7 @@ miniheart.calculate = function(self, card, context)
 							context.other_card:juice_up()
 						end
 					return true end}))
+					return nil, true
 				end
 			end
 		end
@@ -308,30 +311,23 @@ local bird = SMODS.Joker({
 	}
 })
 
--- mid round judgement won't work but maan
--- i really want to change this but this stupid bird is so dumb
-
 bird.calculate = function(self, card, context)
-	if context.setting_blind then
-		card.ability.extra.active = true
+
+	if context.using_consumeable then
+		if context.consumeable.ability.set == 'Planet' then
+			if (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK) or (G.GAME and G.GAME.blind and G.GAME.blind.in_blind) then
+				G.E_MANAGER:add_event(Event({
+					func = function() 
+						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw.." Cards", colour = G.C.FILTER})
+						G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw)          
+					return true
+					end
+				}))
+				return nil, true
+			end
+		end
 	end
-	if context.end_of_round then
-		card.ability.extra.active = false
-	end
-    if context.using_consumeable then
-        if context.consumeable.ability.set == 'Planet' then
-            if G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or card.ability.extra.active == true then
-                return {
-                        G.E_MANAGER:add_event(Event({
-                                            func = function() 
-                                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw.." Cards", colour = G.C.FILTER})
-                                G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw)          
-                                                return true
-                                end}))
-                        }
-            end
-        end
-    end
+
 end
 
 function bird.loc_vars(self, info_queue, card)
@@ -370,106 +366,31 @@ local partofyou = SMODS.Joker({
 	}
 })
 
-partofyou.calculate = function(self, card, context)  -- if you're looking at this code to use it as a reference... don't
-	if context.before then
-	if not context.blueprint then
-     	  if G.GAME.current_round.hands_played == 0 then
-            if #context.full_hand == 2 then
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[1]:flip();play_sound('card1', 1);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('card1', 1);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
- 		G.E_MANAGER:add_event(Event({trigger = 'before',
-                            func = function() 
-				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Mirrored!", colour = G.C.FILTER})   
-                                return true
-				end}))
-                        local suit = string.sub(context.full_hand[1].config.card.suit, 1, 1) .. "_"
-		if context.full_hand[1]:get_id() == 14 then
-                        local rank = "K"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 13 then
-                        local rank = "A"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 12 then
-                        local rank = "2"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 11 then
-                        local rank = "3"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 10 then
-                        local rank = "4"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 9 then
-                        local rank = "5"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 8 then
-                        local rank = "6"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 7 then
-                        local rank = "7"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 6 then
-                        local rank = "8"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 5 then
-                        local rank = "9"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 4 then
-                        local rank = "T"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 3 then
-                        local rank = "J"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[1]:get_id() == 2 then
-                        local rank = "Q"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[1]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+partofyou.calculate = function(self, card, context)
+
+	if context.before and not context.blueprint then
+		if G.GAME.current_round.hands_played == 0 and #context.full_hand == 2 then
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() context.full_hand[1]:flip();play_sound('card1', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
+                	G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('card1', 1, 0.6);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
+			G.E_MANAGER:add_event(Event({trigger = 'before',
+				func = function() 
+					card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Mirrored!", colour = G.C.FILTER})   
+					return true
+				end
+			}))
+			for i = 1, 2 do
+				local suit = string.sub(context.full_hand[i].config.card.suit, 1, 1) .. "_"
+				local _table = {"", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2", "A", "K"}
+				local rank = _table[context.full_hand[i]:get_id()]
+				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function()  context.full_hand[i]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() context.full_hand[1]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
+			delay(0.4)
+			return nil, true
 		end
-                        local suit = string.sub(context.full_hand[2].config.card.suit, 1, 1) .. "_"
-		if context.full_hand[2]:get_id() == 14 then
-                        local rank = "K"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 13 then
-                        local rank = "A"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 12 then
-                        local rank = "2"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 11 then
-                        local rank = "3"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 10 then
-                        local rank = "4"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 9 then
-                        local rank = "5"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 8 then
-                        local rank = "6"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 7 then
-                        local rank = "7"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 6 then
-                        local rank = "8"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 5 then
-                        local rank = "9"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 4 then
-                        local rank = "T"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 3 then
-                        local rank = "J"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		elseif context.full_hand[2]:get_id() == 2 then
-                        local rank = "Q"
-                G.E_MANAGER:add_event(Event({func = function()  context.full_hand[2]:set_base(G.P_CARDS[suit .. rank]);return true end }))
-		end
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() context.full_hand[1]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
-                end
-             end
-	  end
-       end
+	end
+
 end
 
 function partofyou.loc_vars(self, info_queue, card)
@@ -483,7 +404,7 @@ end
 local towels = SMODS.Joker({
 	name = "ccc_Huge Mess: Towels",
 	key = "towels",
-    config = {extra = {chips = 0, chips_scale = 8}},
+    config = {extra = {chips = 0, chips_scale = 7}},
 	pos = {x = 0, y = 3},
 	loc_txt = {
         name = 'Huge Mess: Towels',
@@ -695,28 +616,30 @@ local books = SMODS.Joker({
 	}
 })
 
+-- i need to rework the logic here at some point
+
 books.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
-	card.books_rank_array = {}
-	card.books_card_array_length = 0
-	card.books_pair_amounts = 0
-	card.books_card_pair_candidate = 0
-	card.books_scoring_straight_array = {}
-	card.books_scoring_pair = false
-	card.books_highest_rank_found = false
-	card.books_lowest_rank_found = false
-	card.books_additional_sequence_cards = 0
-	card.books_straight_border_high = 0
-	card.books_straight_border_low = 0
-	card.books_ace_high_scored = false
-	card.books_ace_high_scored_in_hand = false
-	card.books_ace_low_scored = false
-	card.books_skipped_ranks = false
-	card.books_allowed_skipped_ranks = {}
-	card.books_repeat_non_shortcut = true
-	card.books_ranks_used = {}
-	card.books_vip_cards = {}
+		card.books_rank_array = {}
+		card.books_card_array_length = 0
+		card.books_pair_amounts = 0
+		card.books_card_pair_candidate = 0
+		card.books_scoring_straight_array = {}
+		card.books_scoring_pair = false
+		card.books_highest_rank_found = false
+		card.books_lowest_rank_found = false
+		card.books_additional_sequence_cards = 0
+		card.books_straight_border_high = 0
+		card.books_straight_border_low = 0
+		card.books_ace_high_scored = false
+		card.books_ace_high_scored_in_hand = false
+		card.books_ace_low_scored = false
+		card.books_skipped_ranks = false
+		card.books_allowed_skipped_ranks = {}
+		card.books_repeat_non_shortcut = true
+		card.books_ranks_used = {}
+		card.books_vip_cards = {}
 	end
 
 	if context.before and context.poker_hands ~= nil and (next(context.poker_hands['Straight'])) and not context.blueprint then
@@ -1224,6 +1147,8 @@ local strawberry = SMODS.Joker({
 })
 
 -- for some goddamn reason there's no easy way to add the dollar bonus at calculation... so i injected it via lovely. should work though
+-- THERE IS!!! FUCK YOU PAST ME
+-- i'm still not changing it
 
 strawberry.calculate = function(self, card, context)
 	if context.ccc_cash_out and not context.blueprint then	-- custom cashout context in lovely
@@ -1264,7 +1189,7 @@ end
 local wingedstrawberry = SMODS.Joker({
 	name = "ccc_Winged Strawberry",
 	key = "wingedstrawberry",
-    config = {extra = {winged_poker_hand = 'Pair', money = 3}},
+    config = {extra = {winged_poker_hand = 'Pair', money = 2}},
 	pos = {x = 2, y = 1},
 	loc_txt = {
         name = 'Winged Strawberry',
@@ -1314,14 +1239,11 @@ wingedstrawberry.calculate = function(self, card, context)
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
 			if not next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
-				ease_dollars(card.ability.extra.money)
-				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money
-				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
 				return {
 					message = localize('$')..card.ability.extra.money,
 					dollars = card.ability.extra.money,
 					colour = G.C.MONEY
-					}
+				}
 			end
 		end
 	end
@@ -1340,7 +1262,7 @@ end
 local goldenstrawberry = SMODS.Joker({
 	name = "ccc_Golden Strawberry",
 	key = "goldenstrawberry",
-    config = {extra = {after_boss = false, money = 12}},
+    config = {extra = {after_boss = false, money = 15}},
 	pos = {x = 3, y = 1},
 	loc_txt = {
         name = 'Golden Strawberry',
@@ -1386,7 +1308,7 @@ end
 local wingedgoldenstrawberry = SMODS.Joker({
 	name = "ccc_Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false, money = 15}},
+    config = {extra = {condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false, money = 18}},
 	pos = {x = 4, y = 1},
 	loc_txt = {
         name = 'Winged Golden Strawberry',
@@ -1541,6 +1463,7 @@ moonberry.calculate = function(self, card, context)
 		end
 		if card.ability.extra.condition_satisfied == true then
 			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.SECONDARY_SET.Planet})
+			return nil, true
 		end
 	end
         if context.cardarea == G.jokers then
@@ -1579,7 +1502,7 @@ local tothesummit = SMODS.Joker({
 	"with more {C:money}money{} than",
 	"the {C:attention}previous Blind{}",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)",
-	"{C:inactive}(Must be higher than {C:money}$#2#{C:inactive})"
+	"{C:inactive}(Previous: {C:money}$#2#{C:inactive})"
         }
     },
 	rarity = 2,
@@ -1676,11 +1599,17 @@ coreswitch.calculate = function(self, card, context)
 			else
 				card.ability.extra.pos_override.x = 6
 			end
-			
+			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.2*delayfac,
+				func = function()
+					save_run()
+					return true
+				end}
+			))
 			if coreswitch_hand_juggle == 0 then  -- you're a dumbass lol
 				end_round()
 			end
 		return true end }))
+		return nil, true
 	end
 end
 
@@ -1695,7 +1624,7 @@ end
 local templerock = SMODS.Joker({
 	name = "ccc_Temple Rock",
 	key = "templerock",
-    config = {extra = {chips = 50}},
+    config = {extra = {chips = 66}},
 	pos = {x = 8, y = 0},
 	loc_txt = {
         name = 'Temple Rock',
@@ -1862,8 +1791,8 @@ local coyotejump = SMODS.Joker({
 coyotejump.calculate = function(self, card, context) -- thank you bred?????
 
 	if context.before and not context.blueprint then
-	coyotejump_card_array = {}
-	coyotejump_ranks = {}
+		coyotejump_card_array = {}
+		coyotejump_ranks = {}
 	end
 
 	if context.individual and context.poker_hands ~= nil and not context.blueprint then
@@ -1922,14 +1851,14 @@ end
 local climbinggear = SMODS.Joker({
 	name = "ccc_Climbing Gear",
 	key = "climbinggear",
-    config = {d_size = 4},
+    config = {d_size = 3},
 	pos = {x = 6, y = 1},
 	loc_txt = {
         name = 'Climbing Gear',
         text = {
 	"{C:red}+#1#{} discards",
-	"Discarded cards are",
-	"reshuffled into deck"
+	"Played and discarded cards",
+	"are reshuffled into deck"
         }
     },
 	rarity = 2,
@@ -2038,6 +1967,7 @@ bluespinner.calculate = function(self, card, context)
 					delay(0.5)
 				end
 			end
+			return nil, true
 		end
 	end
 end
@@ -2131,6 +2061,7 @@ purplespinner.calculate = function(self, card, context)
 					delay(0.5)
 				end
 			end
+			return nil, true
 		end
 	end
 end
@@ -2223,6 +2154,7 @@ redspinner.calculate = function(self, card, context)
 					delay(0.5)
 				end
 			end
+			return nil, true
 		end
 	end
 end
@@ -2262,11 +2194,29 @@ local rainbowspinner = SMODS.Joker({
 	}
 })
 
+-- this hook handles red and purple, still need lovely for blue
+
+local sealref = Card.calculate_seal
+function Card:calculate_seal(context)
+	if next(SMODS.find_card('j_ccc_rainbowspinner')) and self.seal == 'Gold' then
+		local oldseal = self.seal
+		local ret, post = nil, nil
+		for k, v in pairs(G.P_SEALS) do
+			self.seal = k
+			ret, post = sealref(self, context)
+			if ret or post then break end
+		end
+		self.seal = oldseal
+		return ret, post
+	else
+		local ret, post = sealref(self, context)
+		return ret, post
+	end
+end
+
 function rainbowspinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'gold_seal', set = 'Other'}
 end
-
--- i think i'm just gonna hardcode this using lovely? hate to do it but... whatever, no mod compat sucks though, and at least it looks clean on the user end
 
 -- endregion Rainbow Spinner
 
@@ -2355,6 +2305,7 @@ lettinggo.calculate = function(self, card, context)
                         		return true
                     			end)}))
 				end
+				return nil, true
 			end
 		end
 	end
@@ -3405,7 +3356,7 @@ end
 local brittlecloud = SMODS.Joker({
 	name = "ccc_brittlecloud",
 	key = "brittlecloud",
-    config = {extra = {chips = 150}},
+    config = {extra = {chips = 125}},
 	pos = {x = 5, y = 4},
 	loc_txt = {
         name = 'Brittle Cloud',
@@ -3630,8 +3581,6 @@ local crystalheart = SMODS.Joker({
 		concept = "Gappie"
 	}
 })
-
--- this is dumb, there's a bug with blueprints/copies triggering extra text. it's not gamebreaking i just don't know... how to fix it
 
 crystalheart.calculate = function(self, card, context)
 
@@ -3899,7 +3848,7 @@ local strawberrypie = SMODS.Joker({
 	name = "ccc_Strawberry Pie",
 	key = "strawberrypie",
     config = {extra = {mult = 60, chips = 140, xmult = 8}},
-	pos = {x = 9, y = 4},
+	pos = {x = 8, y = 5},
 	loc_txt = {
         name = 'Strawberry Pie',
         text = {
@@ -3918,7 +3867,7 @@ local strawberrypie = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Kol_Oss"
 	}
@@ -4004,6 +3953,7 @@ oneup.calculate = function(self, card, context)
 			"ccc_Winged Golden Strawberry", 
 			"ccc_Moon Berry", 
 			"ccc_Strawberry Pie",
+			"ccc_The Crowd",
 		}
 		for i = 1, #correct_names do 	-- technically it's faster to do the comparisons in the first if, but this is cleaner
 			if context.card.config.center.name == correct_names[i] then
@@ -4021,6 +3971,150 @@ function oneup.loc_vars(self, info_queue, card)
 end
 
 -- endregion 1UP
+
+-- region Slight Miscalculation
+
+local slightmiscalculation = SMODS.Joker({
+	name = "ccc_Slight Miscalculation",
+	key = "slightmiscalculation",
+    config = {extra = {mult = 9}},
+	pos = {x = 9, y = 5},
+	loc_txt = {
+        name = 'Slight Miscalculation',
+        text = {
+			"{C:mult}+#1#{} Mult if {C:attention}scoring hand{} starts",
+			"and ends with the {C:attention}same{} rank",
+			"{C:inactive}(ex: 3, 7, 7, 3)"
+        }
+    },
+	rarity = 1,
+	cost = 3,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Mr. Wolf",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+slightmiscalculation.calculate = function(self, card, context)
+
+	if context.joker_main then
+		if context.scoring_hand[1] and (context.scoring_hand[1]:get_id() == context.scoring_hand[#context.scoring_hand]:get_id()) then
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_mult',
+					vars = { card.ability.extra.mult }
+				},
+				mult_mod = card.ability.extra.mult
+                	}
+		end		
+	end
+
+end
+
+function slightmiscalculation.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult}}
+end
+
+-- endregion Slight Miscalculation
+
+-- region The Crowd
+
+local thecrowd = SMODS.Joker({
+	name = "ccc_The Crowd",
+	key = "thecrowd",
+	config = {extra = {xmult = 5, money = 1}},
+	pos = {x = 7, y = 5},
+	loc_txt = {
+        name = 'The Crowd',
+        text = {
+			"If played hand contains a",
+			"{C:attention}Five of a Kind{}, {X:mult,C:white} X#1# {} Mult and create",
+			"the played {C:attention}poker hand's{} {C:planet}Planet{}",
+        }
+    },
+	rarity = 3,
+	cost = 12,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Kol_Oss"
+	}
+})
+
+thecrowd.calculate = function(self, card, context)
+
+	if context.joker_main then
+		
+		if (next(context.poker_hands['Five of a Kind'])) then
+
+			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.E_MANAGER:add_event(Event({
+							func = function() 
+								local _planet = 0
+								for k, v in pairs(G.P_CENTER_POOLS.Planet) do
+									if v.config.hand_type == context.scoring_name then
+										_planet = v.key
+									end
+								end
+                    						local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')
+								G.GAME.consumeable_buffer = 0
+                    						card:add_to_deck()
+								G.consumeables:emplace(card)
+               							return true
+							end
+						}))   
+						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.SECONDARY_SET.Planet})
+						return true
+					end
+				}))
+			end
+			-- the consumable addition happens quite late but you know... it's fine, it feels good enough
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_xmult',
+					vars = { card.ability.extra.xmult }
+				},
+				Xmult_mod = card.ability.extra.xmult
+                	}, true
+			
+		end
+		
+	end
+	--[[ toooooo broken
+	if context.individual and not context.blueprint then
+		if context.cardarea == G.play then
+			if (next(context.poker_hands['Five of a Kind'])) then
+				return {
+					dollars = card.ability.extra.money,
+					colour = G.C.MONEY,
+					card = card
+				}
+			end
+		end
+	end
+	]]
+
+end
+
+function thecrowd.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.xmult, card.ability.extra.money}}
+end
 
 -- region Badeline
 
@@ -4155,7 +4249,7 @@ function Card.calculate_joker(self, context)
 
 		end
 	end
-	local ret = calculate_joker_ref(self, context)
+	local ret, post = calculate_joker_ref(self, context)
 	if prevent then
 		for index, value in pairs(orig_values) do
 			if type(value) == "number" and self.ability[index] < orig_values[index]  then
@@ -4185,7 +4279,7 @@ function Card.calculate_joker(self, context)
 		end
 	end
 
-	return ret
+	return ret, post
 end
 
 -- endregion Madeline
@@ -4200,8 +4294,8 @@ local granny = SMODS.Joker({
 	name = "ccc_Granny",
 	key = "granny",
     config = {extra = {draw = 1}},
-	pos = {x = 0, y = 5},
-	soul_pos = {x = 0, y = 6},
+	pos = {x = 9, y = 4}, --pos = {x = 0, y = 5},
+	--soul_pos = {x = 0, y = 6},
 	loc_txt = {
         name = 'Granny',
         text = {

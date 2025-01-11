@@ -25,6 +25,9 @@ assert(load(NFS.read(SMODS.current_mod.path .. "lua_files/vouchers.lua")))()
 SMODS.Atlas({key = "bl_ccc_blinds", path = "bl_ccc_blinds.png", px = 34, py = 34, frames = 21, atlas_table = "ANIMATION_ATLAS"})
 assert(load(NFS.read(SMODS.current_mod.path .. "lua_files/blinds.lua")))()
 
+-- SMODS.Atlas({key = "i_ccc_instapix", path = "i_ccc_instapix.png", px = 71, py = 95, atlas = "asset_atlas"})
+-- assert(load(NFS.read(SMODS.current_mod.path .. "lua_files/instapix.lua")))()
+
 assert(load(NFS.read(SMODS.current_mod.path .. "lua_files/editions.lua")))()
 
 assert(load(NFS.read(SMODS.current_mod.path .. "lua_files/localization/en-us.lua")))()

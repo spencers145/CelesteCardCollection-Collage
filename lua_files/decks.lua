@@ -4,7 +4,7 @@ local start_run_after_callbacks = {}
 
 local eval_cardRef = eval_card
 function eval_card(card, context) 
-	local ret = eval_cardRef(card, context)
+	local ret, post = eval_cardRef(card, context)
 
     if context.repetition_only and context.cardarea == G.play and G.GAME.selected_back.effect.config.virus then
 		if not ret.seals then
@@ -18,7 +18,7 @@ function eval_card(card, context)
 		end
     end
 
-	return ret
+	return ret, post
 end
 
 local debuff_cardRef = Blind.debuff_card
@@ -215,12 +215,12 @@ function Card:calculate_joker(context)
 	if context.setting_blind and G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then
 		local boss = context.blind.boss
 		context.blind.boss = nil
-		ret = calculate_joker_ref(self, context)
+		ret, post = calculate_joker_ref(self, context)
 		context.blind.boss = boss 
 	else 
-		ret = calculate_joker_ref(self, context)
+		ret, post = calculate_joker_ref(self, context)
 	end
-	return ret
+	return ret, post
 end
 
 function bside_start_run(self)
@@ -263,9 +263,9 @@ local heartside = SMODS.Back({
 function heartside_start_run(self)
 	if G.GAME.selected_back.effect.config.all_jokers_modded then
 		local jokerPool = {}
-		for index, joker in ipairs(self.P_CENTER_POOLS["Joker"]) do
-			if not joker.mod and joker.rarity < 4 then
-				joker.no_pool_flag = "heartside_deck"
+		for k, v in pairs(G.P_CENTERS) do
+			if (not v.mod) or (v.mod and v.mod.name ~= 'Celeste Card Collection') then
+				G.GAME.banned_keys[k] = true
 			end
 		end
 		G.GAME.pool_flags.heartside_deck = true
