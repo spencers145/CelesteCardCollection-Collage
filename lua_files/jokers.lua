@@ -3,9 +3,9 @@
 
 local generate_UIBox_ability_table_ref = Card.generate_UIBox_ability_table
 
-function Card.generate_UIBox_ability_table(self)
-	local AUT = generate_UIBox_ability_table_ref(self)
-	AUT.mod_credit = self.config.center.credit or nil 
+function Card.generate_UIBox_ability_table(self, vars_only)
+	local AUT = generate_UIBox_ability_table_ref(self, vars_only)
+	if not vars_only then AUT.mod_credit = self.config.center.credit or nil end
 	return AUT
 end
 
