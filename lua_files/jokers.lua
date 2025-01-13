@@ -2620,7 +2620,7 @@ bumper.calculate = function(self, card, context)
 end
 
 function bumper.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.chips, card.ability.extra.mult}}
+	return {vars = {card.ability.extra.mult, card.ability.extra.chips}}
 end
 
 -- endregion Bumper
