@@ -10,7 +10,7 @@ Below is a list of everything this mod adds
 | Name | Ability
 | --- | ---
 |Virus Deck| Each played card is retriggered then debuffed until the end of the ante |
-|Summit Deck| Start with 0 Joker Slots. Each Ante gain 1 Joker Slot (if you haven't been in this ante yet) |
+|Summit Deck| -4 Joker Slots, each Ante gain 1 Joker Slot (if you haven't been in this ante yet) |
 |B-Side Deck| All blinds are boss blinds. Start at Ante 0 |
 |Heartside Deck| Only modded Jokers may appear (and maybe jimbo) |
 
@@ -25,15 +25,15 @@ Below is a list of everything this mod adds
 |Winged Strawberry| Common | Earn $2 if played poker hand does not contain a Pair, poker hand changes at end of round |
 |Core Switch| Common | Swap hands and discards at the start of round, +1 discard after swap|
 |Waterfall| Common | If played hand contains a Flush, convert a random card held in hand to the same suit |
-|Pointless Machines| Common | <secret> |
+|Pointless Machines| Common |  Bad signal? |
 |5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker or Buffoon Pack purchased|
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
-|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult and add +5 to both|
+|Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less|
-|Feather| Uncommon | Gains X0.05 for each card drawn this round |
+|Feather| Uncommon | Gains X0.04 for each card drawn, resets at end of round |
 |Huge Mess: Towels| Uncommon | When played hand contains a Flush, gains +7 Chips for each card in hand that shares the same suit |
 |Huge Mess: Chests| Uncommon | When played hand contains a Three of a Kind, gains +3 Mult for each possible Pair held in hand |
 |Huge Mess: Books| Uncommon | When played hand contains a Straight, gains X0.14 Mult for each additional card in the sequence held in hand |
@@ -73,6 +73,7 @@ Below is a list of everything this mod adds
 | Name | Rarity | Ability|
 | ---  | ---    | ---|
 |Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
+|Freeze| Common |Cards held in hand gain +15 Chips until end of round|
 |Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
 |Granny| Legendary | After discarding cards, force draw 1 additional card for each card discarded|
@@ -90,4 +91,9 @@ Below is a list of everything this mod adds
 | Name | Ability | Requires
 | --- | --- | ---
 | Fast Track | +1 Ante, -30% blind chips  | none
-| Mindfulness | (Requires Fast Track): -30% blind chips (again) | Fast Track
+| Mindfulness | -30% blind chips (again) | Fast Track
+
+# Vouchers
+| Name | Set | Ability|
+| ---  | ---    | ---|
+| Crystallic | Spectral | Destroys 2 random cards in hand, then adds Mirrored to 2 random cards in hand

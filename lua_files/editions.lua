@@ -33,4 +33,46 @@ local mirrored = SMODS.Edition({
 	end
     end,
 })
+
+function ccc_find_mirror()
+	local mirrors = {
+		'j_ccc_ominousmirror',
+		'j_ccc_badeline',
+		'j_ccc_partofyou',
+	}
+	for i = 1, #mirrors do
+		if next(SMODS.find_card(mirrors[i])) then
+			return true
+		end
+	end
+	return false
+end
+
+local endroundref = end_round
+function end_round()
+	local destroyed_cards = {}
+	for i, v in ipairs(G.playing_cards) do
+		if v.edition and v.edition.ccc_mirrored then
+			if not ccc_find_mirror() then
+				destroyed_cards[#destroyed_cards+1] = v
+			end
+		end
+	end
+	for j=1, #G.jokers.cards do
+		eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
+	end
+	for i=1, #destroyed_cards do
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				if destroyed_cards[i].ability.name == 'Glass Card' then 
+					destroyed_cards[i]:shatter()
+				else
+					destroyed_cards[i]:start_dissolve()
+				end
+			return true
+			end
+		}))
+	end
+	endroundref()
+end
 -- endregion Mirrored

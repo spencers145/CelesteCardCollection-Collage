@@ -51,14 +51,14 @@ end
 local feather = SMODS.Joker({
 	name = "ccc_Feather",
 	key = "feather",
-    config = {extra = {mult_scale = 0.05}},
+    config = {extra = {xmult = 1, mult_scale = 0.04}},
 	pos = {x = 0, y = 0},
 	loc_txt = {
         name = 'Feather',
         text = {
 	"Gains {X:mult,C:white} X#1# {} Mult for",
-	"each card {C:attention}drawn{} from",
-	"deck during round",
+	"each card {C:attention}drawn{} from deck,",
+	"{C:red}resets{} at end of round",
 	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
         }
     },
@@ -77,19 +77,44 @@ local feather = SMODS.Joker({
 })
 
 feather.calculate = function(self, card, context)
+
+        if context.ccc_drawfromdeck then
+		if not context.blueprint then
+                	card.ability.extra.xmult = card.ability.extra.xmult+(card.ability.extra.mult_scale*context.ccc_amount)
+		end
+	end
 	
         if context.joker_main then
 		return {
-			message = localize{type='variable',key='a_xmult',vars={1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards))}},
-			Xmult_mod = 1+(card.ability.extra.mult_scale*(#G.playing_cards - #G.deck.cards)), 
+			message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
+			Xmult_mod = card.ability.extra.xmult, 
 			colour = G.C.MULT
 		}
         end
 	
+	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
+		card.ability.extra.xmult = 1
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+	end
 end
 
 function feather.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.mult_scale, 1+(card.ability.extra.mult_scale*((G.deck and G.deck.cards and G.playing_cards) and #G.playing_cards - #G.deck.cards or 0))}}
+	return {vars = {card.ability.extra.mult_scale, card.ability.extra.xmult}}
+end
+
+local drawcardref = G.FUNCS.draw_from_deck_to_hand
+G.FUNCS.draw_from_deck_to_hand = function(e)
+	local hand_space = e or math.min(#G.deck.cards, G.hand.config.card_limit - #G.hand.cards)
+	if G.GAME.blind.name == 'The Serpent' and
+	not G.GAME.blind.disabled and
+	(G.GAME.current_round.hands_played > 0 or
+	G.GAME.current_round.discards_used > 0) then
+		hand_space = math.min(#G.deck.cards, 3)
+	end
+	for i = 1, #G.jokers.cards do	-- probably should be using smods calculate context here
+		G.jokers.cards[i]:calculate_joker({ccc_drawfromdeck = true, ccc_amount = hand_space})
+	end
+	drawcardref(e)
 end
 
 --endregion Feather
@@ -124,15 +149,11 @@ local zipper = SMODS.Joker({
 })
 
 zipper.set_ability = function(self, card, initial, delay_sprites)
-        if card.ability.name == 'ccc_Zipper' then
-            card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
-	end
+	card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
 end
 
 zipper.calculate = function(self, card, context)
-        if card.ability.name == 'ccc_Zipper' then
-            card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
-	end
+	card.ability.extra.chips = G.GAME.skips*card.ability.extra.chips_scale
         if context.skip_blind then
             if not context.blueprint then
                 G.E_MANAGER:add_event(Event({
@@ -294,7 +315,7 @@ local bird = SMODS.Joker({
         name = 'Bird',
         text = {
 	"Whenever a {C:planet}Planet{} card",
-	"is used, {C:purple}force draw{} {C:attention}#1#{} cards"
+	"is used, {C:attention}quick draw{} {C:attention}#1#{} cards"
         }
     },
 	rarity = 3,
@@ -1228,7 +1249,7 @@ wingedstrawberry.calculate = function(self, card, context)
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
-                        if v.visible and k ~= card.ability.extra.winged_poker_hand then 
+                        if v.visible and k ~= card.ability.extra.winged_poker_hand and k ~= 'High Card' then 
 				_poker_hands[#_poker_hands+1] = k 
 			end
                     end
@@ -1289,7 +1310,7 @@ local goldenstrawberry = SMODS.Joker({
 
 goldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
-		if context.blind.boss then
+		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -1348,7 +1369,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 		if not context.blueprint then
                     local _poker_hands = {}
                     for k, v in pairs(G.GAME.hands) do
-                        if v.visible and k ~= card.ability.extra.winged_poker_hand then 
+                        if v.visible and k ~= card.ability.extra.winged_poker_hand and k ~= 'High Card' then 
 				_poker_hands[#_poker_hands+1] = k 
 			end
                     end
@@ -1365,7 +1386,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 	end
 	if context.setting_blind then
 		card.ability.extra.condition_satisfied = true
-		if context.blind.boss then
+		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -1452,7 +1473,7 @@ moonberry.calculate = function(self, card, context)
 			func = (function()
 			local _poker_hands = {}
                     	for k, v in pairs(G.GAME.hands) do
-                      	  	if v.visible and k ~= card.ability.extra.winged_poker_hand then 
+                      	  	if v.visible and k ~= card.ability.extra.winged_poker_hand and k ~= 'High Card' then 
 					_poker_hands[#_poker_hands+1] = k 
 				end
                     	end
@@ -1639,6 +1660,7 @@ local templerock = SMODS.Joker({
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
+	enhancement_gate = "m_stone",
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -1977,6 +1999,13 @@ function bluespinner.loc_vars(self, info_queue, card)
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
+function bluespinner.in_pool(self)
+	for i, v in ipairs(G.playing_cards) do
+		if v.seal and v.seal == 'Blue' then return true end
+	end
+	return false
+end
+
 -- endregion Blue Spinner
 
 -- region Purple Spinner
@@ -2071,6 +2100,12 @@ function purplespinner.loc_vars(self, info_queue, card)
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
+function purplespinner.in_pool(self)
+	for i, v in ipairs(G.playing_cards) do
+		if v.seal and v.seal == 'Purple' then return true end
+	end
+	return false
+end
 
 -- region Red Spinner
 
@@ -2164,6 +2199,13 @@ function redspinner.loc_vars(self, info_queue, card)
 	return {vars = {''..(G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success}}
 end
 
+function redspinner.in_pool(self)
+	for i, v in ipairs(G.playing_cards) do
+		if v.seal and v.seal == 'Red' then return true end
+	end
+	return false
+end
+
 -- endregion Red Spinner
 
 -- region Rainbow Spinner
@@ -2216,6 +2258,13 @@ end
 
 function rainbowspinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'gold_seal', set = 'Other'}
+end
+
+function rainbowspinner.in_pool(self)
+	for i, v in ipairs(G.playing_cards) do
+		if v.seal and v.seal == 'Gold' then return true end
+	end
+	return false
 end
 
 -- endregion Rainbow Spinner
@@ -2877,15 +2926,19 @@ switchgate.calculate = function(self, card, context)
 
 	if context.individual and not context.blueprint then
 		if context.cardarea == G.play then
+			local count = 0
 			for i = 1, 3 do
 				if context.other_card:get_id() == card.ability.extra.cards[i].id and context.other_card:is_suit(card.ability.extra.cards[i].suit) then
-					card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_scale
-					return {
-						extra = {focus = card, message = localize('k_upgrade_ex')},
-						colour = G.C.CHIPS,	-- why doesn't this work???????? it's fine but it should really be chip coloured
-						card = card
-					}
+					count = count + 1
 				end
+			end
+			if count > 0 then
+				card.ability.extra.chips = card.ability.extra.chips + (card.ability.extra.chips_scale*count)
+				return {
+					extra = {focus = card, message = localize('k_upgrade_ex')},
+					colour = G.C.CHIPS,	-- why doesn't this work???????? it's fine but it should really be chip coloured
+					card = card
+				}
 			end
 		end
 	end
@@ -2960,7 +3013,7 @@ checkpoint.calculate = function(self, card, context)
 
 	if context.setting_blind and not context.blueprint then
 		card.ability.extra.did_you_discard = false
-		if context.blind.boss then
+		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -3074,7 +3127,7 @@ local pointlessmachines = SMODS.Joker({
 	loc_txt = {
         name = 'Pointless Machines',
         text = {
-	""
+	"Bad signal?"
         }
     },
 	rarity = 1,
@@ -3182,7 +3235,7 @@ local lapidary = SMODS.Joker({
 })
 
 lapidary.calculate = function(self, card, context)
-	if context.other_joker then
+	if context.other_joker and context.cardarea == G.jokers then
 		local uniqueRarity = true 
 		for i = 1, #G.jokers.cards do
 			if G.jokers.cards[i] ~= context.other_joker and G.jokers.cards[i].config.center.rarity == context.other_joker.config.center.rarity then
@@ -3414,7 +3467,7 @@ local seeker = SMODS.Joker({
 			"If card is drawn {C:attention}face up{} and",
 			"is not most owned {C:attention}rank{} ({C:attention}#1#{})",
 			"or {C:attention}suit{} ({V:1}#2#{}), reshuffle",
-			"it into {C:attention}deck{} and {C:purple}force redraw"
+			"it into {C:attention}deck{} and {C:attention}quick redraw"
         }
     },
 	rarity = 3,
@@ -3706,8 +3759,7 @@ local introcar = SMODS.Joker({
         text = {
 			"Before each {C:attention}5{} or {C:attention}8{} is",
 			"scored, {C:attention}swap{} current",
-			"{C:chips}Chips{} and {C:mult}Mult{} and",
-			"add {C:chips}+{C:mult}#1#{} to both"
+			"{C:chips}Chips{} and {C:mult}Mult{}"
         }
     },
 	rarity = 2,
@@ -3731,8 +3783,8 @@ introcar.calculate = function(self, card, context)
 				delay(0.2)
 				local temp_chips = hand_chips
 				local temp_mult = mult
-				hand_chips = mod_chips(temp_mult+card.ability.extra.add)
-				mult = mod_mult(temp_chips+card.ability.extra.add)
+				hand_chips = mod_chips(temp_mult)
+				mult = mod_mult(temp_chips)
 				update_hand_text({delay = 0}, {chips = hand_chips, mult = mult})
 				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Swap", colour = G.C.FILTER})
 				delay(0.2)
@@ -3926,7 +3978,7 @@ local oneup = SMODS.Joker({
         name = '1UP',
         text = {
 			"Earn {C:money}$#1#{} at end of round,",
-			"increases by {C:money}$#2#{} when a",
+			"increases by {C:money}$#2#{} when any",
 			"{C:attention}Strawberry{} is purchased"
         }
     },
@@ -4004,7 +4056,9 @@ local slightmiscalculation = SMODS.Joker({
 slightmiscalculation.calculate = function(self, card, context)
 
 	if context.joker_main then
-		if context.scoring_hand[1] and (context.scoring_hand[1]:get_id() == context.scoring_hand[#context.scoring_hand]:get_id()) then
+		if (context.scoring_hand[1] and (context.scoring_hand[1]:get_id() == context.scoring_hand[#context.scoring_hand]:get_id())) or
+		-- keevin doesn't work well with this! so i'm hardcoding the interaction
+		(#SMODS.find_card('j_ccc_kevin') >= 1 and G.play.cards[#G.play.cards] == context.scoring_hand[#context.scoring_hand] and context.scoring_hand[1]:is_face()) then
 			return {
 				message = localize {
 					type = 'variable',
@@ -4034,13 +4088,12 @@ local thecrowd = SMODS.Joker({
 	loc_txt = {
         name = 'The Crowd',
         text = {
-			"If played hand contains a",
-			"{C:attention}Five of a Kind{}, {X:mult,C:white} X#1# {} Mult and create",
-			"the played {C:attention}poker hand's{} {C:planet}Planet{}",
+			"If played hand contains a {C:attention}Five of a Kind{},",
+			"{X:mult,C:white} X#1# {} Mult",
         }
     },
 	rarity = 3,
-	cost = 12,
+	cost = 8,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -4058,7 +4111,7 @@ thecrowd.calculate = function(self, card, context)
 	if context.joker_main then
 		
 		if (next(context.poker_hands['Five of a Kind'])) then
-
+			--[[ the purge
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 				G.E_MANAGER:add_event(Event({
@@ -4084,6 +4137,8 @@ thecrowd.calculate = function(self, card, context)
 				}))
 			end
 			-- the consumable addition happens quite late but you know... it's fine, it feels good enough
+			]]
+			
 			return {
 				message = localize {
 					type = 'variable',
@@ -4115,6 +4170,146 @@ end
 function thecrowd.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.xmult, card.ability.extra.money}}
 end
+
+function thecrowd.in_pool(self)
+	if G.GAME.hands["Flush Five"].played > 0 or G.GAME.hands["Five of a Kind"].played > 0 then
+		return true
+	end
+	return false
+end
+
+-- endregion The Crowd
+
+-- region Freeze
+
+local freeze = SMODS.Joker({
+	name = "ccc_Freeze",
+	key = "freeze",
+    config = {extra = {chips = 15}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Freeze',
+        text = {
+			"Cards held in hand",
+			"gain {C:chips}+#1#{} Chips",
+			"until end of round",
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+freeze.calculate = function(self, card, context)
+	if context.individual and not (context.end_of_round or context.repetition) then
+        	if context.cardarea == G.hand then
+			-- scuffed
+	         	context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus or 0
+                        context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus + card.ability.extra.chips
+			context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus or 0
+                        context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus + card.ability.extra.chips
+                        return {
+                            	extra = {message = localize('k_upgrade_ex'), colour = G.C.CHIPS},
+                            	colour = G.C.CHIPS,
+				card = card
+                        }
+	        end
+	end
+end
+
+function freeze.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+local endroundref = end_round
+function end_round()
+	for i, v in ipairs(G.playing_cards) do
+		if v.ability.perma_bonus and v.ability.temp_bonus then
+			v.ability.perma_bonus = v.ability.perma_bonus - v.ability.temp_bonus
+			v.ability.temp_bonus = 0
+		end
+	end
+	endroundref()
+end
+
+-- endregion Freeze
+
+--[[ region Shattersong
+
+local shattersong = SMODS.Joker({
+	name = "ccc_Shattersong",
+	key = "shattersong",
+    config = {extra = {mult = 0, mult_scale = 4}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Shattersong',
+        text = {
+		"This Joker gains {C:mult}+#2#{} Mult",
+		"for each {C:attention}consecutive{} hand that",
+		"contains a {C:attention}scoring 7{}, {C:attention}10{}, or {C:attention}King{},",
+		"{C:red}resets{} on beating {C:attention}Boss Blind",
+		"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
+        }
+    },
+	rarity = 2,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "estending"
+	}
+})
+
+-- unfinished
+
+shattersong.calculate = function(self, card, context)
+	if context.before and not context.blueprint then
+		for i = 1, #context.scoring_hand do
+			if context.scoring_hand[i]:get_id() == 7 
+			or context.scoring_hand[i]:get_id() == 10 
+			or context.scoring_hand[i]:get_id() == 13 then
+				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_scale
+				return {
+					extra = {focus = card, message = localize('k_upgrade_ex')},
+					colour = G.C.MULT,
+					card = card
+				}
+			end
+		end
+	end
+
+	if context.joker_main then
+		if card.ability.extra.mult ~= 0 then
+                	return {
+                    	message = localize {
+                        	type = 'variable',
+                        	key = 'a_mult',
+                        	vars = { card.ability.extra.mult }
+                    	},
+			mult_mod = card.ability.extra.mult
+                	}
+		end
+	end
+end
+
+function shattersong.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult, card.ability.extra.mult_scale}}
+end
+]]
+-- endregion Shattersong
 
 -- region Badeline
 
@@ -4300,7 +4495,7 @@ local granny = SMODS.Joker({
         name = 'Granny',
         text = {
 	"After {C:red}discarding{} cards,",
-	"{C:purple}force draw{} {C:attention}#1#{} additional card",
+	"{C:attention}quick draw{} {C:attention}#1#{} additional card",
 	"for each card discarded"
         }
     },

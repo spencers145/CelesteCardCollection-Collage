@@ -89,15 +89,7 @@ target = "blind.lua"
 pattern = "function Blind:drawn_to_hand()"
 position = "after"
 payload = '''
-local theo_crystal_override = false
-for i = 1, #G.jokers.cards do
-	if G.jokers.cards[i].ability.set == 'Joker' then
-		if G.jokers.cards[i].ability.name == 'ccc_Theo Crystal' then
-			theo_crystal_override = true
-		end
-	end
-end
-if theo_crystal_override == true then
+if next(SMODS.find_card('j_ccc_theocrystal')) then
 	local any_forced = nil
 	for k, v in ipairs(G.hand.cards) do
 		if v.ability.forced_selection then
@@ -111,5 +103,44 @@ if theo_crystal_override == true then
 		G.hand:add_to_highlighted(forced_card)
 	end
 end
+'''
+match_indent = true
+
+# square joker copy
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if _center.name == 'Square Joker' and (_center.discovered or self.bypass_discovery_center) then'''
+position = "before"
+payload = '''
+if _center.name == 'ccc_Theo Crystal' and (_center.discovered or self.bypass_discovery_center) then
+	self.children.center.scale.y = self.children.center.scale.x
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if center.name == "Square Joker" and (center.discovered or self.bypass_discovery_center) then'''
+position = "before"
+payload = '''
+if center.name == 'ccc_Theo Crystal' and (center.discovered or self.bypass_discovery_center) then
+	H = W
+	self.T.h = H
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''elseif self.config.center.name == "Square Joker" then'''
+position = "before"
+payload = '''
+elseif self.config.center.name == "ccc_Theo Crystal" then
+        H = W 
+        self.T.h = H*scale
+        self.T.w = W*scale
 '''
 match_indent = true
