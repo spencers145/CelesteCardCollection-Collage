@@ -93,7 +93,7 @@ Below is a list of everything this mod adds
 | Fast Track | +1 Ante, -30% blind chips  | none
 | Mindfulness | -30% blind chips (again) | Fast Track
 
-# Vouchers
+# Consumables
 | Name | Set | Ability|
 | ---  | ---    | ---|
 | Crystallic | Spectral | Destroys 2 random cards in hand, then adds Mirrored to 2 random cards in hand
