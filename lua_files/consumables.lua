@@ -14,7 +14,7 @@ local crystallic = SMODS.Consumable({
 			"{C:attention}#2#{} random cards in hand",
 		}
 	},
-	cost = 6,
+	cost = 4,
 	discovered = true,
 	atlas = "c_ccc_consumables",
 	credit = {
