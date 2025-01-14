@@ -4088,8 +4088,9 @@ local thecrowd = SMODS.Joker({
 	loc_txt = {
         name = 'The Crowd',
         text = {
-			"If played hand contains a {C:attention}Five of a Kind{},",
-			"{X:mult,C:white} X#1# {} Mult",
+			"{X:mult,C:white} X#1# {} Mult if played",
+			"hand contains",
+			"a {C:attention}Five of a Kind{}",
         }
     },
 	rarity = 3,
