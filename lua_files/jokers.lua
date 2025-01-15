@@ -2330,12 +2330,12 @@ lettinggo.calculate = function(self, card, context)
 			end
 		end
 	end
-
-	if context.remove_playing_cards then -- it's just the same thing as before, folks
+	
+	if context.remove_playing_cards and context.removed ~= nil then -- it's just the same thing as before, folks
 		local death_chances = 0
 		for k, val in ipairs(context.removed) do
                     death_chances = death_chances + 1
-                end
+		end
 		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 				if pseudorandom('lettinggo') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
