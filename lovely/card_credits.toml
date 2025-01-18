@@ -11,8 +11,8 @@ priority = 0
 [[patches]]
 [patches.pattern]
 target = "functions/UI_definitions.lua"
-pattern = "return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={"
-position = "before"
+pattern = '''info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+position = "after"
 payload = '''
 local finalstr = ""
 if AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G.jokers.cards, card))  then
@@ -34,8 +34,8 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/UI_definitions.lua"
-pattern = "return {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={"
-position = "after"
+pattern = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil}, nodes={'''
+position = "before"
 payload = '''
 AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G.jokers.cards, card)) and ({n=G.UIT.C,  config={align = "cm", r = 0.1, padding = 0.3, emboss = 0.10}, nodes={ 
 	{n=G.UIT.R, config={align = "cm"}, nodes = {
