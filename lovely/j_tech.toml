@@ -1,0 +1,55 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# square joker copy
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if _center.name == 'Square Joker' and (_center.discovered or self.bypass_discovery_center) then'''
+position = "before"
+payload = '''
+if (
+	_center.name == 'ccc_Bunny Hop'
+	or _center.name == 'ccc_Cornerjump'
+	or _center.name == 'ccc_Bubsdrop'
+) and (_center.discovered or self.bypass_discovery_center) then
+	self.children.center.scale.y = self.children.center.scale.y/(95/81)
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''if center.name == "Square Joker" and (center.discovered or self.bypass_discovery_center) then'''
+position = "before"
+payload = '''
+if (
+	center.name == 'ccc_Bunny Hop'
+	or center.name == 'ccc_Cornerjump'
+	or center.name == 'ccc_Bubsdrop'
+) and (center.discovered or self.bypass_discovery_center) then
+	H = H/(95/81)
+	self.T.h = H
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''elseif self.config.center.name == "Square Joker" then'''
+position = "before"
+payload = '''
+elseif (
+	self.config.center.name == 'ccc_Bunny Hop'
+	or self.config.center.name == 'ccc_Cornerjump'
+	or self.config.center.name == 'ccc_Bubsdrop'
+) then
+        H = H/(95/81)
+        self.T.h = H*scale
+        self.T.w = W*scale
+'''
+match_indent = true

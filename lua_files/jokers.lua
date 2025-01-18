@@ -403,7 +403,20 @@ partofyou.calculate = function(self, card, context)
 				local suit = string.sub(context.full_hand[i].config.card.suit, 1, 1) .. "_"
 				local _table = {"", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2", "A", "K"}
 				local rank = _table[context.full_hand[i]:get_id()]
-				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function()  context.full_hand[i]:set_base(G.P_CARDS[suit .. rank]);return true end }))
+				G.P_CARDS[suit .. rank].delay_change = {
+					suit = context.full_hand[i].config.card.suit,
+					value = context.full_hand[i].config.card.value,
+					pos = copy_table(context.full_hand[i].config.card.pos),
+				}
+				context.full_hand[i]:set_base(G.P_CARDS[suit .. rank])
+				
+				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,
+					func = function()  
+						G.P_CARDS[suit .. rank].delay_change = nil	-- this is blasphemous but it shouldn't break anything????????
+						context.full_hand[i]:set_base(G.P_CARDS[suit .. rank])
+						return true 
+					end 
+				}))
 			end
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() context.full_hand[1]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[1]:juice_up(0.3, 0.3);return true end }))
 			G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() context.full_hand[2]:flip();play_sound('tarot2', 1, 0.6);context.full_hand[2]:juice_up(0.3, 0.3);return true end }))
@@ -417,6 +430,18 @@ end
 function partofyou.loc_vars(self, info_queue, card)
 	info_queue[#info_queue+1] = {key = 'partofyou_complements', set = 'Other'}
 end
+
+-- scuffed
+
+local gfsiref = get_front_spriteinfo
+function get_front_spriteinfo(_front)
+	if _front and _front.delay_change then
+		sendDebugMessage("delaying")
+		return gfsiref(_front.delay_change)
+	else
+		return gfsiref(_front)
+	end
+end		
 
 -- endregion Part Of You
 
@@ -546,10 +571,10 @@ local chests = SMODS.Joker({
 chests.calculate = function(self, card, context)
 
 	if context.before and not context.blueprint then
-	card.boxes_rank_array = {}
-	card.boxes_card_array_length = 0
-	card.boxes_pair_amounts = 0
-	card.boxes_card_pair_candidate = 0
+		card.boxes_rank_array = {}
+		card.boxes_card_array_length = 0
+		card.boxes_pair_amounts = 0
+		card.boxes_card_pair_candidate = 0
 	end
 
 	if context.individual and context.poker_hands ~= nil and ((next(context.poker_hands['Three of a Kind']) or next(context.poker_hands['Full House']) or next(context.poker_hands['Four of a Kind']) or next(context.poker_hands['Five of a Kind']) or next(context.poker_hands['Flush Five']))) and not context.blueprint then
@@ -607,8 +632,8 @@ local books = SMODS.Joker({
         text = {
 	"When played hand contains a",
 	"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult",
-	"for each additional card in",
-	"the {C:attention}sequence{} held in hand",
+	"for each additional card held in",
+	"hand that extends the {C:attention}sequence{}",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
         }
     },
@@ -1260,8 +1285,9 @@ wingedstrawberry.calculate = function(self, card, context)
         if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
 			if not next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
+				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money
+				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
 				return {
-					message = localize('$')..card.ability.extra.money,
 					dollars = card.ability.extra.money,
 					colour = G.C.MONEY
 				}
@@ -2983,7 +3009,7 @@ end
 local checkpoint = SMODS.Joker({
 	name = "ccc_Checkpoint",
 	key = "checkpoint",
-    config = {extra = {xmult = 1, xmult_scale = 1, did_you_discard = false, after_boss = false}},
+    config = {extra = {xmult = 1, xmult_scale = 0.75, did_you_discard = false, after_boss = false}},
 	pos = {x = 8, y = 2},
 	loc_txt = {
         name = 'Checkpoint',
@@ -2999,7 +3025,7 @@ local checkpoint = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -3077,7 +3103,7 @@ local theocrystal = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -3115,95 +3141,7 @@ function theocrystal.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.scale, card.ability.extra.probs}}
 end
 
--- endregion Theo Crystal
-
--- region Pointless Machines
-
-local pointlessmachines = SMODS.Joker({
-	name = "ccc_Pointless Machines",
-	key = "pointlessmachines",
-    config = {extra = {incorrect = false, reset = false, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
-	pos = {x = 9, y = 1},
-	loc_txt = {
-        name = 'Pointless Machines',
-        text = {
-	"Bad signal?"
-        }
-    },
-	rarity = 1,
-	cost = 5,
-	discovered = true,
-	blueprint_compat = false,
-	eternal_compat = true,
-	perishable_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "goose!",
-		code = "toneblock",
-		concept = "Fytos"
-	}
-})
-
-pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
-        for i = 1, 5 do
-		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
-	end
-end
-
-pointlessmachines.calculate = function(self, card, context)
-	if context.before and not context.blueprint then
-		card.ability.extra.incorrect = false
-		if #context.full_hand >= 5 then
-			for i = 1, 5 do
-				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
-					card.ability.extra.incorrect = true
-				end
-			end
-		else
-			card.ability.extra.incorrect = true
-		end
-		if card.ability.extra.incorrect == false then
-			card.ability.extra.reset = true
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Correct", colour = G.C.GREEN})
-			local temp_dollars = pseudorandom('littlemoney', 4, 7)
-				ease_dollars(temp_dollars)
-				G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + temp_dollars
-				G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
-				return {
-					message = localize('$')..temp_dollars,
-					dollars = temp_dollars,
-				colour = G.C.MONEY
-				}
-		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Incorrect", colour = G.C.RED})
-		end
-	end
-	
-	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then	-- 1/3 chance for mult, 2/3 chance for chips
-		if pseudorandom('chipsormult', 0, 2) > 1 then 
-			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
-                            return {
-                                message = localize{type='variable',key='a_mult',vars={temp_Mult}},
-                                mult_mod = temp_Mult
-                            }
-		else
-			local temp_chips = pseudorandom('misprintbutchips', 80, 145)
-                            return {
-                                message = localize{type='variable',key='a_chips',vars={temp_chips}},
-                                chip_mod = temp_chips
-                            }
-		end
-	end
-
-	if context.after and card.ability.extra.reset == true and not context.blueprint then
-		for i = 1, 5 do
-			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('reinitialize'))
-		end
-		card.ability.extra.reset = false
-	end
-end				
-
--- endregion Pointless Machines	
+-- endregion Theo Crystal	
 
 -- region Lapidary
 
@@ -3235,7 +3173,7 @@ local lapidary = SMODS.Joker({
 })
 
 lapidary.calculate = function(self, card, context)
-	if context.other_joker and context.cardarea == G.jokers then
+	if context.other_joker and not context.other_consumable then	-- ?????
 		local uniqueRarity = true 
 		for i = 1, #G.jokers.cards do
 			if G.jokers.cards[i] ~= context.other_joker and G.jokers.cards[i].config.center.rarity == context.other_joker.config.center.rarity then
@@ -3565,8 +3503,10 @@ seeker.calculate = function(self, card, context)
 		end
 		for i = 1, hand_size do
 			local future_card = G.deck.cards[(#G.deck.cards - (i - 1))]		-- end of G.deck.cards currently has the cards that are about to be drawn
+			local ranks = {"", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}
+			local future_card_rank = ranks[future_card:get_id()] or "0"
 			local stay_flipped = G.GAME and G.GAME.blind and G.GAME.blind:stay_flipped(G.hand, G.deck.cards[(#G.deck.cards - (i - 1))])
-			if ((not (future_card.base.value == G.GAME.pool_flags.seeker_table.rank or future_card.base.suit == G.GAME.pool_flags.seeker_table.suit)) 
+			if ((not (future_card_rank == G.GAME.pool_flags.seeker_table.rank or future_card:is_suit(G.GAME.pool_flags.seeker_table.suit, true))) 
 			or (future_card.ability.name == 'Stone Card')) and (not stay_flipped == true) then	-- note that the only exclusion is stone cards, wild/smeared affect :is_suit() rather than base.suit
 				card_redraw_candidates[#card_redraw_candidates + 1] = future_card
 				card_pos[#card_pos + 1] = i
@@ -3604,6 +3544,307 @@ end
 
 -- endregion seeker
 
+-- region Pointless Machines
+
+local pointlessmachines = SMODS.Joker({
+	name = "ccc_Pointless Machines",
+	key = "pointlessmachines",
+    config = {extra = {chosen = 'Spades', incorrect = false, reset = false, count = 0, req = 4, suits = {[1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts'}}},
+	pos = {x = 9, y = 1},
+	loc_txt = {
+        name = 'Pointless Machines',
+        text = {
+	"Bad signal?"
+        }
+    },
+	rarity = 2,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "goose!",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
+	card.ability.extra.chosen = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
+        for i = 1, 5 do
+		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('initialize2'))
+	end
+end
+
+pointlessmachines.calculate = function(self, card, context)
+	
+	if context.before and not context.blueprint then
+		card.ability.extra.incorrect = false
+		if #context.full_hand >= 5 then
+			for i = 1, 5 do
+				if not context.full_hand[i]:is_suit(card.ability.extra.suits[i], true) then
+					card.ability.extra.incorrect = true
+				end
+			end
+		else
+			card.ability.extra.incorrect = true
+		end
+		
+		if card.ability.extra.incorrect == false then
+			card.ability.extra.reset = true
+			card.ability.extra.count = card.ability.extra.count + 1
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Correct", colour = G.C.GREEN})
+			if card.ability.extra.count >= card.ability.extra.req then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',delay = 0.75,func = function()
+						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() 
+							card:flip();play_sound('card1', 1, 0.6);card:juice_up(0.3, 0.3)
+						return true end }))
+						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,
+							func = function()
+								local centers = {'j_ccc_crystalheart', 'j_ccc_mechanicalheart', 'j_ccc_quietheart', 'j_ccc_heavyheart'}
+								local suits = {'Hearts', 'Clubs', 'Spades', 'Diamonds'}
+								local center = 'j_ccc_crystalheart'
+								for i = 1, #suits do
+									if card.ability.extra.chosen == suits[i] then
+										center = centers[i]
+									end
+								end
+								card:set_ability(G.P_CENTERS[center])
+								return true 
+							end 
+						}))
+						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.75,func = function() 
+							card:flip();play_sound('tarot2', 1, 0.6);card:juice_up(0.3, 0.3)
+						return true end }))
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',delay = 1.25,func = function() 
+								local card = create_card('Spectral', G.consumeables, nil, nil, nil, nil, 'c_grim', 'thisispointless')
+								card:set_edition({negative = true}, true)
+								card:add_to_deck()
+								G.consumeables:emplace(card)
+							return true end
+						}))
+						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_spectral'), colour = G.C.SECONDARY_SET.Spectral})
+					return true end
+				}))
+			else
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = card.ability.extra.count.."/"..card.ability.extra.req, colour = G.C.FILTER})
+			end
+			--[[
+			local temp_dollars = pseudorandom('littlemoney', 4, 7)
+			ease_dollars(temp_dollars)
+			G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + temp_dollars
+			G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+			return {
+				dollars = temp_dollars,
+				colour = G.C.MONEY
+			}
+			]]
+		else
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Incorrect", colour = G.C.RED})
+		end
+	end
+	--[[
+	if context.joker_main and card.ability.extra.incorrect == false and not context.blueprint then	-- 1/3 chance for mult, 2/3 chance for chips
+		if pseudorandom('chipsormult', 0, 2) > 1 then 
+			local temp_Mult = pseudorandom('misprintcopylmao', 18, 45)
+                            return {
+                                message = localize{type='variable',key='a_mult',vars={temp_Mult}},
+                                mult_mod = temp_Mult
+                            }
+		else
+			local temp_chips = pseudorandom('misprintbutchips', 80, 145)
+                            return {
+                                message = localize{type='variable',key='a_chips',vars={temp_chips}},
+                                chip_mod = temp_chips
+                            }
+		end
+	end
+	]]
+	if context.after and card.ability.extra.reset == true and not context.blueprint then
+		for i = 1, 5 do
+			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('reinitialize'))
+		end
+		card.ability.extra.reset = false
+	end
+end
+
+-- region Focused Grim
+
+function ccc_heartmatch(name)
+	local table = {
+		['ccc_Crystal Heart'] = 'Hearts',
+		['ccc_Mechanical Heart'] = 'Clubs',
+		['ccc_Quiet Heart'] = 'Spades',
+		['ccc_Heavy Heart'] = 'Diamonds',
+	}
+	return table[name]
+end
+
+local chighlight = Card.highlight
+function Card:highlight(is_higlighted)
+	chighlight(self, is_higlighted)
+	if self.ability.name == 'Grim' and self.highlighted then
+		G.GAME.grim_highlighted = true
+		local _card = nil
+		for i = 1, #G.jokers.cards do
+			if ccc_heartmatch(G.jokers.cards[i].ability.name) then
+				_card = G.jokers.cards[i]
+				break
+			end
+		end
+		if _card then
+			local thunk = function() return G.GAME.grim_highlighted end
+                	juice_card_until(_card, thunk, true)
+		end
+	elseif self.ability.name == 'Grim' and not self.highlighted then
+		G.GAME.grim_highlighted = false
+	end
+end
+
+local function random_destroy(used_tarot)
+	local destroyed_cards = {}
+	destroyed_cards[#destroyed_cards + 1] = pseudorandom_element(G.hand.cards, pseudoseed('random_destroy'))
+	G.E_MANAGER:add_event(Event({
+		trigger = 'after',
+		delay = 0.4,
+		func = function()
+			play_sound('tarot1')
+			used_tarot:juice_up(0.3, 0.5)
+			return true
+		end
+	}))
+	G.E_MANAGER:add_event(Event({
+		trigger = 'after',
+		delay = 0.1,
+		func = function()
+			for i = #destroyed_cards, 1, -1 do
+				local card = destroyed_cards[i]
+				if card.ability.name == 'Glass Card' then
+					card:shatter()
+				else
+					card:start_dissolve(nil, i ~= #destroyed_cards)
+				end
+			end
+			return true
+		end
+        }))
+	return destroyed_cards
+end
+SMODS.Consumable:take_ownership('grim', {
+	use = function(self, card, area, copier)
+		local used_tarot = copier or card
+		local destroyed_cards = random_destroy(used_tarot)
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.7,
+			func = function()
+				local cards = {}
+				local _cards = {}
+				for i = 1, card.ability.extra do
+					cards[i] = true		-- idk why this is done but sure
+					-- TODO preserve suit vanilla RNG
+					local _suit, _rank =
+						pseudorandom_element(SMODS.Suits, pseudoseed('grim_create')).card_key, 'A'
+					local cen_pool = {}
+					for k, v in pairs(G.P_CENTER_POOLS["Enhanced"]) do
+						if v.key ~= 'm_stone' and not v.overrides_base_rank then
+							cen_pool[#cen_pool + 1] = v
+						end
+					end
+					_cards[i] = create_playing_card({
+						front = G.P_CARDS[_suit .. '_' .. _rank],
+						center = pseudorandom_element(cen_pool, pseudoseed('spe_card'))
+						}, G.hand, nil, i ~= 1, { G.C.SECONDARY_SET.Spectral })
+				end
+				local _joker = nil
+				local _suit = nil
+				for i = 1, #G.jokers.cards do
+					_suit = ccc_heartmatch(G.jokers.cards[i].ability.name)
+					if _suit then
+						_joker = G.jokers.cards[i]
+						break
+					end
+				end
+				if _joker then
+					delay(0.5)
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.6,
+						func = function()
+							play_sound('tarot1')
+							_joker:juice_up(0.3, 0.5)
+							return true
+						end
+					}))
+					for i = 1, #_cards do
+						local percent = 1.15 - (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.25,
+							func = function()
+								_cards[i]:flip(); play_sound('card1', percent); _cards[i]:juice_up(0.3, 0.3); return true
+							end
+						}))
+					end
+					for i = 1, #_cards do
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								assert(SMODS.change_base(_cards[i], _suit))
+								if _suit == 'Hearts' then
+									local edition = poll_edition('crystal_heart', nil, true, true)
+									_cards[i]:set_edition(edition, true, true)
+								end
+								if _suit == 'Clubs' then
+									_cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
+									_cards[i]:set_seal("Red", true, true)
+								end
+								if _suit == 'Spades' then
+									_cards[i].ability.perma_bonus = _cards[i].ability.perma_bonus or 0
+									_cards[i].ability.perma_bonus = _cards[i].ability.perma_bonus + 75
+								end
+								if _suit == 'Diamonds' then
+									_cards[i]:set_ability(G.P_CENTERS.m_gold, nil, true)
+									_cards[i]:set_seal("Gold", true, true)
+								end
+								return true
+							end
+						}))
+					end
+					delay(0.8)
+					for i = 1, #_cards do
+						local percent = 0.85 + (i - 0.999) / (#G.hand.cards - 0.998) * 0.3
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.25,
+							func = function()
+								_cards[i]:flip(); play_sound('tarot2', percent, 0.6); _cards[i]:juice_up(0.3, 0.3); return true
+							end
+						}))
+					end
+				end
+				playing_card_joker_effects(cards)
+				return true
+			end
+		}))
+		delay(0.3)
+		SMODS.calculate_context({ remove_playing_cards = true, removed = destroyed_cards })
+	end,
+})
+
+-- endregion Focused Grim
+
+SMODS.Rarity{
+    key = "secret",
+    loc_txt = {name = 'Secret'},
+    badge_colour = HEX('ffc0ff'),
+}
+
+-- endregion Pointless Machines
+
 -- region Crystal Heart
 
 local crystalheart = SMODS.Joker({
@@ -3621,8 +3862,8 @@ local crystalheart = SMODS.Joker({
 			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
     },
-	rarity = 2,
-	cost = 7,
+	rarity = 'ccc_secret',
+	cost = 15,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -3637,7 +3878,7 @@ local crystalheart = SMODS.Joker({
 
 crystalheart.calculate = function(self, card, context)
 
-	if context.joker_main and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Hearts', true) then
+	if context.before and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Hearts', true) then
 		local edition_card_candidates = {}
 		for i = 1, #G.hand.cards do
 			if not G.hand.cards[i].edition then
@@ -3669,11 +3910,176 @@ crystalheart.calculate = function(self, card, context)
 	end
 end
 
+crystalheart.yes_pool_flag = 'secretheart'
 
 -- endregion Crystal Heart
 
--- region Event Horizon
+-- region Mechanical Heart
 
+local mechanicalheart = SMODS.Joker({
+	name = "ccc_Mechanical Heart",
+	key = "mechanicalheart",
+    config = {},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Mechanical Heart',
+        text = {
+			"If played hand is a",
+			"single {C:attention}Ace{} of {C:clubs}Clubs{},",
+			"turn {C:attention}all{} {C:clubs}Clubs{} held in",
+			"hand into {C:attention}Steel Cards{}",
+			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 'ccc_secret',
+	cost = 15,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+mechanicalheart.calculate = function(self, card, context)
+
+	if context.before and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Clubs', true) then
+		local steels = 0
+		for i = 1, #G.hand.cards do
+			if G.hand.cards[i]:is_suit('Clubs', true) then
+				G.hand.cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
+				G.hand.cards[i]:juice_up()
+				steels = steels + 1
+			end
+		end
+		if steels > 0 then
+			return {
+				message = "Steel",
+				colour = lighten(G.C.BLACK, 0.5)
+			}
+		end
+	end
+end
+
+mechanicalheart.yes_pool_flag = 'secretheart'
+
+-- endregion Mechanical Heart
+
+-- region Quiet Heart
+
+local quietheart = SMODS.Joker({
+	name = "ccc_Quiet Heart",
+	key = "quietheart",
+    config = {extra = {add = 15}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Quiet Heart',
+        text = {
+			"If played hand is a",
+			"single {C:attention}Ace{} of {C:spades}Spades{},",
+			"give permanent {C:chips}+#1#{} Chips",
+			"to {C:attention}all{} cards held in hand",
+			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 'ccc_secret',
+	cost = 15,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+quietheart.calculate = function(self, card, context)
+
+	if context.before and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Spades', true) then
+		for i = 1, #G.hand.cards do
+	         	G.hand.cards[i].perma_bonus = G.hand.cards[i].ability.perma_bonus or 0
+                        G.hand.cards[i].ability.perma_bonus = G.hand.cards[i].ability.perma_bonus + card.ability.extra.add
+		end
+		if #G.hand.cards > 0 then
+			return {
+				message = "Upgraded",
+				colour = G.C.CHIPS
+			}
+		end
+	end
+end
+
+quietheart.yes_pool_flag = 'secretheart'
+
+function quietheart.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.add}}
+end
+
+-- endregion Quiet Heart
+
+-- region Heavy Heart
+
+local heavyheart = SMODS.Joker({
+	name = "ccc_Heavy Heart",
+	key = "heavyheart",
+    config = {extra = {money = 2}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Heavy Heart',
+        text = {
+			"If played hand is a",
+			"single {C:attention}Ace{} of {C:diamonds}Diamonds{},",
+			"gives {C:money}$#1#{} {C:attention}multiplied{} by the",
+			"{C:attention}amount{} of cards held in hand",
+			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+        }
+    },
+	rarity = 'ccc_secret',
+	cost = 15,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+heavyheart.calculate = function(self, card, context)
+
+	if context.before and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Diamonds', true) then
+		local money = 0
+		for i = 1, #G.hand.cards do
+	         	money = money + card.ability.extra.money
+		end
+		if #G.hand.cards > 0 then
+			return {
+				dollars = money,
+				colour = G.C.MONEY
+			}
+		end
+	end
+end
+
+heavyheart.yes_pool_flag = 'secretheart'
+
+function heavyheart.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.money}}
+end
+
+-- endregion Heavy Heart
+
+-- region Event Horizon
 
 local eventhorizon = SMODS.Joker({
 	name = "ccc_Event Horizon",
@@ -3805,7 +4211,7 @@ local secretshrine = SMODS.Joker({
 	name = "ccc_Secret Shrine",
 	key = "secretshrine",
     config = {extra = {seven_tally = 4, factor = 3}},
-	pos = {x = 9, y = 4},
+	pos = {x = 6, y = 5},
 	loc_txt = {
         name = 'Secret Shrine',
         text = {
@@ -3823,7 +4229,7 @@ local secretshrine = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "9Ts",
 		code = "toneblock",
 		concept = "Aurora Aquir"
 	}
@@ -3853,8 +4259,6 @@ end
 -- endregion Secret Shrine
 
 -- region Kevin
-
--- we out here disabling
 
 local kevin = SMODS.Joker({
 	name = "ccc_Kevin",
@@ -3899,7 +4303,7 @@ end
 local strawberrypie = SMODS.Joker({
 	name = "ccc_Strawberry Pie",
 	key = "strawberrypie",
-    config = {extra = {mult = 60, chips = 140, xmult = 8}},
+    config = {extra = {mult = 50, chips = 140, xmult = 6}},
 	pos = {x = 8, y = 5},
 	loc_txt = {
         name = 'Strawberry Pie',
@@ -3912,7 +4316,7 @@ local strawberrypie = SMODS.Joker({
         }
     },
 	rarity = 3,
-	cost = 12,
+	cost = 13,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -3987,7 +4391,7 @@ local oneup = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -4023,60 +4427,6 @@ function oneup.loc_vars(self, info_queue, card)
 end
 
 -- endregion 1UP
-
--- region Slight Miscalculation
-
-local slightmiscalculation = SMODS.Joker({
-	name = "ccc_Slight Miscalculation",
-	key = "slightmiscalculation",
-    config = {extra = {mult = 9}},
-	pos = {x = 9, y = 5},
-	loc_txt = {
-        name = 'Slight Miscalculation',
-        text = {
-			"{C:mult}+#1#{} Mult if {C:attention}scoring hand{} starts",
-			"and ends with the {C:attention}same{} rank",
-			"{C:inactive}(ex: 3, 7, 7, 3)"
-        }
-    },
-	rarity = 1,
-	cost = 3,
-	discovered = true,
-	blueprint_compat = true,
-	eternal_compat = true,
-	perishable_compat = true,
-	atlas = "j_ccc_jokers",
-	credit = {
-		art = "Mr. Wolf",
-		code = "toneblock",
-		concept = "Fytos"
-	}
-})
-
-slightmiscalculation.calculate = function(self, card, context)
-
-	if context.joker_main then
-		if (context.scoring_hand[1] and (context.scoring_hand[1]:get_id() == context.scoring_hand[#context.scoring_hand]:get_id())) or
-		-- keevin doesn't work well with this! so i'm hardcoding the interaction
-		(#SMODS.find_card('j_ccc_kevin') >= 1 and G.play.cards[#G.play.cards] == context.scoring_hand[#context.scoring_hand] and context.scoring_hand[1]:is_face()) then
-			return {
-				message = localize {
-					type = 'variable',
-					key = 'a_mult',
-					vars = { card.ability.extra.mult }
-				},
-				mult_mod = card.ability.extra.mult
-                	}
-		end		
-	end
-
-end
-
-function slightmiscalculation.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.mult}}
-end
-
--- endregion Slight Miscalculation
 
 -- region The Crowd
 
@@ -4181,19 +4531,19 @@ end
 
 -- endregion The Crowd
 
--- region Freeze
+-- region Bunny Hop
 
-local freeze = SMODS.Joker({
-	name = "ccc_Freeze",
-	key = "freeze",
-    config = {extra = {chips = 15}},
-	pos = {x = 9, y = 4},
+local bunnyhop = SMODS.Joker({
+	name = "ccc_Bunny Hop",
+	key = "bunnyhop",
+    config = {extra = {chips = 2}},
+	pos = {x = 9, y = 6},
 	loc_txt = {
-        name = 'Freeze',
+        name = 'Bunny Hop',
         text = {
-			"Cards held in hand",
-			"gain {C:chips}+#1#{} Chips",
-			"until end of round",
+			"Permanently give {C:chips}+#1#{} Chips",
+			"to {C:attention}all{} cards held in hand",
+			"on discarding a {C:attention}card{}",
         }
     },
 	rarity = 1,
@@ -4204,44 +4554,159 @@ local freeze = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Aurora Aquir"
+	}
+})
+
+bunnyhop.calculate = function(self, card, context)
+	if context.discard then
+		for i = 1, #G.hand.cards do
+	         	G.hand.cards[i].perma_bonus = G.hand.cards[i].ability.perma_bonus or 0
+                        G.hand.cards[i].ability.perma_bonus = G.hand.cards[i].ability.perma_bonus + card.ability.extra.chips
+		end
+		return {
+			message = localize('k_upgrade_ex'),
+			card = card,
+			colour = G.C.CHIPS
+                }
+	end
+end
+
+function bunnyhop.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+
+-- endregion Bunny Hop
+
+-- region Cornerjump
+
+local cornerjump = SMODS.Joker({
+	name = "ccc_Cornerjump",
+	key = "cornerjump",
+    config = {extra = {chips = 90}},
+	pos = {x = 8, y = 6},
+	loc_txt = {
+        name = 'Cornerjump',
+        text = {
+			"{C:chips}+#1#{} Chips if played hand",
+			"contains an {C:attention}Ace{}, and",
+			"either a {C:attention}King{} or a {C:attention}2{}",
+        }
+    },
+	rarity = 1,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
 		code = "toneblock",
 		concept = "Fytos"
 	}
 })
 
-freeze.calculate = function(self, card, context)
-	if context.individual and not (context.end_of_round or context.repetition) then
-        	if context.cardarea == G.hand then
-			-- scuffed
-	         	context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus or 0
-                        context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus + card.ability.extra.chips
-			context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus or 0
-                        context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus + card.ability.extra.chips
-                        return {
-                            	extra = {message = localize('k_upgrade_ex'), colour = G.C.CHIPS},
-                            	colour = G.C.CHIPS,
-				card = card
-                        }
-	        end
-	end
-end
-
-function freeze.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.chips}}
-end
-local endroundref = end_round
-function end_round()
-	for i, v in ipairs(G.playing_cards) do
-		if v.ability.perma_bonus and v.ability.temp_bonus then
-			v.ability.perma_bonus = v.ability.perma_bonus - v.ability.temp_bonus
-			v.ability.temp_bonus = 0
+cornerjump.calculate = function(self, card, context)
+	if context.joker_main then
+		local ace_con = false
+		local tk_con = false
+		for i = 1, #context.full_hand do
+	         	if context.full_hand[i]:get_id() == 14 then ace_con = true end
+			if context.full_hand[i]:get_id() == 2 or context.full_hand[i]:get_id() == 13 then tk_con = true end
+		end
+		if ace_con and tk_con then
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_chips',
+					vars = { card.ability.extra.chips }
+				},
+				chip_mod = card.ability.extra.chips
+			}
 		end
 	end
-	endroundref()
 end
 
--- endregion Freeze
+function cornerjump.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+
+-- endregion Cornerjump
+
+-- region Bubsdrop
+
+local bubsdrop = SMODS.Joker({
+	name = "ccc_Bubsdrop",
+	key = "bubsdrop",
+    config = {extra = {ante = 1, money = 15}},
+	pos = {x = 7, y = 6},
+	loc_txt = {
+        name = 'Bubsdrop',
+        text = {
+			"On defeat of {C:attention}Boss Blind{},",
+			"{C:red}-$#2#{} and {C:attention}-#1#{} Ante, then",
+			"{C:red}disable{} this card",
+        }
+    },
+	rarity = 3,
+	cost = 10,
+	discovered = true,
+	blueprint_compat = false,
+	eternal_compat = false,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "9Ts"
+	}
+})
+
+bubsdrop.no_pool_flag = 'bubsdropused'
+
+bubsdrop.calculate = function(self, card, context)
+	if context.setting_blind and not context.blueprint then
+		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
+			card.ability.extra.boss = true
+		else
+			card.ability.extra.boss = false
+		end
+	end
+	
+	if context.end_of_round and (not context.blueprint) and (not context.repetition) and (not context.individual) and card.ability.extra.after_boss then
+		G.GAME.pool_flags.bubsdropused = true
+		G.E_MANAGER:add_event(Event({
+			func = function() 
+				ease_dollars(-card.ability.extra.money)
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-$"..card.ability.extra.money, colour = G.C.RED})
+				return true
+			end
+		}))
+		G.E_MANAGER:add_event(Event({
+			func = function() 
+				ease_ante(-card.ability.extra.ante)
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-"..card.ability.extra.ante.." Ante", colour = G.C.FILTER})
+				return true
+			end
+		}))
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				card.ability.perma_debuff = true
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_disabled_ex'),colour = G.C.FILTER})
+				return true
+			end
+		}))
+	end
+end
+
+function bubsdrop.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.ante, card.ability.extra.money}}
+end
+
+-- endregion Bubsdrop
 
 --[[ region Shattersong
 
@@ -4311,6 +4776,122 @@ function shattersong.loc_vars(self, info_queue, card)
 end
 ]]
 -- endregion Shattersong
+
+-- region Slight Miscalculation
+
+local slightmiscalculation = SMODS.Joker({
+	name = "ccc_Slight Miscalculation",
+	key = "slightmiscalculation",
+    config = {extra = {mult = 9}},
+	pos = {x = 9, y = 5},
+	loc_txt = {
+        name = 'Slight Miscalculation',
+        text = {
+			"{C:mult}+#1#{} Mult if {C:attention}scoring hand{} starts",
+			"and ends with the {C:attention}same{} rank",
+			"{C:inactive}(ex: 3, 7, 7, 3)"
+        }
+    },
+	rarity = 1,
+	cost = 3,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Mr. Wolf",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+slightmiscalculation.calculate = function(self, card, context)
+
+	if context.joker_main then
+		if (context.scoring_hand[1] and (context.scoring_hand[1]:get_id() == context.scoring_hand[#context.scoring_hand]:get_id())) or
+		-- keevin doesn't work well with this! so i'm hardcoding the interaction
+		(#SMODS.find_card('j_ccc_kevin') >= 1 and G.play.cards[#G.play.cards] == context.scoring_hand[#context.scoring_hand] and context.scoring_hand[1]:is_face()) then
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_mult',
+					vars = { card.ability.extra.mult }
+				},
+				mult_mod = card.ability.extra.mult
+                	}
+		end		
+	end
+
+end
+
+function slightmiscalculation.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult}}
+end
+
+-- endregion Slight Miscalculation
+
+-- region Freeze
+
+local freeze = SMODS.Joker({
+	name = "ccc_Freeze",
+	key = "freeze",
+    config = {extra = {chips = 15}},
+	pos = {x = 9, y = 4},
+	loc_txt = {
+        name = 'Freeze',
+        text = {
+			"Cards held in hand",
+			"gain {C:chips}+#1#{} Chips",
+			"until end of round",
+        }
+    },
+	rarity = 1,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "N/A",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+freeze.calculate = function(self, card, context)
+	if context.individual and not (context.end_of_round or context.repetition) then
+        	if context.cardarea == G.hand then
+			-- scuffed
+	         	context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus or 0
+                        context.other_card.ability.perma_bonus = context.other_card.ability.perma_bonus + card.ability.extra.chips
+			context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus or 0
+                        context.other_card.ability.temp_bonus = context.other_card.ability.temp_bonus + card.ability.extra.chips
+                        return {
+                            	extra = {message = localize('k_upgrade_ex'), colour = G.C.CHIPS},
+                            	colour = G.C.CHIPS,
+				card = card
+                        }
+	        end
+	end
+end
+
+function freeze.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+local endroundref = end_round
+function end_round()
+	for i, v in ipairs(G.playing_cards) do
+		if v.ability.perma_bonus and v.ability.temp_bonus then
+			v.ability.perma_bonus = v.ability.perma_bonus - v.ability.temp_bonus
+			v.ability.temp_bonus = 0
+		end
+	end
+	endroundref()
+end
+
+-- endregion Freeze
 
 -- region Badeline
 

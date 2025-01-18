@@ -14,6 +14,7 @@ G.localization.descriptions.Other.partofyou_complements = {
 }
 
 -- ok this isn't really how a localisation file works...
+-- i need to fix this at some point
 
 G.localization.descriptions.Other.e_mirrored = {
 	name = "Mirrored",
@@ -28,6 +29,12 @@ G.localization.descriptions.Other.ccc_acts_as_mirror = {
 	name = "n2",
 	text = {
 		"{C:inactive,s:0.9}(Acts as a {C:attention,s:0.9}Mirror{C:inactive,s:0.9})"
+	}
+}
+G.localization.descriptions.Other.ccc_focused = {
+	name = "n3",
+	text = {
+		"{C:inactive,s:0.9}(Focused by {C:attention,s:0.9}#1#{C:inactive,s:0.9})"
 	}
 }
 
