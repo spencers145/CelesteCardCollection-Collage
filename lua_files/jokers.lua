@@ -4563,8 +4563,14 @@ local bunnyhop = SMODS.Joker({
 bunnyhop.calculate = function(self, card, context)
 	if context.discard then
 		for i = 1, #G.hand.cards do
-	         	G.hand.cards[i].perma_bonus = G.hand.cards[i].ability.perma_bonus or 0
-                        G.hand.cards[i].ability.perma_bonus = G.hand.cards[i].ability.perma_bonus + card.ability.extra.chips
+			local discarded = false
+			for j = 1, #G.hand.highlighted do
+				if G.hand.cards[i] == G.hand.highlighted[j] then discarded = true break end
+			end
+			if not discarded then
+				G.hand.cards[i].perma_bonus = G.hand.cards[i].ability.perma_bonus or 0
+				G.hand.cards[i].ability.perma_bonus = G.hand.cards[i].ability.perma_bonus + card.ability.extra.chips
+			end
 		end
 		return {
 			message = localize('k_upgrade_ex'),
