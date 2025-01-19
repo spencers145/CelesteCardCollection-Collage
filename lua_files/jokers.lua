@@ -1262,7 +1262,7 @@ local wingedstrawberry = SMODS.Joker({
 wingedstrawberry.set_ability = function(self, card, initial, delay_sprites)
 	local _poker_hands = {}
 	for k, v in pairs(G.GAME.hands) do
-		if v.visible then 
+		if v.visible and k ~= 'High Card' then
 			_poker_hands[#_poker_hands+1] = k 
 		end
 	end
@@ -1383,7 +1383,7 @@ local wingedgoldenstrawberry = SMODS.Joker({
 wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
 	local _poker_hands = {}
 	for k, v in pairs(G.GAME.hands) do
-		if v.visible then 
+		if v.visible and k ~= 'High Card' then
 			_poker_hands[#_poker_hands+1] = k 
 		end
 	end
@@ -1460,7 +1460,7 @@ local moonberry = SMODS.Joker({
 moonberry.set_ability = function(self, card, initial, delay_sprites)
 	local _poker_hands = {}
 	for k, v in pairs(G.GAME.hands) do
-		if v.visible then 
+		if v.visible and k ~= 'High Card' then
 			_poker_hands[#_poker_hands+1] = k 
 		end
 	end
