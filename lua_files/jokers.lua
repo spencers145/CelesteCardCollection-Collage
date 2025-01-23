@@ -2658,7 +2658,7 @@ local bumper = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "9Ts",
 		code = "toneblock",
 		concept = "Aurora Aquir"
 	}
@@ -3086,6 +3086,7 @@ local theocrystal = SMODS.Joker({
 	name = "ccc_Theo Crystal",
 	key = "theocrystal",
 	config = {extra = {base_probs = 0, base_scale = 1, scale = 1, probs = 0}},
+	pixel_size = { w = 71, h = 71 },
 	pos = {x = 9, y = 2},
 	loc_txt = {
 	name = 'Theo Crystal',
@@ -4537,6 +4538,7 @@ local bunnyhop = SMODS.Joker({
 	name = "ccc_Bunny Hop",
 	key = "bunnyhop",
     config = {extra = {chips = 2}},
+	pixel_size = { w = 71, h = 81 },
 	pos = {x = 9, y = 6},
 	loc_txt = {
         name = 'Bunny Hop',
@@ -4592,6 +4594,7 @@ local cornerjump = SMODS.Joker({
 	name = "ccc_Cornerjump",
 	key = "cornerjump",
     config = {extra = {chips = 90}},
+	pixel_size = { w = 71, h = 81 },
 	pos = {x = 8, y = 6},
 	loc_txt = {
         name = 'Cornerjump',
@@ -4648,6 +4651,7 @@ local bubsdrop = SMODS.Joker({
 	name = "ccc_Bubsdrop",
 	key = "bubsdrop",
     config = {extra = {ante = 1, money = 15}},
+	pixel_size = { w = 71, h = 81 },
 	pos = {x = 7, y = 6},
 	loc_txt = {
         name = 'Bubsdrop',
@@ -4682,7 +4686,7 @@ bubsdrop.calculate = function(self, card, context)
 		end
 	end
 	
-	if context.end_of_round and (not context.blueprint) and (not context.repetition) and (not context.individual) and card.ability.extra.after_boss then
+	if context.end_of_round and (not context.blueprint) and (not context.repetition) and (not context.individual) and card.ability.extra.boss then
 		G.GAME.pool_flags.bubsdropused = true
 		G.E_MANAGER:add_event(Event({
 			func = function() 
@@ -4898,6 +4902,102 @@ function end_round()
 end
 
 -- endregion Freeze
+
+-- region Move Block
+
+local moveblock = SMODS.Joker({
+	name = "ccc_Move Block",
+	key = "moveblock",
+    config = {extra = {}},
+	pos = {x = 5, y = 5},
+	loc_txt = {
+        name = 'Move Block',
+        text = {
+			"{C:inactive}Does nothing...{}",
+        }
+    },
+	rarity = 2,
+	cost = 8,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "9Ts",
+		code = "N/A",
+		concept = "N/A"
+	}
+})
+
+moveblock.yes_pool_flag = 'unused'
+
+moveblock.calculate = function(self, card, context)
+	
+end
+
+function moveblock.loc_vars(self, info_queue, card)
+	return {vars = {}}
+end
+
+-- better way to do this probably
+-- for now i'm the hookmaster
+
+local mblockcupdref = Card.update
+function Card:update(dt)
+	
+	if self.config.center.key == 'j_ccc_moveblock' then
+		local _dt = G.TIMERS.REAL - (self.old_timer or G.TIMERS.REAL)
+		self.moveblock_active = self.moveblock_active or 0
+		if self.states.focus.is or self.states.drag.is or self.highlighted then
+			self.moveblock_active = math.min(self.moveblock_active + _dt, 1)
+		else
+			self.moveblock_active = math.max(self.moveblock_active - _dt, 0)
+		end
+		self.old_timer = G.TIMERS.REAL
+	end
+	if mblockcupdref then
+		mblockcupdref(self, dt)
+	end
+end
+
+local mblockdrawref = Card.draw
+function Card:draw(layer)
+	if self.config.center.key == 'j_ccc_moveblock' then
+		moveblock:set_sprites(self)
+	end
+	if mblockdrawref then
+		mblockdrawref(self, layer)
+	end
+end
+
+function moveblock.set_sprites(self, card, front)
+	local _pr = G.ASSET_ATLAS["ccc_moveblock_pr"]
+	local _rl = G.ASSET_ATLAS["ccc_moveblock_rl"]
+	local pos = {x = 0, y = 0}
+	local active = card.moveblock_active or 0
+	local current = card.states.drag.is and _pr or _rl
+	if active > 0.01 then
+		active = tostring(math.floor((active * 100) - 1))
+		active = #active < 2 and '0'..active or ''..active
+		pos = {x = tonumber(string.sub(active, 2, 2)), y = tonumber(string.sub(active, 1, 1))}
+	else
+		pos = {x = 5, y = 5}
+		current = G.ASSET_ATLAS["ccc_j_ccc_jokers"]
+	end
+	print("{"..pos.x..","..pos.y.."}")
+	if not card.old_pos then card.old_pos = {x = pos.x, y = pos.y} end
+	if not card.old_at then card.old_at = current end
+	if card.old_pos.x ~= pos.x or card.old_pos.y ~= pos.y or card.old_at ~= current then
+		card.children.center.atlas = current
+		card.children.center:set_sprite_pos(pos)
+	end
+	card.old_pos.x = pos.x
+	card.old_pos.y = pos.y
+	card.old_at = current
+end
+
+-- endregion Move Block
 
 -- region Badeline
 
