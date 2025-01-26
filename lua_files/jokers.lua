@@ -251,13 +251,14 @@ end
 local miniheart = SMODS.Joker({
 	name = "ccc_Mini Heart",
 	key = "miniheart",
-    config = {extra = {prob_success = 20}},
+    config = {extra = {prob_success = 18}},
 	pos = {x = 5, y = 0},
 	loc_txt = {
         name = 'Mini Heart',
         text = {
 	"{C:green}#1# in #2#{} chance to add {C:dark_edition}Foil{}",
-	"edition to scored cards"
+	"edition to scored cards",
+	"{C:attention}before scoring{}"
         }
     },
 	rarity = 1,
@@ -275,25 +276,22 @@ local miniheart = SMODS.Joker({
 })
 
 miniheart.calculate = function(self, card, context)
-	if context.individual then
-		if context.cardarea == G.play then
-			if not context.other_card.edition then
+	if context.before then
+		local applied = false
+		for i, v in ipairs(context.scoring_hand) do
+			if not v.edition then
 				if pseudorandom('crystal') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
-					G.E_MANAGER:add_event(Event({trigger = 'immediate', func = function()
-						if not context.other_card.edition then
-							context.other_card:set_edition({foil = true}, true)
-							if context.blueprint then	-- idk why i need to put blueprint check here, should work without? but it doesn't
-								context.blueprint_card:juice_up()
-							else
-								card:juice_up()
-							end
-							context.other_card:juice_up()
-						end
-					return true end}))
-					return nil, true
+					applied = true
+					v:set_edition({foil = true})
+					if context.blueprint then	-- idk why i need to put blueprint check here, should work without? but it doesn't
+						context.blueprint_card:juice_up()
+					else
+						card:juice_up()
+					end
 				end
 			end
 		end
+		if applied then return nil, true end
 	end
 end
 
@@ -436,7 +434,6 @@ end
 local gfsiref = get_front_spriteinfo
 function get_front_spriteinfo(_front)
 	if _front and _front.delay_change then
-		sendDebugMessage("delaying")
 		return gfsiref(_front.delay_change)
 	else
 		return gfsiref(_front)
@@ -4532,6 +4529,154 @@ end
 
 -- endregion The Crowd
 
+-- region Jump
+
+local jump = SMODS.Joker({
+	name = "ccc_Jump",
+	key = "jump",
+    config = {extra = {chips = 40}},
+	pixel_size = { w = 71, h = 81 },
+	pos = {x = 9, y = 7},
+	loc_txt = {
+        name = 'Jump',
+        text = {
+			"{C:chips}+#1#{} Chips",
+        }
+    },
+	rarity = 1,
+	cost = 2,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+jump.calculate = function(self, card, context)
+
+	if context.joker_main then
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_chips',
+				vars = { card.ability.extra.chips }
+			},
+			chip_mod = card.ability.extra.chips
+		}
+	end
+
+end
+
+function jump.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.chips}}
+end
+
+-- endregion Jump
+
+-- region Grab
+
+local grab = SMODS.Joker({
+	name = "ccc_Grab",
+	key = "grab",
+    config = {extra = {mult = 6}},
+	pixel_size = { w = 71, h = 81 },
+	pos = {x = 8, y = 7},
+	loc_txt = {
+        name = 'Grab',
+        text = {
+			"{C:mult}+#1#{} Mult if there is",
+			"a Joker to the right",
+        }
+    },
+	rarity = 1,
+	cost = 2,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+grab.calculate = function(self, card, context)
+
+	if context.joker_main and G.jokers.cards[#G.jokers.cards] ~= card then
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_mult',
+				vars = { card.ability.extra.mult }
+			},
+			mult_mod = card.ability.extra.mult
+		}
+	end
+
+end
+
+function grab.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult}}
+end
+
+-- endregion Grab
+
+-- region Dash
+
+local dash = SMODS.Joker({
+	name = "ccc_Dash",
+	key = "dash",
+    config = {extra = {mult = 1.5}},
+	pixel_size = { w = 71, h = 81 },
+	pos = {x = 7, y = 7},
+	loc_txt = {
+        name = 'Dash',
+        text = {
+			"{X:mult,C:white} X#1#{} Mult",
+        }
+    },
+	rarity = 1,
+	cost = 2,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+dash.calculate = function(self, card, context)
+
+	if context.joker_main then
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_xmult',
+				vars = { card.ability.extra.mult }
+			},
+			Xmult_mod = card.ability.extra.mult
+		}
+	end
+
+end
+
+function dash.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult}}
+end
+
+-- endregion Dash
+
 -- region Bunny Hop
 
 local bunnyhop = SMODS.Joker({
@@ -4587,6 +4732,70 @@ function bunnyhop.loc_vars(self, info_queue, card)
 end
 
 -- endregion Bunny Hop
+
+-- region Hyperdash
+
+local hyperdash = SMODS.Joker({
+	name = "ccc_Hyperdash",
+	key = "hyperdash",
+    config = {extra = {mult = 3}},
+	pixel_size = { w = 71, h = 81 },
+	pos = {x = 6, y = 6},
+	loc_txt = {
+        name = 'Hyperdash',
+        text = {
+			"{X:mult,C:white} X#1# {} Mult after {C:attention}discarding{} a",
+			"hand that contains {C:attention}Two Pair{}",
+        }
+    },
+	rarity = 2,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "Gappie",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+hyperdash.calculate = function(self, card, context)
+
+	if context.pre_discard and not context.blueprint then
+		local poker_hands = evaluate_poker_hand(G.hand.highlighted)
+		if next(poker_hands["Two Pair"]) then
+			card.ability.active = true
+			local thunk = function(_card) return _card.ability.active == true end
+                	juice_card_until(card, thunk, true)
+			return {
+				message = localize('k_active_ex'),
+			}
+		end
+	end
+			
+
+	if context.joker_main and card.ability.active then
+		card.ability.active = false
+		return {
+			message = localize {
+				type = 'variable',
+				key = 'a_xmult',
+				vars = { card.ability.extra.mult }
+			},
+			Xmult_mod = card.ability.extra.mult
+		}
+	end
+			
+end
+
+function hyperdash.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.mult}}
+end
+
+-- endregion Hyperdash
 
 -- region Cornerjump
 
@@ -4908,16 +5117,20 @@ end
 local moveblock = SMODS.Joker({
 	name = "ccc_Move Block",
 	key = "moveblock",
-    config = {extra = {}},
+    config = {extra = {mult = 0, mult_scale = 2}},
 	pos = {x = 5, y = 5},
+	pixel_size = { w = 71, h = 91 },
 	loc_txt = {
         name = 'Move Block',
         text = {
-			"{C:inactive}Does nothing...{}",
+			"{C:mult}+#1#{} Mult per discard,",
+			"{C:attention}resets{} if played hand",
+			"contains a {C:attention}Pair",
+			"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
         }
     },
 	rarity = 2,
-	cost = 8,
+	cost = 5,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -4925,19 +5138,45 @@ local moveblock = SMODS.Joker({
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "9Ts",
-		code = "N/A",
-		concept = "N/A"
+		code = "toneblock",
+		concept = "9Ts"
 	}
 })
 
-moveblock.yes_pool_flag = 'unused'
-
 moveblock.calculate = function(self, card, context)
-	
+	if context.discard then
+		if not context.blueprint and context.other_card == context.full_hand[#context.full_hand] then
+			card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_scale
+			return {
+				card = card,
+				message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult_scale}}
+                        }
+		end
+	end
+	if context.before then
+		if next(context.poker_hands['Pair']) then
+			card.ability.extra.mult = 0
+			return {
+				message = localize('k_reset')
+			}
+		end
+	end
+	if context.joker_main then
+		if card.ability.extra.mult ~= 0 then
+			return {
+				message = localize {
+					type = 'variable',
+					key = 'a_mult',
+					vars = { card.ability.extra.mult }
+                		},
+				mult_mod = card.ability.extra.mult
+                	}
+		end
+	end
 end
 
 function moveblock.loc_vars(self, info_queue, card)
-	return {vars = {}}
+	return {vars = {card.ability.extra.mult_scale, card.ability.extra.mult}}
 end
 
 -- better way to do this probably
@@ -4985,7 +5224,6 @@ function moveblock.set_sprites(self, card, front)
 		pos = {x = 5, y = 5}
 		current = G.ASSET_ATLAS["ccc_j_ccc_jokers"]
 	end
-	print("{"..pos.x..","..pos.y.."}")
 	if not card.old_pos then card.old_pos = {x = pos.x, y = pos.y} end
 	if not card.old_at then card.old_at = current end
 	if card.old_pos.x ~= pos.x or card.old_pos.y ~= pos.y or card.old_at ~= current then
@@ -4998,6 +5236,97 @@ function moveblock.set_sprites(self, card, front)
 end
 
 -- endregion Move Block
+
+-- region joker.ppt
+
+local jokerppt = SMODS.Joker({
+	name = "ccc_joker_ppt",
+	key = "jokerppt",
+    config = {extra = {winged_poker_hand = 'Pair'}},
+	pixel_size = { w = 71, h = 81 },
+	pos = {x = 5, y = 6},
+	loc_txt = {
+        name = 'joker.ppt',
+        text = {
+			"If poker hand is a {C:attention}#1#{},",
+			"create its {C:planet}Planet{} card,",
+			"{s:0.8}poker hand changes at end of round",
+        }
+    },
+	rarity = 1,
+	cost = 6,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "9Ts",
+		code = "toneblock",
+		concept = "9Ts"
+	}
+})
+
+-- i just copied most of this code from moon berry
+
+jokerppt.set_ability = function(self, card, initial, delay_sprites)
+	local _poker_hands = {}
+	for k, v in pairs(G.GAME.hands) do
+		if v.visible then
+			_poker_hands[#_poker_hands+1] = k 
+		end
+	end
+	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('powerpoint'))
+end
+
+jokerppt.calculate = function(self, card, context)
+	if context.joker_main and context.scoring_name == card.ability.extra.winged_poker_hand then
+		if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+			G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+			G.E_MANAGER:add_event(Event({
+			trigger = 'before',
+			delay = 0.0,
+			func = (function()
+				local _planet = 0
+				for k, v in pairs(G.P_CENTER_POOLS.Planet) do
+					if v.config.hand_type == card.ability.extra.winged_poker_hand then
+						_planet = v.key
+					end
+				end
+                    		local card = create_card(card_type,G.consumeables, nil, nil, nil, nil, _planet, 'blusl')
+                    		card:add_to_deck()
+                    		G.consumeables:emplace(card)
+				G.GAME.consumeable_buffer = 0
+                		return true
+            		end)}))
+			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_planet'), colour = G.C.SECONDARY_SET.Planet})
+		end
+	end
+	if context.end_of_round and not context.individual and not context.repetition then
+		if not context.blueprint then
+			G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.0,
+			func = (function()
+			local _poker_hands = {}
+                    	for k, v in pairs(G.GAME.hands) do
+                      	  	if v.visible and k ~= card.ability.extra.winged_poker_hand then 
+					_poker_hands[#_poker_hands+1] = k 
+				end
+                    	end
+			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('powerpoint'))
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+			return true
+            		end)}))
+		end
+	end
+end
+
+function jokerppt.loc_vars(self, info_queue, card)
+	return {vars = {card.ability.extra.winged_poker_hand}}
+end
+
+-- endregion joker.ppt
 
 -- region Badeline
 

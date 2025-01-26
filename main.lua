@@ -7,6 +7,7 @@
 --- PRIORITY: 0
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
+--- VERSION: 0.31.0
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -34,6 +35,9 @@ assert(SMODS.load_file("lua_files/consumables.lua"))()
 assert(SMODS.load_file("lua_files/editions.lua"))()
 
 assert(SMODS.load_file("lua_files/localization/en-us.lua"))()
+
+SMODS.Atlas({key = "moveblock_pr", path = "moveblock_pr.png", px = 71, py = 95, atlas = "asset_atlas"})
+SMODS.Atlas({key = "moveblock_rl", path = "moveblock_rl.png", px = 71, py = 95, atlas = "asset_atlas"})
 
 SMODS.Atlas({
     key = "modicon",

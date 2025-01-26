@@ -187,16 +187,16 @@ fallacy.press_play = function(self)
         for i = 1, #G.play.cards do
 		G.E_MANAGER:add_event(Event({func = function()
 			local card = G.play.cards[i]
-			local suit_prefix = string.sub(card.base.suit, 1, 1)..'_'
-			local rank_suffix = card.base.id == 2 and 14 or math.min(card.base.id-1, 14)
-			if rank_suffix < 10 then rank_suffix = tostring(rank_suffix)
-			elseif rank_suffix == 10 then rank_suffix = 'T'
-			elseif rank_suffix == 11 then rank_suffix = 'J'
-			elseif rank_suffix == 12 then rank_suffix = 'Q'
-			elseif rank_suffix == 13 then rank_suffix = 'K'
-			elseif rank_suffix == 14 then rank_suffix = 'A'
+			local new_rank = 'Ace'
+			for _, v in pairs(SMODS.Ranks) do
+				for __, _v in ipairs(v.next) do
+					if card.base.value == _v then
+						new_rank = v.key
+						break
+					end
+				end
 			end
-			card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
+                        assert(SMODS.change_base(card, nil, new_rank))
 			card:juice_up()
 			play_sound('tarot1')
 		return true end }))
