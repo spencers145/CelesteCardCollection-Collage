@@ -5473,7 +5473,7 @@ function Card.calculate_joker(self, context)
 			end
 		end
 
-		if type(self.ability.extra) == "table" then
+		if type(self.ability.extra) == "table" and (orig_values.extra and type(orig_values.extra) == "table") then
 			for index, value in pairs(orig_values.extra) do
 				if type(value) == "number" and self.ability.extra[index] < orig_values.extra[index]  then
 					self.ability.extra[index] = orig_values.extra[index] 
