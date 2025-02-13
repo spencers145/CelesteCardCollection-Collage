@@ -294,11 +294,13 @@ end
 local start_run_ref = Game.start_run
 function Game:start_run(args)
 	local ret = start_run_ref(self, args)
-	for _, callback in ipairs(start_run_after_callbacks) do
-		callback(self)
+	if args.savetext then
+		for _, callback in ipairs(start_run_after_callbacks) do
+			callback(self)
+		end
+	
+		self.GAME.highest_ante = self.GAME.highest_ante or 1	-- idk what this does
 	end
-
-	self.GAME.highest_ante = self.GAME.highest_ante or 1
 	return ret
 end
 
