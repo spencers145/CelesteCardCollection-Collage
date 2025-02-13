@@ -294,7 +294,7 @@ end
 local start_run_ref = Game.start_run
 function Game:start_run(args)
 	local ret = start_run_ref(self, args)
-	if args.savetext then
+	if not args.savetext then
 		for _, callback in ipairs(start_run_after_callbacks) do
 			callback(self)
 		end
