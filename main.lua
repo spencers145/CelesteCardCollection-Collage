@@ -4,10 +4,10 @@
 --- PREFIX: ccc
 --- MOD_AUTHOR: [AuroraAquir, toneblock, Gappie, bein, sunsetquasar, goose!]
 --- MOD_DESCRIPTION: Featuring 4 new decks, 50+ new jokers, and 2 new vouchers! Additional thanks to Bred and Fytos for concepts!
---- PRIORITY: 0
+--- PRIORITY: 10
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
---- VERSION: 0.31.0
+--- VERSION: 0.32.0
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -46,6 +46,9 @@ SMODS.Atlas({
     py = 34
 }):register()
 
+if not to_big then
+	function to_big(x) return x end
+end
 
 ----------------------------------------------
 ------------MOD CODE END----------------------

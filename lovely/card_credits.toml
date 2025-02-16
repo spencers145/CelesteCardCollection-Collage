@@ -102,3 +102,25 @@ payload = '''
 	ccc_generate_deck_credit_payload(),
 '''
 match_indent = true
+
+# revert steamodded patch if credits present
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''        config = (not e.config.ref_table or not e.config.ref_table[1].config.card_pos or e.config.ref_table[1].config.card_pos > G.ROOM.T.w*0.4) and'''
+position = "at"
+payload = '''
+        config = (not e.config.ref_table or not e.config.ref_table[1].config.card_pos or e.config.ref_table[1].config.card_pos > G.ROOM.T.w*0.4 or e.config.ref_table[1].config.credit) and
+'''
+match_indent = true
+
+# ref
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x }, nodes = info_cols}}'''
+position = "at"
+payload = '''
+info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, card_pos = card.T.x, credit = AUT.mod_credit and true or nil }, nodes = info_cols}}
+'''
+match_indent = true

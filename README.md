@@ -14,7 +14,7 @@ Below is a list of everything this mod adds
 |B-Side Deck| All blinds are boss blinds. Start at Ante 0 |
 |Heartside Deck| Only modded Jokers may appear (and maybe jimbo) |
 
-# Jokers
+# Jokers (may be outdated or wrong)
 ## Have art
 
 | Name | Rarity | Ability|
@@ -26,11 +26,12 @@ Below is a list of everything this mod adds
 |Core Switch| Common | Swap hands and discards at the start of round, +1 discard after swap|
 |Waterfall| Common | If played hand contains a Flush, convert a random card held in hand to the same suit |
 |Pointless Machines| Common |  Bad signal? |
-|5-Star Hardlist| Common |+25 Mult; -5 Mult for every Joker or Buffoon Pack purchased|
+|5-Star Hardlist| Common |+20 Mult; -4 Mult for every Joker or Buffoon Pack purchased|
 |Switch Gate| Common |Gains +10 Chips if any of the following cards are scored: <3 random cards> (starts at +0 chips); Cards change every round |
 |Temple Rock| Common |Each Stone Card held in hand gives +50 Chips|
 |Cloud| Common | +30 chips for each hand played this round|
 |Brittle Cloud| Common |+150 chips on the first hand played this round|
+|Strawberry Seeds| Common | After scoring 8 [suit] cards, sell this card to create a random Strawberry |
 |Intro Car| Uncommon |Before each 5 or 8 is scored, swap current Chips and Mult|
 |Temple Eyes | Uncommon | Gives Hanged Man if Blind is selected with $4 or less|
 |Feather| Uncommon | Gains X0.04 for each card drawn, resets at end of round |
@@ -48,8 +49,9 @@ Below is a list of everything this mod adds
 |Event Horizon| Uncommon | Every 5th Planet card used acts as a Black Hole|
 |Green Booster| Uncommon | Adds an extra card to all Booster Packs |
 |1UP| Uncommon | Earn $2 at end of round, increases by $4 when a Strawberry is purchased |
-|Crystal Heart| Uncommon | If played hand is a single Ace of Hearts, apply a random Edition to a card held in hand|
 |Lapidary| Uncommon | Jokers with a unique rarity each give X1.5 Mult|
+|Fireball| Uncommon | If your score display catches fire during the round, next shop will have an extra Mega booster pack|
+|Iceball| Uncommon | If your score display didn't catch fire during the previous round, X3 Mult|
 |Kevin| Rare | Scoring face cards act as a copy of the rightmost played card|
 |Theo Crystal| Rare |Forces 1 card to always be selected; Adds +1 to all listed probabilities at round end (2 in 7 -> 3 in 7)|
 |Red Booster| Rare |Allows you to choose 1 extra card from all Booster Packs|
@@ -64,7 +66,7 @@ Below is a list of everything this mod adds
 |Strong Winds| Rare | X2.22 Mult; Card of the highest rank in scoring hand is destroyed|
 |Letting Go| Rare |When a card is destroyed, 1 in 2 chance to create a Death; Gains +4 Mult for each Death used (starts at 0)|
 |Strawberry Pie| Rare | Grants a large bonus based on current money; $30-$79: +140 Chips; $80-$174: +60 Mult; $175+: X8 Mult|
-|The Crowd| Rare | If played hand contains a Five of a Kind; X5 Mult, and create the played poker hand's Planet|
+|The Crowd| Rare | If played hand contains a Five of a Kind; X5 Mult |
 |Badeline| Legendary | Retrigger all Glass cards and all Mirrored cards|
 |Madeline| Legendary | Prevents reductions and resets of Joker values through their own abilities|
 
@@ -72,9 +74,6 @@ Below is a list of everything this mod adds
 
 | Name | Rarity | Ability|
 | ---  | ---    | ---|
-|Bumper| Common |If discards > hands, +16 Mult; if hands > discards, +60 Chips; if both are equal does nothing|
-|Freeze| Common |Cards held in hand gain +15 Chips until end of round|
-|Secret Shrine| Common |Gives Mult equal to triple the amount of 7s in full deck|
 |Seeker| Rare | If drawn card is not most owned Rank or most owned Suit, put it back in deck and draw again|
 |Granny| Legendary | After discarding cards, force draw 1 additional card for each card discarded|
 
