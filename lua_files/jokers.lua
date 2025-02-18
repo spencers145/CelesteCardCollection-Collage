@@ -4345,7 +4345,7 @@ strawberrypie.calculate = function(self, card, context)
 				},
 			chip_mod = card.ability.extra.chips
                 	}
-		elseif to_big(dollars) >= to_big(80) and to_big(dollars) < to_big(80) then
+		elseif to_big(dollars) >= to_big(80) and to_big(dollars) < to_big(175) then
                 	return {
 			message = localize {
 				type = 'variable',
