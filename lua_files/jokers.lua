@@ -5080,7 +5080,7 @@ local freeze = SMODS.Joker({
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "9Ts",
 		code = "toneblock",
 		concept = "Fytos"
 	}
