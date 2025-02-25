@@ -155,8 +155,10 @@ local bside = SMODS.Back({
 	loc_txt = {
         name = "B-Side Deck",
         text = {
-            "Every blind is a {C:red}boss blind{}",
-			"Start from {C:attention}Ante 0{}"
+		"Every blind is a {C:red}boss blind{}",
+		"Start from {C:attention}Ante 0{}",
+		"Skipping costs {C:red}$8{} multiplied",
+		"by ({C:attention}Current Ante{} + {C:attention}1{})",
         }
     },
     atlas= "b_ccc_decks",
@@ -177,42 +179,52 @@ function Blind:get_type()
 	return ret
 end
 
-
+--[[	patched this instead
 local reset_blinds_ref = reset_blinds
 function reset_blinds()
 	local state = G.GAME.round_resets.blind_states or {Small = 'Select', Big = 'Upcoming', Boss = 'Upcoming'}
 	reset_blinds_ref()
+	print(state.Boss)
 	if G.GAME.selected_back.effect.config.everything_is_boss and state.Boss == 'Defeated' then
 		
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
 		G.GAME.round_resets.blind_choices.Big = get_new_boss()
 	end
 end
+]]
 
 local end_round_ref = end_round
 function end_round()
 	if G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then 
 		
 		-- campfire and ante not increasing and such
+		-- unneeded with patches
+		--[[
 		G.GAME.blind.boss = nil
-
+		]]
 		-- no money red stake
-        if G.GAME.modifiers.no_blind_reward and G.GAME.modifiers.no_blind_reward[G.GAME.blind:get_type()] then G.GAME.blind.dollars = 0 end
+		if G.GAME.modifiers.no_blind_reward and G.GAME.modifiers.no_blind_reward[G.GAME.blind:get_type()] then G.GAME.blind.dollars = 0 end
+		
 		-- game actually advancing to big/boss
+		-- unneeded with patches
+		--[[
 		if G.GAME.blind:get_type() == "Small" then
 			G.GAME.round_resets.blind = G.P_BLINDS.bl_small
 		end
 		if G.GAME.blind:get_type() == "Big" then
 			G.GAME.round_resets.blind = G.P_BLINDS.bl_big
 		end
+		]]
 	end
 	return end_round_ref()
 end
 
 -- madness joker
+-- decided to keep it useless for the meme
+--[[
 local calculate_joker_ref = Card.calculate_joker
 function Card:calculate_joker(context)
-	local ret
+	local ret, post
 	if context.setting_blind and G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then
 		local boss = context.blind.boss
 		context.blind.boss = nil
@@ -223,6 +235,25 @@ function Card:calculate_joker(context)
 	end
 	return ret, post
 end
+]]
+
+-- alter some joker statistics in b-side deck
+local sabref = Card.set_ability
+function Card:set_ability(center, initial, delay_sprites)
+	sabref(self, center, initial, delay_sprites)
+	if G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss and initial then
+		local k = self.config.center.key
+		if k == 'j_campfire' or k == 'j_throwback' then
+			self.ability.extra = self.ability.extra*3
+		elseif k == 'j_ccc_zipper' then
+			self.ability.extra.chips_scale = self.ability.extra.chips_scale*3
+		elseif k == 'j_ccc_goldenstrawberry' or k == 'j_ccc_wingedgoldenstrawberry' then
+			self.ability.extra.money = math.floor(self.ability.extra.money/2)
+		elseif k == 'j_ccc_checkpoint' then
+			self.ability.extra.xmult_scale = self.ability.extra.xmult_scale/2
+		end
+	end
+end
 
 function bside_start_run(self)
 	if G.GAME.selected_back.effect.config.everything_is_boss then
@@ -230,6 +261,7 @@ function bside_start_run(self)
 		G.GAME.round_resets.blind_ante = 0
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
 		G.GAME.round_resets.blind_choices.Big = get_new_boss()
+		G.GAME.bside_skipcost = 8*(G.GAME.round_resets.ante+1)
 	end
 end
 

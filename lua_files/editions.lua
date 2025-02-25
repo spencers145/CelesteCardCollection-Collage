@@ -8,10 +8,10 @@ local mirrored = SMODS.Edition({
         name = "Mirrored",
         label = "Mirrored",
         text = {
-		"{C:attention}Retrigger{} this card",
-		"If a {C:attention}Mirror{} is not",
-		"present, {C:red}self-destructs{}",
-		"at end of round"
+		"If a {C:attention}Mirror{} is present,",
+		"{C:attention}retrigger{} this card,",
+		"otherwise it {C:red}self-destructs{}",
+		"at end of round",
         }
     },
     discovered = true,
@@ -24,12 +24,14 @@ local mirrored = SMODS.Edition({
     calculate = function(self, card, context)
 	-- yeah ngl i took this directly from ortalab... i hope this works?
 	if context.repetition_only or (context.retrigger_joker_check and context.other_card == card) then
-		return {
-			repetitions = 1,
-			card = card,
-			colour = G.C.FILTER,
-			message = localize('k_again_ex')
-		}     
+		if ccc_find_mirror() then
+			return {
+				repetitions = 1,
+				card = card,
+				colour = G.C.FILTER,
+				message = localize('k_again_ex')
+			}     
+		end
 	end
     end,
 })

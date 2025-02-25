@@ -11,7 +11,7 @@ local crystallic = SMODS.Consumable({
 		text = {
 			"Destroys {C:attention}#1#{} random cards in",
 			"hand, then adds {C:dark_edition}Mirrored{} to",
-			"{C:attention}#2#{} random cards in hand",
+			"{C:attention}all{} other cards in hand",
 		}
 	},
 	cost = 4,
@@ -45,7 +45,7 @@ function crystallic.use(self, card, area, copier)
 	for i = 1, card.ability.extra.destroy do 
 		destroyed_cards[#destroyed_cards+1] = table.remove(temp_hand, 1)
 	end
-	for i = 1, card.ability.extra.add do 
+	while #temp_hand > 0 do -- for i = 1, card.ability.extra.add do
 		mirrored_cards[#mirrored_cards+1] = table.remove(temp_hand, 1)
 	end
 
@@ -54,6 +54,9 @@ function crystallic.use(self, card, area, copier)
                 used_card:juice_up(0.3, 0.5)
                 return true end 
 	}))
+	for j=1, #G.jokers.cards do
+		eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = destroyed_cards})
+	end
 	G.E_MANAGER:add_event(Event({
 		trigger = 'after',
 		delay = 0.1,
@@ -71,14 +74,16 @@ function crystallic.use(self, card, area, copier)
 	delay(0.5)
 	for i = 1, #mirrored_cards do
 		local _card = mirrored_cards[i]
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 0.15,
-			func = function()
-				_card:set_edition({ccc_mirrored = true})
-				return true
-			end,
-		}))
+		if not _card.edition then
+			G.E_MANAGER:add_event(Event({
+				trigger = "after",
+				delay = 0.15,
+				func = function()
+					_card:set_edition({ccc_mirrored = true})
+					return true
+				end,
+			}))
+		end
 	end
 end
 
@@ -91,7 +96,7 @@ function crystallic.in_pool(self)
 	if ccc_find_mirror() then
 		return true
 	end
-	return false
+	return true	-- disabling this
 end
 
 -- endregion Crystallic

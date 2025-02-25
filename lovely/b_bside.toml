@@ -1,0 +1,131 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# copied these patches from cryptid's boss rush challenge
+
+# reset blind choices
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
+position = "before"
+payload = '''
+if G.GAME.selected_back.effect.config.everything_is_boss then
+    G.GAME.round_resets.blind_choices.Small = get_new_boss()
+    G.GAME.round_resets.blind_choices.Big = get_new_boss()
+else
+    G.GAME.round_resets.blind_choices.Big = 'bl_big'
+end
+'''
+match_indent = true
+
+# big blind doesn't increase ante
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.blind:get_type() == 'Boss' then"
+position = "at"
+payload = "if G.GAME.blind_on_deck == 'Boss' then"
+match_indent = true
+
+# smaller showdown blinds don't win
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.round_resets.ante == G.GAME.win_ante and G.GAME.blind:get_type() == 'Boss' then"
+position = "at"
+payload = "if G.GAME.round_resets.ante >= G.GAME.win_ante and G.GAME.blind_on_deck == 'Boss' then"
+match_indent = true
+
+
+# mark small blind as defeated
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then"
+position = "at"
+payload = "if G.GAME.blind_on_deck == 'Small' then"
+match_indent = true
+
+# mark big blind as defeated
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then"
+position = "at"
+payload = "elseif G.GAME.blind_on_deck == 'Big' then"
+match_indent = true
+
+
+
+
+# skipping costs $8*ante
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "G.FUNCS.skip_blind = function(e)"
+position = "after"
+payload = '''
+if G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss then
+	local skipcost = 8*(G.GAME.round_resets.ante+1)
+	if -skipcost < 0 then
+		if to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - skipcost ) < to_big(0) then
+			e.disable_button = false
+			return	-- do not skip. scuffed but it has to be done like this rn
+		end
+	end
+	if -skipcost ~= 0 then
+		ease_dollars(-skipcost)
+	end
+end
+'''
+match_indent = true
+
+# show
+# lmao this is so long
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = "{n=G.UIT.T, config={text = localize('b_skip_blind'), scale = 0.4, colour = G.C.UI.TEXT_INACTIVE}}"
+position = "at"
+payload = '''
+{n=G.UIT.T, config={text = localize('b_skip_blind')..(
+	G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss and 
+		((-8*(G.GAME.round_resets.ante+1))<0 and ' (-' or ' (')..localize('$')..math.abs(-8*(G.GAME.round_resets.ante+1))..')' 
+	or ''
+), scale = 0.4, colour = G.C.UI.TEXT_INACTIVE}}
+'''
+match_indent = true
+
+# deal with button
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''_blind_choice.alignment.offset.y = -0.9
+if _tag and _tag_container then'''
+position = "after"
+payload = '''
+if not ( G.GAME.selected_back.effect.config.everything_is_boss and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
+'''
+match_indent = true
+
+# back on my bullshit
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "_sprite.config.force_focus = nil"
+position = "after"
+payload = '''
+else
+	_tag.children[2].config.button = 'skip_blind'	-- should be nil but tag colour isn't updating
+	_tag.config.outline_colour = G.C.UI.BACKGROUND_INACTIVE
+	_tag.children[2].config.hover = false
+	_tag.children[2].config.colour = G.C.UI.BACKGROUND_INACTIVE
+	_tag.children[2].children[1].config.colour = G.C.UI.TEXT_INACTIVE
+	local _sprite = _tag.config.ref_table
+	_sprite.config.force_focus = true
+end
+'''
+match_indent = true
