@@ -19,10 +19,10 @@ G.localization.descriptions.Other.partofyou_complements = {
 G.localization.descriptions.Other.e_mirrored = {
 	name = "Mirrored",
 	text = {
-		"{C:attention}Retrigger{} this card",
-		"If a {C:attention}Mirror{} is not",
-		"present, {C:red}self-destructs{}",
-		"at end of round"
+		"If a {C:attention}Mirror{} is present,",
+		"{C:attention}retrigger{} this card,",
+		"otherwise it {C:red}self-destructs{}",
+		"at end of round",
 	}
 }
 G.localization.descriptions.Other.ccc_acts_as_mirror = {
