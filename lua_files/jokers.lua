@@ -3109,6 +3109,41 @@ local theocrystal = SMODS.Joker({
 	eternal_compat = true,
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
+	add_to_deck = function (self, card, from_debuff)
+		local oops_factor = 1
+		if G.jokers ~= nil then	-- this is always true?
+			for i = 1, #G.jokers.cards do
+				if G.jokers.cards[i].ability.set == 'Joker' then
+					if G.jokers.cards[i].ability.name == 'Oops! All 6s' then
+						oops_factor = oops_factor*2
+					end
+				end
+			end
+			for k, v in pairs(G.GAME.probabilities) do 
+				G.GAME.probabilities[k] = v + (card.ability.extra.base_probs*oops_factor)
+			end
+		end
+	end,
+	remove_from_deck = function (self, card, from_debuff)
+		local oops_factor = 1
+		if G.jokers ~= nil then
+			for i = 1, #G.jokers.cards do
+				if G.jokers.cards[i].ability.set == 'Joker' then
+					if G.jokers.cards[i].ability.name == 'Oops! All 6s' then
+						oops_factor = oops_factor*2
+					end
+				end
+			end
+		end
+		for k, v in ipairs(G.hand.cards) do
+			if v.ability.forced_selection then
+				v.ability.forced_selection = false
+			end
+		end
+		for k, v in pairs(G.GAME.probabilities) do 
+			G.GAME.probabilities[k] = v - (card.ability.extra.base_probs*oops_factor)
+		end
+	end,
 	credit = {
 		art = "Gappie",
 		code = "toneblock",
