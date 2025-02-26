@@ -37,6 +37,12 @@ snow.disable = function(self)
 	end
 end
 
+snow.stay_flipped = function(self, area, card)
+	if card:is_suit('Clubs', true) then
+		return true
+	end
+end
+
 -- endregion Snow
 
 -- region Stone
@@ -73,6 +79,12 @@ stone.disable = function(self)
 	end
 	for k, v in pairs(G.playing_cards) do
 		v.ability.wheel_flipped = nil
+	end
+end
+
+stone.stay_flipped = function(self, area, card)
+	if card:is_suit('Spades', true) then
+		return true
 	end
 end
 
@@ -115,6 +127,12 @@ crystal.disable = function(self)
 	end
 end
 
+crystal.stay_flipped = function(self, area, card)
+	if card:is_suit('Diamonds', true) then
+		return true
+	end
+end
+
 -- endregion Crystal
 
 -- region Berry
@@ -151,6 +169,12 @@ berry.disable = function(self)
 	end
 	for k, v in pairs(G.playing_cards) do
 		v.ability.wheel_flipped = nil
+	end
+end
+
+berry.stay_flipped = function(self, area, card)
+	if card:is_suit('Hearts', true) then
+		return true
 	end
 end
 
