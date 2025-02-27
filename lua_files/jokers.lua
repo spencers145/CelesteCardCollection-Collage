@@ -2310,9 +2310,9 @@ local lettinggo = SMODS.Joker({
 	"When a card is destroyed,",
 	"{C:green}#1# in #3#{} chance to create",
 	"a {C:tarot}Death{}",
+	"{C:inactive}(Must have room)",
 	"Gains {X:mult,C:white} X#4# {} Mult for each",
 	"{C:tarot}Death{} used",
-	"{C:inactive}(Must have room)",
 	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)"
         }
     },
@@ -5658,7 +5658,7 @@ local badeline = SMODS.Joker({
 	credit = {
 		art = "Gappie",
 		code = "toneblock",
-		concept = "Gappie"
+		concept = "Gappie + Fytos"
 	}
 })
 
