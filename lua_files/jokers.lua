@@ -1093,9 +1093,11 @@ ominousmirror.calculate = function(self, card, context)
 	card.children.center:set_sprite_pos(card.ability.extra.pos_override)
 	if context.before and card.ability.extra.broken == false then
 		if not context.repetition and not context.individual and card.ability.extra.broken == false then
+			local _cards = {} 
 			for k, v in ipairs(context.scoring_hand) do
 				if pseudorandom('ominous') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 					local _card = copy_card(v, nil, nil, G.playing_card)
+					_cards[#_cards+1] = _card
                            		_card.states.visible = nil
 					G.hand:emplace(_card)
 					G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.3, func = function()
@@ -1106,11 +1108,13 @@ ominousmirror.calculate = function(self, card, context)
 						G.deck.config.card_limit = G.deck.config.card_limit + 1
 						table.insert(G.playing_cards, _card)
                                    		_card:start_materialize()
-						return {
-						playing_cards_created = {true}
-						}
+						return true
 					end}))
 				end
+			end
+			if #_cards > 0 then
+				playing_card_joker_effects(_cards)
+				return nil, true
 			end
 		end
 	end
