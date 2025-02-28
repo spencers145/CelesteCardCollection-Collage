@@ -25,7 +25,7 @@ local crystallic = SMODS.Consumable({
 })
 
 function crystallic.can_use(self, card)
-	if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.PLANET_PACK then
+	if G.STATE == G.STATES.SELECTING_HAND or G.STATE == G.STATES.SMODS_BOOSTER_OPENED then
 		if #G.hand.cards > 1 then
 			return true
 		end
