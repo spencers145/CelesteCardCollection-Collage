@@ -2821,7 +2821,7 @@ collapsingbridge.calculate = function(self, card, context)
 		end
 	end
 
-	if context.destroying_card then
+	if context.destroying_card and (context.cardarea == G.play or context.cardarea == "unscored") then
 		if pseudorandom('bridge') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
 			return {remove = true}
 		end
