@@ -56,8 +56,8 @@ local feather = SMODS.Joker({
 	loc_txt = {
         name = 'Feather',
         text = {
-	"Gains {X:mult,C:white} X#1# {} Mult for",
-	"each card {C:attention}drawn{} from deck,",
+	"Gains {X:mult,C:white} X#1# {} Mult when a",
+	"card is {C:attention}drawn{} from deck,",
 	"{C:red}resets{} at end of round",
 	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
         }
@@ -102,7 +102,7 @@ function feather.loc_vars(self, info_queue, card)
 	return {vars = {card.ability.extra.mult_scale, card.ability.extra.xmult}}
 end
 
-local drawcardref = G.FUNCS.draw_from_deck_to_hand
+local drawcardref = G.FUNCS.draw_from_deck_to_hand	-- additionally used for seeker
 G.FUNCS.draw_from_deck_to_hand = function(e)
 	local hand_space = e or math.min(#G.deck.cards, G.hand.config.card_limit - #G.hand.cards)
 	if G.GAME.blind.name == 'The Serpent' and
@@ -111,9 +111,7 @@ G.FUNCS.draw_from_deck_to_hand = function(e)
 	G.GAME.current_round.discards_used > 0) then
 		hand_space = math.min(#G.deck.cards, 3)
 	end
-	for i = 1, #G.jokers.cards do	-- probably should be using smods calculate context here
-		G.jokers.cards[i]:calculate_joker({ccc_drawfromdeck = true, ccc_amount = hand_space})
-	end
+	SMODS.calculate_context({ccc_drawfromdeck = true, ccc_amount = hand_space})
 	drawcardref(e)
 end
 
@@ -313,7 +311,7 @@ local bird = SMODS.Joker({
         name = 'Bird',
         text = {
 	"Whenever a {C:planet}Planet{} card",
-	"is used, {C:attention}quick draw{} {C:attention}#1#{} cards"
+	"is used, {C:attention}draw{} {C:attention}#1#{} cards"
         }
     },
 	rarity = 3,
@@ -367,7 +365,7 @@ local partofyou = SMODS.Joker({
         text = {
 	"If {C:attention}first hand{} of round",
 	"contains exactly {C:attention}2{} cards,",
-	"convert both their {C:attention}ranks{}",
+	"convert their {C:attention}ranks{}",
 	"into their {C:attention}complements{}"
         }
     },
@@ -628,9 +626,9 @@ local books = SMODS.Joker({
         name = 'Huge Mess: Books',
         text = {
 	"When played hand contains a",
-	"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult",
-	"for each additional card held in",
-	"hand that extends the {C:attention}sequence{}",
+	"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult for",
+	"each additional card held in hand",
+	"that extends the played {C:attention}Straight{}",
 	"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
         }
     },
@@ -1050,11 +1048,11 @@ local ominousmirror = SMODS.Joker({
 	loc_txt = {
         name = ('Ominous Mirror'),
         text = {
-	"{C:green}#1# in #3#{} chance to copy each",
-	"scored card to your hand,",
-	"adding {C:dark_edition}Mirrored{} edition",
+	"{C:green}#1# in #3#{} chance to add a",
+	"permanent, {C:dark_edition}Mirrored{} copy of",
+	"each scored card to your hand,",
 	"{C:green}#1# in #4#{} chance to {C:inactive}break{}",
-	"at end of round, leaving",
+	"at end of round, becoming",
 	"a {C:attention}Broken Mirror{}"
         }
     },
@@ -1613,7 +1611,7 @@ local coreswitch = SMODS.Joker({
         name = 'Core Switch',
         text = {
 	"Swap {C:blue}hands{} and {C:red}discards{}",
-	"at start of round",
+	"on blind select",
 	"{C:red}+#1#{} discard after swap"
         }
     },
@@ -1738,8 +1736,8 @@ local strongwinds = SMODS.Joker({
         name = 'Strong Winds',
         text = {
 	"{X:mult,C:white} X#1# {} Mult",
-	"Card of the highest {C:attention}rank{} in",
-	"scoring hand is {C:red}destroyed{}"
+	"The highest-{C:attention}ranked{} scoring",
+	"card is {C:red}destroyed{}"
         }
     },
 	rarity = 3,
@@ -1759,41 +1757,6 @@ local strongwinds = SMODS.Joker({
 strongwinds.calculate = function(self, card, context)
 	if context.cardarea == G.jokers then
 		if context.joker_main then
-			if not context.blueprint then
-				local cards_destroyed = {}
-				local bitch = context.scoring_hand[1]
-				for k = 1, #context.scoring_hand do
-					if context.scoring_hand[k].ability.name ~= 'Stone Card' then
-						if context.scoring_hand[k]:get_id() > bitch:get_id() then
-							bitch = context.scoring_hand[k]
-						end
-					end
-				end
-				if bitch then
-            				highlight_card(bitch,(1-0.999)/(#context.scoring_hand-0.998),'down') -- i copied literally the entire goddamn card destruction code to fix this stupid bug... it's probably just this line that i was missing but oh my god i don't care at this point
-					if bitch.ability.name == 'Glass Card' then 
-						bitch.shattered = true
-					else 
-						bitch.destroyed = true
-					end 
-					cards_destroyed[#cards_destroyed+1] = bitch
-       					for j=1, #G.jokers.cards do
-						eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
-					end
-					for i=1, #cards_destroyed do
-						G.E_MANAGER:add_event(Event({
-							func = function()
-								if cards_destroyed[i].ability.name == 'Glass Card' then 
-									cards_destroyed[i]:shatter()
-								else
-									cards_destroyed[i]:start_dissolve()
-								end
-							return true
-							end
-						}))
-					end
-				end
-			end
 			return {
 				message = localize {
 					type = 'variable',
@@ -1802,6 +1765,19 @@ strongwinds.calculate = function(self, card, context)
 				},
 				Xmult_mod = card.ability.extra.xmult
 			}
+		end
+	end
+	if context.cardarea == G.play and context.destroying_card then
+		local bitch = context.scoring_hand[1] or nil
+		for k = 1, #context.scoring_hand do
+			if context.scoring_hand[k].ability.name ~= 'Stone Card' then
+				if context.scoring_hand[k]:get_id() > bitch:get_id() then
+					bitch = context.scoring_hand[k]
+				end
+			end
+		end
+		if bitch and bitch == context.destroy_card then
+			return {remove = true}
 		end
 	end
 end
@@ -2251,7 +2227,7 @@ local rainbowspinner = SMODS.Joker({
         name = 'Rainbow Spinner',
         text = {
 	"{C:money}Gold Seals{} act as",
-	"{C:red}ev{C:tarot}e{C:planet}ry{} seal"
+	"{C:attention}every{} {C:money}s{C:red}e{C:tarot}a{C:planet}l"
         }
     },
 	rarity = 3,
@@ -2812,7 +2788,7 @@ local collapsingbridge = SMODS.Joker({
         text = {
 	"{X:mult,C:white} X#2# {} Mult when played hand",
 	"contains a {C:attention}Straight{}",
-	"All played cards have a {C:green}#1# in #3#{}",
+	"All {C:attention}played{} cards have a {C:green}#1# in #3#{}",
 	"chance of being {C:red}destroyed{}"
         }
     },
@@ -2833,38 +2809,6 @@ local collapsingbridge = SMODS.Joker({
 collapsingbridge.calculate = function(self, card, context)
 	
 	if context.joker_main then
-
-		if not context.blueprint then
-			local cards_destroyed = {}
-			for k, v in ipairs(context.full_hand) do
-				if pseudorandom('bridge') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
-					cards_destroyed[#cards_destroyed+1] = v
-					if v.ability.name == 'Glass Card' then 
-						v.shattered = true
-					else 
-						v.destroyed = true
-					end 
-				end
-			end
-			
-			for j=1, #G.jokers.cards do
-				eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
-			end
-			for i=1, #cards_destroyed do
-				highlight_card(cards_destroyed[i],(1-0.999)/(#context.full_hand-0.998),'down')
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						if cards_destroyed[i].ability.name == 'Glass Card' then 
-							cards_destroyed[i]:shatter()
-						else
-							cards_destroyed[i]:start_dissolve()
-						end
-					return true
-					end
-				}))
-			end
-		end
-
 		if next(context.poker_hands['Straight']) then
                 	return {
 			message = localize {
@@ -2874,6 +2818,12 @@ collapsingbridge.calculate = function(self, card, context)
                 		},
                 	Xmult_mod = card.ability.extra.xmult
                 	}
+		end
+	end
+
+	if context.destroying_card then
+		if pseudorandom('bridge') < G.GAME.probabilities.normal/card.ability.extra.prob_success then
+			return {remove = true}
 		end
 	end
 end
@@ -3448,7 +3398,7 @@ local seeker = SMODS.Joker({
 			"If card is drawn {C:attention}face up{} and",
 			"is not most owned {C:attention}rank{} ({C:attention}#1#{})",
 			"or {C:attention}suit{} ({V:1}#2#{}), reshuffle",
-			"it into {C:attention}deck{} and {C:attention}quick redraw"
+			"it into {C:attention}deck{} and {C:attention}draw another"
         }
     },
 	rarity = 3,
@@ -3534,23 +3484,21 @@ end
 seeker.calculate = function(self, card, context)
 	seeker.get_common_suit_and_ranks(card)		-- could possibly just put this function into Card:update instead of calling it frequently? similar to secret shrine
 
-	if context.ccc_hand_drawn and not context.blueprint and not ccc_GLOBAL_seeker_proc == true then		-- custom context created in lovely
+	if context.ccc_drawfromdeck and not context.blueprint and not GLOBAL_seeker_proc == true then		-- custom context created in lovely
+
+		GLOBAL_seeker_proc = true
 		
-		ccc_GLOBAL_seeker_proc = true		-- global variable to prevent multiple copies of seeker from triggering
 		local card_pos = {}
 		local card_redraw_candidates = {}
-		local hand_size = G.hand.config.card_limit - #G.hand.cards
 		G.deck:shuffle('see'..G.GAME.round_resets.ante)			-- shuffle is early, otherwise card drawing gets messed up
-		if hand_size > #G.deck.cards then
-			hand_size = #G.deck.cards
-		end
+		hand_size = context.ccc_amount
 		for i = 1, hand_size do
 			local future_card = G.deck.cards[(#G.deck.cards - (i - 1))]		-- end of G.deck.cards currently has the cards that are about to be drawn
 			local ranks = {"", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"}
 			local future_card_rank = ranks[future_card:get_id()] or "0"
 			local stay_flipped = G.GAME and G.GAME.blind and G.GAME.blind:stay_flipped(G.hand, G.deck.cards[(#G.deck.cards - (i - 1))])
 			if ((not (future_card_rank == G.GAME.pool_flags.seeker_table.rank or future_card:is_suit(G.GAME.pool_flags.seeker_table.suit, true))) 
-			or (future_card.ability.name == 'Stone Card')) and (not stay_flipped == true) then	-- note that the only exclusion is stone cards, wild/smeared affect :is_suit() rather than base.suit
+			or (future_card.ability.name == 'Stone Card')) and (not stay_flipped == true) then
 				card_redraw_candidates[#card_redraw_candidates + 1] = future_card
 				card_pos[#card_pos + 1] = i
 			end
@@ -3571,7 +3519,7 @@ seeker.calculate = function(self, card, context)
 		G.E_MANAGER:add_event(Event({
 		trigger = "after",
 		func = function ()
-			ccc_GLOBAL_seeker_proc = false
+			GLOBAL_seeker_proc = false
 			return true 
 		end}))
 	end
@@ -3907,7 +3855,7 @@ local crystalheart = SMODS.Joker({
     },
 	rarity = 'ccc_secret',
 	cost = 15,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -3976,7 +3924,7 @@ local mechanicalheart = SMODS.Joker({
     },
 	rarity = 'ccc_secret',
 	cost = 15,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -4031,7 +3979,7 @@ local quietheart = SMODS.Joker({
     },
 	rarity = 'ccc_secret',
 	cost = 15,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -4086,7 +4034,7 @@ local heavyheart = SMODS.Joker({
     },
 	rarity = 'ccc_secret',
 	cost = 15,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -4258,9 +4206,8 @@ local secretshrine = SMODS.Joker({
 	loc_txt = {
         name = 'Secret Shrine',
         text = {
-			"Gives {C:mult}Mult{} equal to",
-			"{C:attention}#2#x{} the amount of",
-			"{C:attention}7{}s in your {C:attention}full deck{}",
+			"Gives {C:mult}+#2#{} Mult for",
+			"each {C:attention}7{} in {C:attention}full deck{}",
 			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}"
         }
     },
@@ -4737,7 +4684,7 @@ local bunnyhop = SMODS.Joker({
 	loc_txt = {
         name = 'Bunny Hop',
         text = {
-			"Permanently give {C:chips}+#1#{} Chips",
+			"Permanently give {C:chips}+#1#{} Chip",
 			"to {C:attention}all{} cards held in hand",
 			"on discarding a {C:attention}card{}",
         }
@@ -5167,7 +5114,7 @@ end
 local moveblock = SMODS.Joker({
 	name = "ccc_Move Block",
 	key = "moveblock",
-    config = {extra = {mult = 0, mult_scale = 2}},
+    config = {extra = {mult = 0, mult_scale = 1}},
 	pos = {x = 5, y = 5},
 	pixel_size = { w = 71, h = 91 },
 	loc_txt = {
@@ -5647,14 +5594,14 @@ local badeline = SMODS.Joker({
 	loc_txt = {
         name = 'Badeline',
         text = {
-	"Retrigger all {C:dark_edition}Mirrored{} and/or {C:attention}Glass{}",
-	"cards, they will both be {C:attention}sustained{}",
-	"and give {X:mult,C:white} X#1# {} Mult when scoring",
+	"Retrigger and {C:attention}sustain{} all",
+	"{C:dark_edition}Mirrored{} and/or {C:attention}Glass{} cards,",
+	"they give {X:mult,C:white} X#1# {} Mult when scored",
         }
     },
 	rarity = 4,
 	cost = 20,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -5728,7 +5675,7 @@ local madeline = SMODS.Joker({
     },
 	rarity = 4,
 	cost = 20,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -5828,13 +5775,13 @@ local granny = SMODS.Joker({
         name = 'Granny',
         text = {
 	"After {C:red}discarding{} cards,",
-	"{C:attention}quick draw{} {C:attention}#1#{} additional card",
+	"{C:attention}draw{} {C:attention}#1#{} additional card",
 	"for each card discarded"
         }
     },
 	rarity = 4,
 	cost = 20,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
