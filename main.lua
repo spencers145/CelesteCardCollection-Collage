@@ -46,6 +46,12 @@ SMODS.Atlas({
     py = 34
 }):register()
 
+SMODS.current_mod.optional_features = {
+	cardareas = {
+		unscored = true,
+	},
+}
+
 if not to_big then
 	function to_big(x) return x end
 end
