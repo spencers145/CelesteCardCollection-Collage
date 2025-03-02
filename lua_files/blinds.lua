@@ -38,7 +38,7 @@ snow.disable = function(self)
 end
 
 snow.stay_flipped = function(self, area, card)
-	if card:is_suit('Clubs', true) then
+	if card:is_suit('Clubs', true) and area == G.hand then
 		return true
 	end
 end
@@ -83,7 +83,7 @@ stone.disable = function(self)
 end
 
 stone.stay_flipped = function(self, area, card)
-	if card:is_suit('Spades', true) then
+	if card:is_suit('Spades', true) and area == G.hand then
 		return true
 	end
 end
@@ -128,7 +128,7 @@ crystal.disable = function(self)
 end
 
 crystal.stay_flipped = function(self, area, card)
-	if card:is_suit('Diamonds', true) then
+	if card:is_suit('Diamonds', true) and area == G.hand then
 		return true
 	end
 end
@@ -173,7 +173,7 @@ berry.disable = function(self)
 end
 
 berry.stay_flipped = function(self, area, card)
-	if card:is_suit('Hearts', true) then
+	if card:is_suit('Hearts', true) and area == G.hand then
 		return true
 	end
 end

@@ -347,7 +347,7 @@ function G.UIDEF.ccc_generate_credits(credits)
 		{n=G.UIT.O, config={object = DynaText({string = credits and credits.art or " ", colours = {G.C.CCC_COLOUR}, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}}}},
 	{n=G.UIT.R, config={align = "cm"}, nodes={
 		{n=G.UIT.O, config={object = DynaText({string = credits and "Code by " or "", colours = {G.C.WHITE}, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}},
-		{n=G.UIT.O, config={object = DynaText({string = credits and credits.code or "Vanilla Deck", colours = {credits and G.C.CCC_COLOUR or G.C.DARK_EDITION}, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}}}},
+		{n=G.UIT.O, config={object = DynaText({string = credits and credits.code or G.GAME.viewed_back.effect.center.mod and "Modded Deck" or "Vanilla Deck", colours = {credits and G.C.CCC_COLOUR or G.C.DARK_EDITION}, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}}}},
 	{n=G.UIT.R, config={align = "cm"}, nodes={
 		{n=G.UIT.O, config={object = DynaText({string = credits and "Concept by " or " ", colours = {G.C.WHITE}, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}},
 		{n=G.UIT.O, config={object = DynaText({string = credits and credits.concept or " ", colours = {G.C.CCC_COLOUR }, float = true, shadow = true, offset_y = -0.05, silent = true, spacing = 1, scale = 0.25})}}}},}}
@@ -355,7 +355,6 @@ end
 
 function ccc_generate_deck_credit_payload()
 	local obj = Moveable()
-
 	obj= UIBox{
 		definition = G.UIDEF.ccc_generate_credits(G.GAME.viewed_back.effect.center.credit),
 		config = {offset = {x=0,y=0}, align = 'cm'}
