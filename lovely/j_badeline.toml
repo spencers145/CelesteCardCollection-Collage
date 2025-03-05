@@ -12,7 +12,7 @@ pattern = "local card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho'
 position = "at"
 payload = '''
 local card = ""
-if G.GAME.pool_flags.badeline_break and not (G.GAME.used_jokers['j_ccc_badeline'] and not next(find_joker("Showman"))) and pseudorandom('baddie'..G.GAME.round_resets.ante) > 0.995 then
+if G.GAME.pool_flags.badeline_break and not (G.GAME.used_jokers['j_ccc_badeline'] and not next(find_joker("Showman"))) and pseudorandom('baddie'..G.GAME.round_resets.ante) > 0.996 then
 	card = create_card('Joker', area, nil, nil, nil, nil, 'j_ccc_badeline', 'bad')
 else
 	card = create_card(v.type, area, nil, nil, nil, nil, nil, 'sho')

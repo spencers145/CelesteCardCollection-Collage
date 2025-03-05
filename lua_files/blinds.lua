@@ -231,4 +231,47 @@ fallacy.press_play = function(self)
         return true
 end
 
+-- endregion Fallacy
 
+-- region Golden Crown
+
+local goldencrown = SMODS.Blind{
+	name = "ccc_Golden Crown",
+	slug = "goldencrown", 
+	key = 'goldencrown',
+	atlas = 'bl_ccc_blinds',
+	pos = {x = 0, y = 9},
+	dollars = 5, 
+	mult = 2.5, 
+	vars = {extra = 3}, 
+	debuff = {},
+	discovered = true,
+	boss = {min = 1, max = 10, showdown = true},
+	boss_colour = HEX('ffe073'),
+	loc_vars = function(self)
+		return { vars = { (G.GAME.ccc_golden_progress or self.vars.extra), (G.GAME.ccc_golden_progress or self.vars.extra) == 1 and '' or 's' } } -- no bignum?
+	end,
+	collection_loc_vars = function(self)
+		return { vars = { self.vars.extra, "s" } }
+	end,
+	set_blind = function(self, reset, silent)
+		G.GAME.ccc_golden_progress = self.vars.extra
+	end,
+	loc_txt = {
+        	['default'] = {
+			name = "Golden Crown",
+			text = {
+				"Defeat this blind",
+				"#1# time#2#"
+			}
+		}
+	}
+}
+goldencrown.disable = function(self)
+	G.GAME.ccc_golden_progress = 1
+	G.GAME.blind.chips = (G.GAME.blind.chips/5)*4
+	G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+end
+goldencrown.defeat = function(self)
+	G.GAME.ccc_golden_progress = self.vars.extra
+end

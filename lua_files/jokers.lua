@@ -1704,7 +1704,7 @@ local templerock = SMODS.Joker({
 templerock.calculate = function(self, card, context)
 	if context.individual and context.poker_hands ~= nil then
         	if context.cardarea == G.hand then
-	         	if context.other_card.ability.name == 'Stone Card' then
+	         	if SMODS.has_enhancement(context.other_card, 'm_stone') then
                         	return {
                     			message = localize {
                         			type = 'variable',
@@ -2505,7 +2505,7 @@ local cassetteblock = SMODS.Joker({
 	rarity = 2,
 	cost = 8,
 	discovered = true,
-	blueprint_compat = false,
+	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
@@ -3057,7 +3057,7 @@ local theocrystal = SMODS.Joker({
 	}
     },
 	rarity = 3,
-	cost = 9,
+	cost = 12,
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = true,
@@ -3553,7 +3553,7 @@ local pointlessmachines = SMODS.Joker({
 	discovered = true,
 	blueprint_compat = false,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "goose!",
@@ -3858,7 +3858,7 @@ local crystalheart = SMODS.Joker({
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "Gappie",
@@ -3911,7 +3911,7 @@ local mechanicalheart = SMODS.Joker({
 	name = "ccc_Mechanical Heart",
 	key = "mechanicalheart",
     config = {},
-	pos = {x = 9, y = 4},
+	pos = {x = 0, y = 8},
 	loc_txt = {
         name = 'Mechanical Heart',
         text = {
@@ -3927,10 +3927,10 @@ local mechanicalheart = SMODS.Joker({
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "9Ts",
 		code = "toneblock",
 		concept = "Fytos"
 	}
@@ -3982,7 +3982,7 @@ local quietheart = SMODS.Joker({
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -4037,7 +4037,7 @@ local heavyheart = SMODS.Joker({
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
-	perishable_compat = true,
+	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
 		art = "N/A",
@@ -5583,6 +5583,109 @@ end
 
 -- endregion Iceball
 
+-- region Crumble Joker
+
+local crumblejoker = SMODS.Joker({
+	name = "ccc_Crumble Joker",
+	key = "crumblejoker",
+    config = {extra = {xmult = 2}},
+	pos = {x = 3, y = 7},
+	loc_txt = {
+        name = 'Crumble Joker',
+        text = {
+			"Played {C:attention}Stone Cards",
+			"each give {X:mult,C:white} X#1# {} Mult",
+			"and are {C:red}destroyed{}",
+        }
+    },
+	rarity = 2,
+	cost = 5,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	enhancement_gate = "m_stone",
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "9Ts",
+		code = "toneblock",
+		concept = "Fytos"
+	}
+})
+
+crumblejoker.calculate = function(self, card, context)
+	if context.individual and context.cardarea == G.play then
+		if SMODS.has_enhancement(context.other_card, 'm_stone') then
+			return {
+				x_mult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+	end
+	if context.cardarea == G.play and context.destroying_card then
+		if SMODS.has_enhancement(context.destroy_card, 'm_stone') then
+			return {remove = true}
+		end
+	end
+end
+
+function crumblejoker.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.m_stone
+	return {vars = {card.ability.extra.xmult}}
+end
+
+-- endregion Crumble Joker
+
+-- region PICO-8 Joker
+
+local picojoker = SMODS.Joker({
+	name = "ccc_PICO-8 Joker",
+	key = "pico8joker",
+    config = {extra = {}},
+	pos = {x = 1, y = 7},
+	loc_txt = {
+        name = 'PICO-8 Joker',
+        text = {
+			"Retrigger each",
+			"played {C:attention}Ace{}, {C:attention}8{}, or {C:attention}6{}",
+        }
+    },
+	rarity = 2,
+	cost = 4,
+	discovered = true,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = true,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "9Ts",
+		code = "toneblock",
+		concept = "Gappie"
+	}
+})
+
+picojoker.calculate = function(self, card, context)
+	if context.repetition then
+		if context.cardarea == G.play then
+			if context.other_card:get_id() == 6 
+			or context.other_card:get_id() == 8
+			or context.other_card:get_id() == 14 then
+				return {
+					message = localize('k_again_ex'),
+					repetitions = 1,
+					card = card
+				}
+			end
+		end
+	end
+end
+
+function picojoker.loc_vars(self, info_queue, card)
+	return {vars = {}}
+end
+
+-- endregion PICO-8 Joker
+
 -- region Badeline
 
 local badeline = SMODS.Joker({
@@ -5621,7 +5724,7 @@ badeline.yes_pool_flag = 'preventsoulspawn'
 badeline.calculate = function(self, card, context)
 	if context.repetition then
 		if context.cardarea == G.play then
-			if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or context.other_card.ability.effect == 'Glass Card' then
+			if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or SMODS.has_enhancement(context.other_card, 'm_glass') then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = 1,
@@ -5629,7 +5732,7 @@ badeline.calculate = function(self, card, context)
 				}
 			end
 		elseif context.cardarea == G.hand then
-			if ((context.other_card.edition and context.other_card.edition.ccc_mirrored) or context.other_card.ability.effect == 'Glass Card') and (next(context.card_effects[1]) or #context.card_effects > 1) then
+			if ((context.other_card.edition and context.other_card.edition.ccc_mirrored) or SMODS.has_enhancement(context.other_card, 'm_glass')) and (next(context.card_effects[1]) or #context.card_effects > 1) then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = 1,
@@ -5639,7 +5742,7 @@ badeline.calculate = function(self, card, context)
 		end
 	end
 	if context.individual and context.cardarea == G.play then
-		if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or context.other_card.ability.effect == 'Glass Card' then
+		if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or SMODS.has_enhancement(context.other_card, 'm_glass') then
 			return {
 				x_mult = card.ability.extra.xmult,
 				card = card
