@@ -6,15 +6,15 @@ local eval_cardRef = eval_card
 function eval_card(card, context) 
 	local ret, post = eval_cardRef(card, context)
 
-    if context.repetition_only and context.cardarea == G.play and G.GAME.selected_back.effect.config.virus then
+    if context.repetition_only and context.cardarea == G.play and G.GAME.modifiers.ccc_virus then
 		if not ret.seals then
 			ret.seals = {
 				message = localize('k_again_ex'),
-				repetitions = 1,
+				repetitions = G.GAME.modifiers.ccc_virus,
 				card = card
 			}
 		else
-			ret.seals.repetitions = ret.seals.repetitions + 1
+			ret.seals.repetitions = ret.seals.repetitions + G.GAME.modifiers.ccc_virus
 		end
     end
 
@@ -24,7 +24,7 @@ end
 local debuff_cardRef = Blind.debuff_card
 
 function Blind.debuff_card(self, card, from_blind)
-	if G.GAME.selected_back.effect.config.virus and card.ability.played_this_ante then
+	if G.GAME.modifiers.ccc_virus and card.ability.played_this_ante then
 		card:set_debuff(true)
 		return
 	end
@@ -33,12 +33,12 @@ function Blind.debuff_card(self, card, from_blind)
 end
 
 function virus_effect(self, args)
-    if G.GAME.selected_back.effect.config.virus and args.context == 'final_scoring_step' then
+    if G.GAME.modifiers.ccc_virus and args.context == 'final_scoring_step' then
 		
         G.E_MANAGER:add_event(Event({
             func = (function()
 				for _, v in ipairs(G.playing_cards) do
-					if G.GAME.selected_back.effect.config.virus and v.ability.played_this_ante then
+					if G.GAME.modifiers.ccc_virus and v.ability.played_this_ante then
 						v:set_debuff(true)
 					end
 				end
@@ -63,6 +63,9 @@ local virus = SMODS.Back({
 	    "until the end of the ante"
         }
     },
+    apply = function(self)
+        G.GAME.modifiers.ccc_virus = (G.GAME.modifiers.ccc_virus or 0) + 1
+    end,
     atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
@@ -100,11 +103,11 @@ function ease_ante(mod)
 	G.E_MANAGER:add_event(Event({
 		trigger = 'immediate',
 		func = function () 
-			if G.GAME.selected_back.effect.config.add_slot_each_ante and G.GAME.round_resets.ante % G.GAME.win_ante ~= 0 and G.GAME.round_resets.ante > G.GAME.highest_ante then
-						G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+			if G.GAME.modifiers.ccc_summit and G.GAME.round_resets.ante % G.GAME.win_ante ~= 0 and G.GAME.round_resets.ante > G.GAME.highest_ante then
+						G.jokers.config.card_limit = G.jokers.config.card_limit + G.GAME.modifiers.ccc_summit.add
 						G.GAME.highest_ante = G.GAME.round_resets.ante
 						attention_text({
-							text = "+1 Joker Slot",
+							text = "+"..G.GAME.modifiers.ccc_summit.add.." Joker Slot"..(G.GAME.modifiers.ccc_summit.add > 1 and 's' or ''),
 							scale = 0.5, 
 							hold = 3.3,
 							cover = G.jokers.children.area_uibox,
@@ -135,6 +138,11 @@ local summit = SMODS.Back({
 	    	"{s:0.75}(if Ante has not been reached before){}"
         }
     },
+    apply = function(self)
+        G.GAME.modifiers.ccc_summit = G.GAME.modifiers.ccc_summit or {minus = 0, add = 0}
+        G.GAME.modifiers.ccc_summit.minus = G.GAME.modifiers.ccc_summit.minus + self.config.joker_slot	-- this isn't used... oops
+        G.GAME.modifiers.ccc_summit.add = G.GAME.modifiers.ccc_summit.add + self.config.add_slot_each_ante
+    end,
     atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
@@ -161,6 +169,9 @@ local bside = SMODS.Back({
 		"by ({C:attention}Current Ante{} + {C:attention}1{})",
         }
     },
+    apply = function(self)
+        G.GAME.modifiers.ccc_bside = (G.GAME.modifiers.ccc_bside or 0) + 1
+    end,
     atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
@@ -185,7 +196,7 @@ function reset_blinds()
 	local state = G.GAME.round_resets.blind_states or {Small = 'Select', Big = 'Upcoming', Boss = 'Upcoming'}
 	reset_blinds_ref()
 	print(state.Boss)
-	if G.GAME.selected_back.effect.config.everything_is_boss and state.Boss == 'Defeated' then
+	if G.GAME.modifiers.ccc_bside and state.Boss == 'Defeated' then
 		
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
 		G.GAME.round_resets.blind_choices.Big = get_new_boss()
@@ -195,7 +206,7 @@ end
 
 local end_round_ref = end_round
 function end_round()
-	if G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then 
+	if G.GAME.modifiers.ccc_bside and G.GAME.blind_on_deck ~= "Boss" then 
 		
 		-- campfire and ante not increasing and such
 		-- unneeded with patches
@@ -225,7 +236,7 @@ end
 local calculate_joker_ref = Card.calculate_joker
 function Card:calculate_joker(context)
 	local ret, post
-	if context.setting_blind and G.GAME.selected_back.effect.config.everything_is_boss and G.GAME.blind_on_deck ~= "Boss" then
+	if context.setting_blind and G.GAME.modifiers.ccc_bside and G.GAME.blind_on_deck ~= "Boss" then
 		local boss = context.blind.boss
 		context.blind.boss = nil
 		ret, post = calculate_joker_ref(self, context)
@@ -241,7 +252,7 @@ end
 local sabref = Card.set_ability
 function Card:set_ability(center, initial, delay_sprites)
 	sabref(self, center, initial, delay_sprites)
-	if G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss and initial then
+	if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and initial then
 		local k = self.config.center.key
 		if k == 'j_campfire' or k == 'j_throwback' then
 			self.ability.extra = self.ability.extra*3
@@ -256,7 +267,7 @@ function Card:set_ability(center, initial, delay_sprites)
 end
 
 function bside_start_run(self)
-	if G.GAME.selected_back.effect.config.everything_is_boss then
+	if G.GAME.modifiers.ccc_bside then
 		G.GAME.round_resets.ante = 0
 		G.GAME.round_resets.blind_ante = 0
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
@@ -284,6 +295,9 @@ local heartside = SMODS.Back({
 			"{s:0.75}(and maybe {C:legendary,E:1,s:0.75}jimbo{}{s:0.75})"
         }
     },
+    apply = function(self)
+        G.GAME.modifiers.ccc_heartside = (G.GAME.modifiers.ccc_heartside or 0) + 1
+    end,
     atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
@@ -294,7 +308,7 @@ local heartside = SMODS.Back({
 
 
 function heartside_start_run(self)
-	if G.GAME.selected_back.effect.config.all_jokers_modded then
+	if G.GAME.modifiers.ccc_heartside then
 		local jokerPool = {}
 		for k, v in pairs(G.P_CENTERS) do
 			if v.set == 'Joker' then

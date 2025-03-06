@@ -1335,7 +1335,7 @@ local goldenstrawberry = SMODS.Joker({
 
 goldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
-		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
+		if context.blind.boss or G.GAME.modifiers.ccc_bside then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -1411,7 +1411,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 	end
 	if context.setting_blind then
 		card.ability.extra.condition_satisfied = true
-		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
+		if context.blind.boss or G.GAME.modifiers.ccc_bside then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -2996,7 +2996,7 @@ checkpoint.calculate = function(self, card, context)
 
 	if context.setting_blind and not context.blueprint then
 		card.ability.extra.did_you_discard = false
-		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
+		if context.blind.boss or G.GAME.modifiers.ccc_bside then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
@@ -3563,9 +3563,9 @@ local pointlessmachines = SMODS.Joker({
 })
 
 pointlessmachines.set_ability = function(self, card, initial, delay_sprites)
-	card.ability.extra.chosen = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('initialize'))
+	card.ability.extra.chosen = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('pminitialize'))
         for i = 1, 5 do
-		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('initialize2'))
+		card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('pminitialize2'))
 	end
 end
 
@@ -3657,10 +3657,15 @@ pointlessmachines.calculate = function(self, card, context)
 	]]
 	if context.after and card.ability.extra.reset == true and not context.blueprint then
 		for i = 1, 5 do
-			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('reinitialize'))
+			card.ability.extra.suits[i] = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs', card.ability.extra.chosen}, pseudoseed('pmreinitialize'))
 		end
 		card.ability.extra.reset = false
 	end
+end
+
+function ccc_getfirstheart(_key)
+	local _t = pseudorandom_element({'Hearts', 'Spades', 'Diamonds', 'Clubs'}, pseudoseed('pminitialize', _key))
+	return _t
 end
 
 -- region Focused Grim
@@ -4870,7 +4875,7 @@ local bubsdrop = SMODS.Joker({
 	rarity = 3,
 	cost = 10,
 	discovered = true,
-	blueprint_compat = false,
+	blueprint_compat = true,
 	eternal_compat = false,
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
@@ -4885,33 +4890,34 @@ bubsdrop.no_pool_flag = 'bubsdropused'
 
 bubsdrop.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
-		if context.blind.boss or G.GAME.selected_back.effect.config.everything_is_boss then
+		if context.blind.boss or G.GAME.modifiers.ccc_bside then
 			card.ability.extra.boss = true
 		else
 			card.ability.extra.boss = false
 		end
 	end
 	
-	if context.end_of_round and (not context.blueprint) and (not context.repetition) and (not context.individual) and card.ability.extra.boss then
+	if context.end_of_round and (not context.repetition) and (not context.individual) and card.ability.extra.boss then
 		G.GAME.pool_flags.bubsdropused = true
+		local _card = context.blueprint_card or card
 		G.E_MANAGER:add_event(Event({
 			func = function() 
 				ease_dollars(-card.ability.extra.money)
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-$"..card.ability.extra.money, colour = G.C.RED})
+				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = "-$"..card.ability.extra.money, colour = G.C.RED})
 				return true
 			end
 		}))
 		G.E_MANAGER:add_event(Event({
 			func = function() 
 				ease_ante(-card.ability.extra.ante)
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = "-"..card.ability.extra.ante.." Ante", colour = G.C.FILTER})
+				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = "-"..card.ability.extra.ante.." Ante", colour = G.C.FILTER})
 				return true
 			end
 		}))
 		G.E_MANAGER:add_event(Event({
 			func = function()
-				card.ability.perma_debuff = true
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_disabled_ex'),colour = G.C.FILTER})
+				_card.ability.perma_debuff = true
+				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = localize('k_disabled_ex'),colour = G.C.FILTER})
 				return true
 			end
 		}))
@@ -5412,7 +5418,6 @@ berryseeds.calculate = function(self, card, context)
 			if G.GAME.banned_keys[v.key] then add = nil end
 			if G.GAME.used_jokers[v.key] and not next(find_joker("Showman")) then add = nil end
 			if add then
-				print('added: '..berry..' to'..v.rarity)
 				rarities[v.rarity][#rarities[v.rarity]+1] = berry
 			end
 		end
@@ -5691,15 +5696,15 @@ end
 local badeline = SMODS.Joker({
 	name = "ccc_Badeline",
 	key = "badeline",
-    config = {extra = {xmult = 1.2}},
+    config = {extra = {xmult = 1.25}},
 	pos = {x = 0, y = 5},
 	soul_pos = {x = 0, y = 6},
 	loc_txt = {
         name = 'Badeline',
         text = {
-	"Retrigger and {C:attention}sustain{} all",
-	"{C:dark_edition}Mirrored{} and/or {C:attention}Glass{} cards,",
-	"they give {X:mult,C:white} X#1# {} Mult when scored",
+	"{C:attention}Sustain{} all {C:dark_edition}Mirrored{} and/or",
+	"{C:attention}Glass{} cards, they each give",
+	"{X:mult,C:white} X#1# {} Mult when scored",
         }
     },
 	rarity = 4,
@@ -5722,6 +5727,7 @@ badeline.yes_pool_flag = 'preventsoulspawn'
 -- apparently you're passing card (the object) to card (the return value) so you do need that
 
 badeline.calculate = function(self, card, context)
+	--[[
 	if context.repetition then
 		if context.cardarea == G.play then
 			if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or SMODS.has_enhancement(context.other_card, 'm_glass') then
@@ -5741,6 +5747,7 @@ badeline.calculate = function(self, card, context)
 			end
 		end
 	end
+	]]
 	if context.individual and context.cardarea == G.play then
 		if (context.other_card.edition and context.other_card.edition.ccc_mirrored) or SMODS.has_enhancement(context.other_card, 'm_glass') then
 			return {
@@ -5902,9 +5909,10 @@ granny.calculate = function(self, card, context)
 	end
 	if context.ccc_hand_drawn and (G.GAME.ccc_after_discard and G.GAME.ccc_after_discard > 0) and #G.deck.cards > 0 then
 		G.GAME.ccc_after_discard_buffer = G.GAME.ccc_after_discard
+		local _card = context.blueprint_card or card
 		return {
 			G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw*G.GAME.ccc_after_discard_buffer.." Cards", colour = G.C.FILTER})
+				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw*G.GAME.ccc_after_discard_buffer.." Cards", colour = G.C.FILTER})
 				G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw*G.GAME.ccc_after_discard_buffer)
 				G.GAME.ccc_after_discard = 0
 			return true end }))

@@ -12,7 +12,7 @@ target = "functions/common_events.lua"
 pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
 position = "before"
 payload = '''
-if G.GAME.selected_back.effect.config.everything_is_boss then
+if G.GAME.modifiers.ccc_bside then
     G.GAME.round_resets.blind_choices.Small = get_new_boss()
     G.GAME.round_resets.blind_choices.Big = get_new_boss()
 else
@@ -68,7 +68,7 @@ target = "functions/button_callbacks.lua"
 pattern = "G.FUNCS.skip_blind = function(e)"
 position = "after"
 payload = '''
-if G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss then
+if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside then
 	local skipcost = 8*(G.GAME.round_resets.ante+1)
 	if -skipcost < 0 then
 		if to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - skipcost ) < to_big(0) then
@@ -92,7 +92,7 @@ pattern = "{n=G.UIT.T, config={text = localize('b_skip_blind'), scale = 0.4, col
 position = "at"
 payload = '''
 {n=G.UIT.T, config={text = localize('b_skip_blind')..(
-	G.GAME and G.GAME.selected_back and G.GAME.selected_back.effect.config.everything_is_boss and 
+	G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and 
 		((-8*(G.GAME.round_resets.ante+1))<0 and ' (-' or ' (')..localize('$')..math.abs(-8*(G.GAME.round_resets.ante+1))..')' 
 	or ''
 ), scale = 0.4, colour = G.C.UI.TEXT_INACTIVE}}
@@ -107,7 +107,7 @@ pattern = '''_blind_choice.alignment.offset.y = -0.9
 if _tag and _tag_container then'''
 position = "after"
 payload = '''
-if not ( G.GAME.selected_back.effect.config.everything_is_boss and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
+if not ( G.GAME.modifiers.ccc_bside and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
 '''
 match_indent = true
 

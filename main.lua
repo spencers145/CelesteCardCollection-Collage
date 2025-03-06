@@ -32,6 +32,10 @@ assert(SMODS.load_file("lua_files/blinds.lua"))()
 SMODS.Atlas({key = "c_ccc_consumables", path = "c_ccc_consumables.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(SMODS.load_file("lua_files/consumables.lua"))()
 
+if CardSleeves then
+	SMODS.Atlas({key = "s_ccc_sleeves", path = "s_ccc_sleeves.png", px = 73, py = 95, atlas = "asset_atlas"})
+	assert(SMODS.load_file("lua_files/sleeves.lua"))()
+end
 assert(SMODS.load_file("lua_files/editions.lua"))()
 
 assert(SMODS.load_file("lua_files/localization/en-us.lua"))()
