@@ -1,0 +1,55 @@
+-- region Mechanical Heart
+
+local mechanicalheart = {
+	name = "ccc_Mechanical Heart",
+	key = "mechanicalheart",
+	config = {},
+	pos = { x = 0, y = 8 },
+	loc_txt = {
+		name = 'Mechanical Heart',
+		text = {
+			"If played hand is a",
+			"single {C:attention}Ace{} of {C:clubs}Clubs{},",
+			"turn {C:attention}all{} {C:clubs}Clubs{} held in",
+			"hand into {C:attention}Steel Cards{}",
+			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
+		}
+	},
+	rarity = 'ccc_secret',
+	cost = 15,
+	discovered = false,
+	blueprint_compat = true,
+	eternal_compat = true,
+	perishable_compat = false,
+	atlas = "j_ccc_jokers",
+	credit = {
+		art = "9Ts",
+		code = "toneblock",
+		concept = "Fytos"
+	},
+    description = "If played hand is a single Ace of Clubs, turn all Clubs held in hand into Steel Cards (Unaffected by retriggers)"
+}
+
+mechanicalheart.calculate = function(self, card, context)
+	if context.before and #context.full_hand == 1 and context.full_hand[1]:get_id() == 14 and context.full_hand[1]:is_suit('Clubs', true) then
+		local steels = 0
+		for i = 1, #G.hand.cards do
+			if G.hand.cards[i]:is_suit('Clubs', true) then
+				G.hand.cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
+				G.hand.cards[i]:juice_up()
+				steels = steels + 1
+			end
+		end
+		if steels > 0 then
+			return {
+				message = "Steel",
+				colour = lighten(G.C.BLACK, 0.5)
+			}
+		end
+	end
+end
+
+mechanicalheart.yes_pool_flag = 'secretheart'
+
+return mechanicalheart
+-- endregion Mechanical Heart

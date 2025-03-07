@@ -13,7 +13,6 @@ local instapix = SMODS.ConsumableType({
 	secondary_colour = HEX("090909"),
 	collection_rows = { 4, 4 },
 	shop_rate = 0.0,
-	loc_txt = {},
 	default = "c_ccc_test",
 	can_stack = false,
 	can_divide = false,

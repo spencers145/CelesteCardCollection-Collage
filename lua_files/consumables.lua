@@ -100,3 +100,7 @@ function crystallic.in_pool(self)
 end
 
 -- endregion Crystallic
+
+
+-- info:
+-- Pointless machine takes ownership of Grim for "Focused Grim"

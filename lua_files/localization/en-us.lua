@@ -38,4 +38,5 @@ G.localization.descriptions.Other.ccc_focused = {
 	}
 }
 
+G.localization.misc.labels.k_ccc_strawberry_badge = "Strawberry"
 end

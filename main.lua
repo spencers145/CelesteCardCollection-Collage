@@ -14,8 +14,58 @@
 
 assert(SMODS.load_file("lua_files/_helper_functions.lua"))()
 
+-- region JOKERS
 SMODS.Atlas({key = "j_ccc_jokers", path = "j_ccc_jokers.png", px = 71, py = 95, atlas = "asset_atlas"})
-assert(SMODS.load_file("lua_files/jokers.lua"))()
+local joker_order = assert(assert(SMODS.load_file("lua_files/jokers.lua"))(), "Joker order was not returned by jokers.lua file!")
+
+-- load joker files in jokers folder
+local full_path = SMODS.current_mod.path:gsub("\\", "/")
+local mods_start = string.find(full_path, "Mods/")
+local end_of_mod_name = string.find(full_path, "/", mods_start + 5)
+local mod_path = string.sub(full_path, mods_start, end_of_mod_name)
+
+local joker_data = {}
+
+function loadFiles(prefix, files) 
+	for k, file in ipairs(files) do
+		if love.filesystem.isDirectory(mod_path .. prefix .. file) then 
+			loadFiles(prefix .. file .. "/", love.filesystem.getDirectoryItems(mod_path .. prefix .. file))
+		else 
+			local joker = assert(assert(SMODS.load_file(prefix .. file))(), "Trying to load joker file " .. prefix .. file .. " failed! Returned false value, did you forget to return the config?")
+
+			table.insert(joker_data, 1, joker)
+		end
+	end
+end
+
+local files = love.filesystem.getDirectoryItems(mod_path .. "lua_files/jokers")
+loadFiles("lua_files/jokers/", files)
+
+local key_lookup = {}
+local i = 1
+for line in joker_order:gmatch("([^\r\n]+)[\r\n]*") do  -- Changed the * to +
+	key_lookup[line] = i
+	i = i + 1
+end
+
+table.sort(joker_data, function(a, b)
+
+    
+    local order_a = assert(key_lookup["j_ccc_" .. a.key], "Key '" .. "j_ccc_" ..tostring(a.key) .. "' not found in key_order list.")
+    local order_b = assert(key_lookup["j_ccc_" .. b.key], "Key '" .. "j_ccc_" ..tostring(b.key) .. "' not found in key_order list.")
+	
+    return order_a < order_b
+  end)
+
+
+
+for i, joker in ipairs(joker_data) do
+	SMODS.Joker(joker)
+end
+
+sendDebugMessage("[CCC] Joker files loaded")
+
+-- endregion JOKERS
 
 SMODS.Atlas({key = "b_ccc_decks", path = "b_ccc_decks.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(SMODS.load_file("lua_files/decks.lua"))()
@@ -37,6 +87,8 @@ if CardSleeves then
 	assert(SMODS.load_file("lua_files/sleeves.lua"))()
 end
 assert(SMODS.load_file("lua_files/editions.lua"))()
+
+assert(SMODS.load_file("lua_files/rarity.lua"))()
 
 assert(SMODS.load_file("lua_files/localization/en-us.lua"))()
 
