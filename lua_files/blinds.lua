@@ -273,5 +273,5 @@ goldencrown.disable = function(self)
 	G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 end
 goldencrown.defeat = function(self)
-	G.GAME.ccc_golden_progress = self.vars.extra
+	G.GAME.ccc_golden_progress = nil
 end
