@@ -38,13 +38,11 @@ G.localization.descriptions.Other.ccc_focused = {
 	}
 }
 
-G.localization.descriptions.Sleeve.
-
 G.localization.misc.labels.k_ccc_strawberry_badge = "Strawberry"
 
 -- here so they can change for squared effects
-G.localization.descriptions.Sleeve = {
-	sleeve_cccc_bside = { 
+if CardSleeves then
+	G.localization.descriptions.Sleeve.sleeve_ccc_bside = {
 		name = "B-Side Deck",
 		text = {
 			"Every blind is a {C:red}boss blind{}",
@@ -52,23 +50,23 @@ G.localization.descriptions.Sleeve = {
 			"Skipping costs {C:red}$8{} multiplied",
 			"by ({C:attention}Current Ante{} + {C:attention}1{})",
 		}
-	},
-	sleeve_ccc_bside_alt = {
+	}
+	G.localization.descriptions.Sleeve.sleeve_ccc_bside_alt = {
 		name = "B-Side Sleeve",
 		text = {
 			"Every blind is {C:red}partnered{}",
 			"{C:blue}+#1#{} hand, {C:red}+#2#{} discard, and {C:attention}+#3#{} Joker Slot",
 		}
-	},
-	sleeve_ccc_virus = {
+	}
+	G.localization.descriptions.Sleeve.sleeve_ccc_virus = {
 		name = "Virus Sleeve",
 		text = {
 			"Each played card is retriggered",
 			"then {C:red}debuffed{}",
 			"until the end of the ante"
 		}
-	},
-	sleeve_ccc_virus_alt = {
+	}
+	G.localization.descriptions.Sleeve.sleeve_ccc_virus_alt = {
 		name = "Virus Sleeve",
 		text = {
 			"Each played card is retriggered",
@@ -78,22 +76,22 @@ G.localization.descriptions.Sleeve = {
 --			"All drawn cards are {C:red}debuffed{}",
 --			"until the end of the ante"
 		}
-	},
-	sleeve_ccc_summit = {
+	}
+	G.localization.descriptions.Sleeve.sleeve_ccc_summit = {
 		name = "Summit Sleeve",
 		text = {
 			"{C:attention}-4{} Joker slots",
 			"{C:attention}+1{} Joker slot each Ante",
 			"without a {C:red}final boss{}",
-		    	"{s:0.75}(if Ante has not been reached before){}"
+			"{s:0.75}(if Ante has not been reached before){}"
 		}
-	},
-	sleeve_ccc_summit_alt = {
+	}
+	G.localization.descriptions.Sleeve.sleeve_ccc_summit_alt = {
 		name = "Summit Sleeve",
 		text = {
 			"You win only upon defeating Ante 16"
 		}
-	},
+	}
+end
 
-}
 end
