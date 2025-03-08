@@ -40,11 +40,6 @@ goldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
 		card.ability.extra.after_boss = false
 	end
 end
-		card.ability.extra.after_boss = true
-	else
-		card.ability.extra.after_boss = false
-	end
-end
 
 goldenstrawberry.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
