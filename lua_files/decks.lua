@@ -190,72 +190,25 @@ function Blind:get_type()
 	return ret
 end
 
---[[	patched this instead
-local reset_blinds_ref = reset_blinds
-function reset_blinds()
-	local state = G.GAME.round_resets.blind_states or {Small = 'Select', Big = 'Upcoming', Boss = 'Upcoming'}
-	reset_blinds_ref()
-	print(state.Boss)
-	if G.GAME.modifiers.ccc_bside and state.Boss == 'Defeated' then
-		
-		G.GAME.round_resets.blind_choices.Small = get_new_boss()
-		G.GAME.round_resets.blind_choices.Big = get_new_boss()
-	end
-end
-]]
-
 local end_round_ref = end_round
 function end_round()
-	if G.GAME.modifiers.ccc_bside and G.GAME.blind_on_deck ~= "Boss" then 
-		
-		-- campfire and ante not increasing and such
-		-- unneeded with patches
-		--[[
-		G.GAME.blind.boss = nil
-		]]
+	if G.GAME.modifiers.ccc_bside >= 1 and G.GAME.blind_on_deck ~= "Boss" then 
 		-- no money red stake
 		if G.GAME.modifiers.no_blind_reward and G.GAME.modifiers.no_blind_reward[G.GAME.blind:get_type()] then G.GAME.blind.dollars = 0 end
-		
-		-- game actually advancing to big/boss
-		-- unneeded with patches
-		--[[
-		if G.GAME.blind:get_type() == "Small" then
-			G.GAME.round_resets.blind = G.P_BLINDS.bl_small
-		end
-		if G.GAME.blind:get_type() == "Big" then
-			G.GAME.round_resets.blind = G.P_BLINDS.bl_big
-		end
-		]]
 	end
 	return end_round_ref()
 end
-
--- madness joker
--- decided to keep it useless for the meme
---[[
-local calculate_joker_ref = Card.calculate_joker
-function Card:calculate_joker(context)
-	local ret, post
-	if context.setting_blind and G.GAME.modifiers.ccc_bside and G.GAME.blind_on_deck ~= "Boss" then
-		local boss = context.blind.boss
-		context.blind.boss = nil
-		ret, post = calculate_joker_ref(self, context)
-		context.blind.boss = boss 
-	else 
-		ret, post = calculate_joker_ref(self, context)
-	end
-	return ret, post
-end
-]]
 
 -- alter some joker statistics in b-side deck
 local sabref = Card.set_ability
 function Card:set_ability(center, initial, delay_sprites)
 	sabref(self, center, initial, delay_sprites)
-	if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and initial then
+	if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1 and initial then
 		local k = self.config.center.key
 		if k == 'j_campfire' or k == 'j_throwback' then
 			self.ability.extra = self.ability.extra*3
+		elseif k == 'j_rocket' then
+			self.ability.extra.increase = self.ability.extra.increase/2
 		elseif k == 'j_ccc_zipper' then
 			self.ability.extra.chips_scale = self.ability.extra.chips_scale*3
 		elseif k == 'j_ccc_goldenstrawberry' or k == 'j_ccc_wingedgoldenstrawberry' then
@@ -267,12 +220,42 @@ function Card:set_ability(center, initial, delay_sprites)
 end
 
 function bside_start_run(self)
-	if G.GAME.modifiers.ccc_bside then
+	G.GAME.round_resets.blind_choices.ccc_bonus = {}
+	if G.GAME.modifiers.ccc_bside >= 1 then
 		G.GAME.round_resets.ante = 0
 		G.GAME.round_resets.blind_ante = 0
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
 		G.GAME.round_resets.blind_choices.Big = get_new_boss()
-		G.GAME.bside_skipcost = 8*(G.GAME.round_resets.ante+1)
+		if G.GAME.modifiers.ccc_bside >= 2 then
+			for _, v in ipairs({'Small', 'Big', 'Boss'}) do
+				G.GAME.round_resets.blind_choices.ccc_bonus[v] = get_new_boss()
+				local i = 0
+				while G.GAME.round_resets.blind_choices.ccc_bonus[v] == G.GAME.round_resets.blind_choices[v] and i < 100 do
+					G.GAME.round_resets.blind_choices.ccc_bonus[v] = get_new_boss()
+					i = i + 1
+				end
+			end
+		end
+	end
+end
+
+-- overwrite this for double blind
+function SMODS.juice_up_blind(blind)
+	if (not blind) or (blind == true) then 
+		blind = 'blind' 
+	end
+	local ui_elem = G.HUD_blind:get_UIE_by_ID('HUD_blind_debuff')
+	for _, v in ipairs(ui_elem.children) do
+		v.children[1]:juice_up(0.3, 0)
+	end
+	G.GAME[blind]:juice_up()
+end
+
+-- handle verdant leaf more specifically
+function Blind:ccc_verdant_disable()
+	self.disabled = true
+	for _, v in ipairs(G.playing_cards) do
+		self:debuff_card(v)
 	end
 end
 

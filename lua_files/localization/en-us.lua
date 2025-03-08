@@ -38,5 +38,13 @@ G.localization.descriptions.Other.ccc_focused = {
 	}
 }
 
+G.localization.descriptions.Sleeve.sleeve_ccc_bside_sleeve_double = {
+	name = "B-Side Sleeve",
+	text = {
+		"Every blind is {C:red}partnered{}",
+		"{C:blue}+#1#{} hand, {C:red}+#2#{} discard, and {C:attention}+#3#{} Joker Slot",
+	}
+}
+
 G.localization.misc.labels.k_ccc_strawberry_badge = "Strawberry"
 end

@@ -41,6 +41,12 @@ wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites
 		end
 	end
 	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
+	if G.GAME.blind_on_deck and G.GAME.blind_on_deck == "Boss" or 
+	G.GAME.modifiers and G.GAME.modifiers.ccc_bside then
+		card.ability.extra.after_boss = true
+	else
+		card.ability.extra.after_boss = false
+	end
 end
 
 wingedgoldenstrawberry.calculate = function(self, card, context)

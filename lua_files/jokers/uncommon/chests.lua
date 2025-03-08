@@ -31,21 +31,17 @@ local chests = {
 }
 
 chests.calculate = function(self, card, context)
-	if context.before and not context.blueprint then
+	if context.before and (context.poker_hands ~= nil and next(context.poker_hands['Three of a Kind'])) and not context.blueprint then
 		card.boxes_rank_array = {}
 		card.boxes_card_array_length = 0
 		card.boxes_pair_amounts = 0
 		card.boxes_card_pair_candidate = 0
-	end
-
-	if context.individual and context.poker_hands ~= nil and ((next(context.poker_hands['Three of a Kind']) or next(context.poker_hands['Full House']) or next(context.poker_hands['Four of a Kind']) or next(context.poker_hands['Five of a Kind']) or next(context.poker_hands['Flush Five']))) and not context.blueprint then
-		if context.cardarea == G.hand then
+		
+		for k, v in pairs(G.hand.cards) do
 			card.boxes_card_array_length = card.boxes_card_array_length + 1
-			card.boxes_rank_array[card.boxes_card_array_length] = context.other_card:get_id()
+			card.boxes_rank_array[card.boxes_card_array_length] = v:get_id()
 		end
-	end
-
-	if context.joker_main and not context.blueprint then
+		
 		for v = 1, 13 do
 			card.boxes_card_pair_candidate = 0
 			for i = 1, card.boxes_card_array_length do
@@ -56,12 +52,14 @@ chests.calculate = function(self, card, context)
 			card.boxes_pair_amounts = card.boxes_pair_amounts +
 			((card.boxes_card_pair_candidate - 1) * (card.boxes_card_pair_candidate)) / 2
 		end
+		
 		if card.boxes_pair_amounts > 0 then
 			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts) * card.ability.extra
 			.mult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.MULT })
 		end
 	end
+
 	if context.joker_main then
 		if card.ability.extra.mult ~= 0 then
 			return {

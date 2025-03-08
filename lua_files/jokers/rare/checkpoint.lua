@@ -29,6 +29,14 @@ local checkpoint = {
     description = "Gains +0.75 XMult if Boss Blind is Defeated without discarding."
 }
 
+checkpoint.set_ability = function(self, card, initial, delay_sprites)
+	if G.GAME.blind_on_deck and G.GAME.blind_on_deck == "Boss" or 
+	G.GAME.modifiers and G.GAME.modifiers.ccc_bside then
+		card.ability.extra.after_boss = true
+	else
+		card.ability.extra.after_boss = false
+	end
+end
 
 checkpoint.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
