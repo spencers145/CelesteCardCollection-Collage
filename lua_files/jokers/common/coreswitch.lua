@@ -64,13 +64,28 @@ coreswitch.calculate = function(self, card, context)
 						return true
 					end
 				}))
+				--[[
 				if coreswitch_hand_juggle == 0 then -- you're a dumbass lol
 					end_round()
 				end
+				]]
 				return true
 			end
 		}))
 		return nil, true
+	end
+	if context.pre_discard and G.GAME.current_round.hands_left == 0 and not context.hook then
+		end_round()
+	end
+end
+
+local gfcpref = G.FUNCS.can_play
+G.FUNCS.can_play = function(e)
+	if G.GAME.current_round.hands_left == 0 then
+		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+		e.config.button = nil
+	else
+		gfcpref(e)
 	end
 end
 
