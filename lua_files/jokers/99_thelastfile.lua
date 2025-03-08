@@ -24,7 +24,7 @@ local lastjoker = {
 		concept = "???"
 	},
     in_pool = function(self, args) 
-        return (has_joker("j_ccc_crystalheart") ~= nil and has_joker("j_ccc_madeline") ~= nil and has_joker("j_ccc_eventhorizon") and has_joker("j_ccc_lettinggo") and has_joker("j_ccc_bunnyhop") and #G.deck.cards <= 33)
+        return (CCCHELPER.has_joker("j_ccc_crystalheart") ~= nil and CCCHELPER.has_joker("j_ccc_madeline") ~= nil and CCCHELPER.has_joker("j_ccc_eventhorizon") and CCCHELPER.has_joker("j_ccc_lettinggo") and CCCHELPER.has_joker("j_ccc_bunnyhop") and #G.deck.cards <= 33)
     end,
     add_to_deck = function(self, card, from_debuff)
         win_game()
