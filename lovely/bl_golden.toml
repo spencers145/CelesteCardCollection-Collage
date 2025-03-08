@@ -40,7 +40,7 @@ else
 		G.GAME.current_round.discards_used = 0
 		G.GAME.ccc_golden_progress = G.GAME.ccc_golden_progress - 1
 		G.GAME.blind:set_text()
-		if G.GAME.modifiers.ccc_bside >= 1 then
+		if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 			G.GAME.ccc_bonus_blind:set_text()
 		end
 	end
@@ -61,7 +61,7 @@ else
 	delay(0.8)
 
 	-- literally just copypasted an entire set_blind chunk (i can't run the rest of it)
-	if G.GAME.modifiers.ccc_bside >= 1 then
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 		for i, v in ipairs({'blind', 'ccc_bonus_blind'}) do
 			local self = G.GAME[v]
 			local obj = self.config.blind
@@ -115,7 +115,7 @@ else
 	end
 
 	G.GAME.blind:alert_debuff(true)
-	if G.GAME.modifiers.ccc_bside >= 1 then
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 		G.GAME.ccc_bonus_blind:alert_debuff(true)
 	end
 	SMODS.calculate_context({setting_blind = true, blind = G.GAME.round_resets.blind})

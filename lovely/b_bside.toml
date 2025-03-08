@@ -12,13 +12,13 @@ target = "functions/common_events.lua"
 pattern = "G.GAME.round_resets.blind_choices.Boss = get_new_boss()"
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 1 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
     G.GAME.round_resets.blind_choices.Small = get_new_boss()
     G.GAME.round_resets.blind_choices.Big = get_new_boss()
 else
     G.GAME.round_resets.blind_choices.Big = 'bl_big'
 end
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	for _, v in ipairs({'Small', 'Big', 'Boss'}) do
 		G.GAME.round_resets.blind_choices.ccc_bonus[v] = get_new_boss()
 		local i = 0
@@ -78,7 +78,7 @@ target = "functions/button_callbacks.lua"
 pattern = "G.FUNCS.skip_blind = function(e)"
 position = "after"
 payload = '''
-if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside >= 1 then
+if G.GAME and G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 	local skipcost = 8*(G.GAME.round_resets.ante+1)
 	if -skipcost < 0 then
 		if to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - skipcost ) < to_big(0) then
@@ -102,7 +102,7 @@ pattern = "{n=G.UIT.T, config={text = localize('b_skip_blind'), scale = 0.4, col
 position = "at"
 payload = '''
 {n=G.UIT.T, config={text = localize('b_skip_blind')..(
-	G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside >= 1 and 
+	G.GAME and G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and 
 		((-8*(G.GAME.round_resets.ante+1))<0 and ' (-' or ' (')..localize('$')..math.abs(-8*(G.GAME.round_resets.ante+1))..')' 
 	or ''
 ), scale = 0.4, colour = G.C.UI.TEXT_INACTIVE}}
@@ -117,7 +117,7 @@ pattern = '''_blind_choice.alignment.offset.y = -0.9
 if _tag and _tag_container then'''
 position = "after"
 payload = '''
-if not ( G.GAME.modifiers.ccc_bside >= 1 and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
+if not ( (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
 '''
 match_indent = true
 
@@ -147,7 +147,7 @@ target = "card.lua"
 pattern = '''if G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss')) then'''
 position = "at"
 payload = '''
-if G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss' or G.GAME.modifiers.ccc_bside >= 1)) then 
+if G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss' or (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1))) then 
 '''
 match_indent = true
 
@@ -158,7 +158,7 @@ target = "card.lua"
 pattern = '''local disableable = G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss'))'''
 position = "at"
 payload = '''
-local disableable = G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss' or G.GAME.modifiers.ccc_bside >= 1))
+local disableable = G.GAME.blind and ((not G.GAME.blind.disabled) and (G.GAME.blind:get_type() == 'Boss' or (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1)))
 '''
 match_indent = true
 
@@ -281,7 +281,7 @@ target = "functions/button_callbacks.lua"
 pattern = '''G.GAME.round_resets.blind_choices.Boss = get_new_boss()'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.round_resets.blind_choices.ccc_bonus.Boss = get_new_boss()
 	local i = 0
 	while G.GAME.round_resets.blind_choices.ccc_bonus.Boss == G.GAME.round_resets.blind_choices.Boss and i < 100 do
@@ -303,7 +303,7 @@ target = "blind.lua"
 pattern = '''self.loc_name = self.name == '' and self.name or localize{type ='name_text', key = self.config.blind.key, set = 'Blind'}'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	self.loc_name = self.name == '' and self.name or localize{type ='name_text', key = G.GAME.ccc_bonus_blind.config.blind.key, set = 'Blind'}..' & '..localize{type ='name_text', key = self.config.blind.key, set = 'Blind'}
 end
 '''
@@ -316,7 +316,7 @@ target = "blind.lua"
 pattern = '''for k, v in ipairs(loc_target) do'''
 position = "before"
 payload = '''
-local ccc_bonus = (G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind.config.blind) and G.GAME.ccc_bonus_blind or nil
+local ccc_bonus = ((G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind.config.blind) and G.GAME.ccc_bonus_blind or nil
 
 local ccc_bonus_target = ccc_bonus and {type = 'raw_descriptions', key = ccc_bonus.config.blind.key, set = 'Blind', vars = {}} or nil
 if ccc_bonus and ccc_bonus.name == 'The Ox' then
@@ -363,7 +363,7 @@ pattern = '''{n=G.UIT.O, config={object = G.GAME.blind, draw_layer = 1}},'''
 position = "at"
 payload = '''
 {n=G.UIT.C, nodes = {
-	G.GAME.modifiers.ccc_bside >= 2 and {n=G.UIT.R, nodes = {
+	(G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and {n=G.UIT.R, nodes = {
 		{n=G.UIT.O, config={object = G.GAME.ccc_bonus_blind, draw_layer = 2}},
 	}} or nil,
 	{n=G.UIT.R, nodes = {
@@ -381,7 +381,7 @@ pattern = '''G.GAME.blind:change_dim(1.5,1.5)'''
 position = "after"
 payload = '''
 if not G.GAME.modifiers.ccc_bside then G.GAME.modifiers.ccc_bside = 0 end	-- this is like the perfect place to put this for some reason??? idk man
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.blind:change_dim(1,1)
 	G.GAME.ccc_bonus_blind:change_dim(1,1)
 	scale = 0.24
@@ -396,7 +396,7 @@ target = "functions/button_callbacks.lua"
 pattern = '''G.GAME.blind.states.visible = true'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.ccc_bonus_blind.states.visible = true
 end
 '''
@@ -409,7 +409,7 @@ target = "functions/button_callbacks.lua"
 pattern = '''G.GAME.blind.states.visible = false'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.ccc_bonus_blind.states.visible = false
 end
 '''
@@ -422,7 +422,7 @@ target = "functions/UI_definitions.lua"
 pattern = '''{n=G.UIT.R, config={align = "cm", minh = 0.7, r = 0.1, emboss = 0.05, colour = G.C.DYN_UI.MAIN}, nodes={'''
 position = "at"
 payload = '''
-{n=G.UIT.R, config={align = "cm", minh = G.GAME.modifiers.ccc_bside >= 2 and 0.4 or 0.7, r = 0.1, emboss = 0.05, colour = G.C.DYN_UI.MAIN}, nodes={
+{n=G.UIT.R, config={align = "cm", minh = (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and 0.4 or 0.7, r = 0.1, emboss = 0.05, colour = G.C.DYN_UI.MAIN}, nodes={
 '''
 match_indent = true
 
@@ -481,7 +481,7 @@ target = "functions/common_events.lua"
 pattern = '''local blindname = ((blind_override or (G.GAME.blind and G.GAME.blind.name ~= '' and G.GAME.blind.name)) or 'Small Blind')'''
 position = "before"
 payload = '''
-local ccc_blindname = (G.GAME.modifiers and G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and ((blind_override or (G.GAME.ccc_bonus_blind and G.GAME.ccc_bonus_blind.name ~= '' and G.GAME.ccc_bonus_blind.name)) or 'Small Blind') or nil
+local ccc_blindname = (G.GAME.modifiers and G.GAME.modifiers.ccc_bside and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2)) and ((blind_override or (G.GAME.ccc_bonus_blind and G.GAME.ccc_bonus_blind.name ~= '' and G.GAME.ccc_bonus_blind.name)) or 'Small Blind') or nil
 '''
 match_indent = true
 
@@ -536,7 +536,7 @@ target = "functions/common_events.lua"
 pattern = '''local obj = G.GAME.blind.config.blind'''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	local obj = G.GAME.ccc_bonus_blind.config.blind	
 	local blind_sprite = AnimatedSprite(0, 0, 1.2, 1.2, G.ANIMATION_ATLAS[obj.atlas] or G.ANIMATION_ATLAS['blind_chips'], copy_table(G.GAME.ccc_bonus_blind.pos))
 	blind_sprite:define_draw_steps({
@@ -555,7 +555,7 @@ target = "functions/state_events.lua"
 pattern = '''G.GAME.blind:defeat()'''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.ccc_bonus_blind:defeat(true)
 end
 '''
@@ -568,7 +568,7 @@ target = "functions/common_events.lua"
 pattern = '''G.GAME.blind:juice_up()'''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.ccc_bonus_blind:juice_up()
 end
 '''
@@ -602,7 +602,7 @@ target = "functions/UI_definitions.lua"
 pattern = '''{n=G.UIT.O, config={object = blind_choice.animation}}'''
 position = "before"
 payload = '''
-G.GAME.modifiers.ccc_bside >= 2 and {n=G.UIT.O, config={object = ccc_blind_choice.animation}} or nil,
+(G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and {n=G.UIT.O, config={object = ccc_blind_choice.animation}} or nil,
 '''
 match_indent = true
 
@@ -613,13 +613,13 @@ target = "functions/UI_definitions.lua"
 pattern = '''{n=G.UIT.O, config={object = DynaText({string = localize{type ='name_text', key = blind_choice.config.key, set = 'Blind'}, colours = {G.C.WHITE},shadow = true, float = true,maxw = 2.2, scale = 0.45})}}'''
 position = "at"
 payload = '''
-(G.GAME.modifiers.ccc_bside >= 2) and {n=G.UIT.R, config={align = "cm"}, nodes={
+((G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2)) and {n=G.UIT.R, config={align = "cm"}, nodes={
 	{n=G.UIT.O, config={object = DynaText({string = localize{type ='name_text', key = ccc_blind_choice.config.key, set = 'Blind'}..' &', colours = {G.C.WHITE},shadow = true, float = true,maxw = 2.2, scale = 0.45})}} 
 }} or nil,
-(G.GAME.modifiers.ccc_bside >= 2) and {n=G.UIT.R, config={align = "cm"}, nodes={
+((G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2)) and {n=G.UIT.R, config={align = "cm"}, nodes={
 	{n=G.UIT.O, config={object = DynaText({string = localize{type ='name_text', key = blind_choice.config.key, set = 'Blind'}, colours = {G.C.WHITE},shadow = true, float = true,maxw = 2.2, scale = 0.45})}} 
 }} or nil,
-not (G.GAME.modifiers.ccc_bside >= 2) and {n=G.UIT.O, config={object = DynaText({string = localize{type ='name_text', key = blind_choice.config.key, set = 'Blind'}, colours = {G.C.WHITE},shadow = true, float = true,maxw = 2.2, scale = 0.45})}} or nil,
+not ((G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2)) and {n=G.UIT.O, config={object = DynaText({string = localize{type ='name_text', key = blind_choice.config.key, set = 'Blind'}, colours = {G.C.WHITE},shadow = true, float = true,maxw = 2.2, scale = 0.45})}} or nil,
 '''
 match_indent = true
 
@@ -690,7 +690,7 @@ position = "at"
 payload = '''
         if G.GAME.blind and G.GAME.blind:debuff_hand(self.highlighted, poker_hands, text, true) then
             G.boss_throw_hand = 'blind'
-        elseif G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind and G.GAME.ccc_bonus_blind:debuff_hand(self.highlighted, poker_hands, text, true) then
+        elseif (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind and G.GAME.ccc_bonus_blind:debuff_hand(self.highlighted, poker_hands, text, true) then
             G.boss_throw_hand = 'ccc_bonus_blind'
         end
 '''
@@ -774,7 +774,7 @@ target = "blind.lua"
 pattern = '''self.chips = get_blind_amount(G.GAME.round_resets.ante)*self.mult*G.GAME.starting_params.ante_scaling'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind.mult then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind.mult then
 	local used_mult = 2
 	used_mult = used_mult*(G.GAME.ccc_bonus_blind.mult / 2)
 	used_mult = used_mult*(self.mult / 2)
@@ -790,7 +790,7 @@ target = "functions/UI_definitions.lua"
 pattern = '''local blind_amt = get_blind_amount(G.GAME.round_resets.blind_ante)*blind_choice.config.mult*G.GAME.starting_params.ante_scaling'''
 position = "after"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 and ccc_bonus_blind_choice.config then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and ccc_bonus_blind_choice.config then
 	local used_mult = 2
 	used_mult = used_mult*(ccc_bonus_blind_choice.config.mult / 2)
 	used_mult = used_mult*(blind_choice.config.mult / 2)
@@ -821,7 +821,7 @@ if G.GAME.blind:press_play() then
 '''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind:press_play() then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind:press_play() then
 	G.E_MANAGER:add_event(Event({
 		trigger = 'immediate',
 		func = (function()
@@ -848,7 +848,7 @@ position = "at"
 payload = '''
 if not (
 	G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text) or 
-	(G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text))
+	((G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text))
 ) then
 '''
 match_indent = true
@@ -870,7 +870,7 @@ hand_chips = mod_chips(0)
 G.E_MANAGER:add_event(Event({
 	trigger = 'immediate',
 	func = (function()
-	if G.GAME.modifiers.ccc_bside >= 2 and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text, true) then
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text, true) then
 		SMODS.juice_up_blind('ccc_bonus_blind')
 	end
 	if G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text, true) then
@@ -925,7 +925,7 @@ pattern = '''
 '''
 position = "at"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	if self.ability.set == 'Joker' then
 		for i, v in ipairs({'blind', 'ccc_bonus_blind'}) do
 			if G.GAME[v] and G.GAME[v].name == 'Verdant Leaf' then
@@ -1013,7 +1013,7 @@ mult, hand_chips, modded = G.GAME.blind:modify_hand(G.play.cards, poker_hands, t
 '''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	local ccc_modded = false
 
 	mult, hand_chips, ccc_modded = G.GAME.ccc_bonus_blind:modify_hand(G.play.cards, poker_hands, text, mult, hand_chips)
@@ -1078,7 +1078,7 @@ G.GAME.blind:load(saveTable.BLIND)
 '''
 position = "before"
 payload = '''
-if G.GAME.modifiers.ccc_bside >= 2 then
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	G.GAME.ccc_bonus_blind:load(saveTable.CCC_BONUS_BLIND)
 end
 '''

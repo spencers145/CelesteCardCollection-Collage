@@ -1,7 +1,7 @@
 
 ---/ Summit^2 effect: You only win the game upon beating the ante 16 boss  (no showdown on 8?)
 --- Virus^2 effect: Each played card is retriggered twice then permanently debuffed 
---- B-Side^2 effect: Each blind is a boss, every 2nd ante has a showdown boss 
+---X B-Side^2 effect: double(partnered) boss blinds
 --- Heartside^2 effect: Add 11 meme jokers to the pool
 
 

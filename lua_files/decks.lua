@@ -192,7 +192,7 @@ end
 
 local end_round_ref = end_round
 function end_round()
-	if G.GAME.modifiers.ccc_bside >= 1 and G.GAME.blind_on_deck ~= "Boss" then 
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and G.GAME.blind_on_deck ~= "Boss" then 
 		-- no money red stake
 		if G.GAME.modifiers.no_blind_reward and G.GAME.modifiers.no_blind_reward[G.GAME.blind:get_type()] then G.GAME.blind.dollars = 0 end
 	end
@@ -203,7 +203,7 @@ end
 local sabref = Card.set_ability
 function Card:set_ability(center, initial, delay_sprites)
 	sabref(self, center, initial, delay_sprites)
-	if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1 and initial then
+	if G.GAME and G.GAME.modifiers and G.GAME.modifiers.ccc_bside and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and initial then
 		local k = self.config.center.key
 		if k == 'j_campfire' or k == 'j_throwback' then
 			self.ability.extra = self.ability.extra*3
@@ -221,12 +221,12 @@ end
 
 function bside_start_run(self)
 	G.GAME.round_resets.blind_choices.ccc_bonus = {}
-	if G.GAME.modifiers.ccc_bside >= 1 then
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 		G.GAME.round_resets.ante = 0
 		G.GAME.round_resets.blind_ante = 0
 		G.GAME.round_resets.blind_choices.Small = get_new_boss()
 		G.GAME.round_resets.blind_choices.Big = get_new_boss()
-		if G.GAME.modifiers.ccc_bside >= 2 then
+		if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 			for _, v in ipairs({'Small', 'Big', 'Boss'}) do
 				G.GAME.round_resets.blind_choices.ccc_bonus[v] = get_new_boss()
 				local i = 0
