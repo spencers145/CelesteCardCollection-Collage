@@ -1,21 +1,3 @@
--- check if table has an item
-function Has_value (tab, val)
-   for index, value in ipairs(tab) do
-       if value == val then
-           return true
-       end
-   end
-
-   return false
-end
-
-function In_pack()
-    return  G.STATE == G.STATES.TAROT_PACK or 
-            G.STATE == G.STATES.PLANET_PACK or 
-            G.STATE == G.STATES.SPECTRAL_PACK or 
-            G.STATE == G.STATES.STANDARD_PACK or 
-            G.STATE == G.STATES.BUFFOON_PACK
-end
 
 
 
@@ -38,12 +20,32 @@ function dump(o, i)
     else
        return tostring(o)
     end
- end
+end
 
 
+CCCHELPER = {}
+
+function CCCHELPER.in_pack()
+   return  G.STATE == G.STATES.TAROT_PACK or 
+           G.STATE == G.STATES.PLANET_PACK or 
+           G.STATE == G.STATES.SPECTRAL_PACK or 
+           G.STATE == G.STATES.STANDARD_PACK or 
+           G.STATE == G.STATES.BUFFOON_PACK
+end
+
+-- check if table has an item
+function CCCHELPER.has_value (tab, val)
+   for index, value in ipairs(tab) do
+       if value == val then
+           return true
+       end
+   end
+
+   return false
+end
 
 -- Joker in possession?
 
-function has_joker(card, debuffed)
+function CCCHELPER.has_joker(card, debuffed)
    return #SMODS.find_card(card, debuffed or false) >= 1
- end
+end

@@ -15,7 +15,7 @@ pattern = '''info_boxes = {{n=G.UIT.R, config = {align="cm", padding = 0.05, car
 position = "after"
 payload = '''
 local finalstr = ""
-if AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G.jokers.cards, card))  then
+if AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or CCCHELPER.has_value(G.jokers.cards, card))  then
 	local artstr = "Art by " .. AUT.mod_credit.art
 	local codestr = "Code by " .. AUT.mod_credit.code
 
@@ -37,7 +37,7 @@ target = "functions/UI_definitions.lua"
 pattern = '''{n=G.UIT.C, config={align = "cm", func = 'show_infotip',object = Moveable(),ref_table = next(info_boxes) and info_boxes or nil}, nodes={'''
 position = "before"
 payload = '''
-AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G.jokers.cards, card)) and ({n=G.UIT.C,  config={align = "cm", r = 0.1, padding = 0.3, emboss = 0.10}, nodes={ 
+AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or CCCHELPER.has_value(G.jokers.cards, card)) and ({n=G.UIT.C,  config={align = "cm", r = 0.1, padding = 0.3, emboss = 0.10}, nodes={ 
 	{n=G.UIT.R, config={align = "cm"}, nodes = {
 		{n=G.UIT.O, config={object = DynaText({string = finalstr, colours = {{0,0,0,0}}, shadow = false, offset_y = -0.05, silent = true, spacing = 1, scale = 0.33})}}
 	}}
@@ -53,7 +53,7 @@ target = "functions/UI_definitions.lua"
 pattern = '''badges\[1\] and \{n=G\.UIT\.R, config=\{align = "cm", padding = 0\.03\}, nodes=badges\} or nil,\n\s+\}\}\n\s+\}\}\n\s+\}\},''' #'''badges[1] and {n=G.UIT.R, config={align = "cm", padding = 0.03}, nodes=badges} or nil,\n'''
 position = "after"
 payload = '''
-AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or Has_value(G.jokers.cards, card))  and ({n=G.UIT.C,  config={align = "cm", r = 0.1, padding = 0.05, emboss = 0.05}, nodes={
+AUT.mod_credit and (G.STATE ~= G.STATES.SHOP or G.SETTINGS.paused or CCCHELPER.has_value(G.jokers.cards, card))  and ({n=G.UIT.C,  config={align = "cm", r = 0.1, padding = 0.05, emboss = 0.05}, nodes={
 	{n=G.UIT.R, config={align = "cm", colour = lighten(G.C.JOKER_GREY, 0.5), r = 0.1, padding = 0.05, emboss = 0.05}, nodes={
 	{n=G.UIT.R, config={align = "cm", colour = lighten(G.C.GREY, 0.15), r = 0.1, padding=0.2}, nodes={
 	{n=G.UIT.R, config={align = "cm"}, nodes={
