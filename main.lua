@@ -1,4 +1,4 @@
---- STEAMODDED HEADER
+--- old
 --- MOD_NAME: Celeste Card Collection
 --- MOD_ID: CelesteCardCollection
 --- PREFIX: ccc
