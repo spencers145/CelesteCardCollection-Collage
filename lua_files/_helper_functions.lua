@@ -39,3 +39,11 @@ function dump(o, i)
        return tostring(o)
     end
  end
+
+
+
+-- Joker in possession?
+
+function has_joker(card, debuffed)
+   return #SMODS.find_card(card, debuffed or false) >= 1
+ end
