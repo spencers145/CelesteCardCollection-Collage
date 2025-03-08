@@ -33,8 +33,13 @@ local goldenstrawberry ={
 -- literally the simplest code in the entire mod lmao
 
 goldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
-	if G.GAME.blind_on_deck and G.GAME.blind_on_deck == "Boss" or 
-	G.GAME.modifiers and G.GAME.modifiers.ccc_bside >= 1 then
+	if (G.GAME.blind_on_deck and G.GAME.blind_on_deck == "Boss") or 
+	(G.GAME.modifiers and G.GAME.modifiers.ccc_bside >= 1) then
+		card.ability.extra.after_boss = true
+	else
+		card.ability.extra.after_boss = false
+	end
+end
 		card.ability.extra.after_boss = true
 	else
 		card.ability.extra.after_boss = false
