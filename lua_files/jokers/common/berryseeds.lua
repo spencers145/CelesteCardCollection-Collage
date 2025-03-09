@@ -41,7 +41,7 @@ berryseeds.calculate = function(self, card, context)
 	if context.individual and context.other_card:is_suit(card.ability.extra.suit, true) then	-- i could put a check here but then it doesn't infinitely scale and that's no fun
 		if context.cardarea == G.play and not context.blueprint then
 			card.ability.extra.count = card.ability.extra.count + 1
-			if card.ability.extra.count >= card.ability.extra.req then
+			if (card.ability.extra.count >= card.ability.extra.req) and not card.ccc_juiced then
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
 					delay = 0.0,
@@ -51,6 +51,7 @@ berryseeds.calculate = function(self, card, context)
 						return true
 					end)
 				}))
+				card.ccc_juiced = true	-- doesn't get saved but neither does juice_card_until
 			end
 			if (card.ability.extra.count <= card.ability.extra.req) then
 				return {
@@ -66,7 +67,7 @@ berryseeds.calculate = function(self, card, context)
 		
 		local rarities = {{},{},{}}
 		
-		for i, berry in ipairs(strawberries) do	-- defined in 1up region
+		for i, berry in ipairs(G.ccc_strawberries) do	-- defined in 1up region
 			local v = G.P_CENTERS[berry]
 			add = true
 			

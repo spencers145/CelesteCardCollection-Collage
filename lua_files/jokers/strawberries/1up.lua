@@ -33,7 +33,7 @@ local oneup = {
 	end,
 }
 
-local strawberries = {
+G.ccc_strawberries = {
 	"j_ccc_strawberry",
 	"j_ccc_wingedstrawberry",
 	"j_ccc_goldenstrawberry",
@@ -46,8 +46,8 @@ local strawberries = {
 
 oneup.calculate = function(self, card, context)
 	if (context.selling_card and context.card.config.center.set == "Joker" and not (context.card == card)) then
-		for i = 1, #strawberries do
-			if context.card.config.center.key == strawberries[i] then
+		for i = 1, #G.ccc_strawberries do
+			if context.card.config.center.key == G.ccc_strawberries[i] then
 				card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_mod
 				card.ability.extra.money_mod = math.max(1, card.ability.extra.money_mod - card.ability.extra.money_minus)
 				card_eval_status_text(card, 'extra', nil, nil, nil,
