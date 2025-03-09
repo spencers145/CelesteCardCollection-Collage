@@ -41,7 +41,8 @@ end
 checkpoint.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
 		card.ability.extra.did_you_discard = false
-		if context.blind.boss or G.GAME.modifiers.ccc_bside then
+		if context.blind.boss 
+		or (G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1)) then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false

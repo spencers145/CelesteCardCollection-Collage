@@ -4,7 +4,7 @@
 local wingedgoldenstrawberry = {
 	name = "ccc_Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-	config = { extra = { condition_satisfied = 'true', winged_poker_hand = 'Pair', after_boss = false, money = 18 } },
+	config = { extra = { condition_satisfied = true, winged_poker_hand = 'Pair', after_boss = false, money = 18 } },
 	pos = { x = 4, y = 1 },
 	loc_txt = {
 		name = 'Winged Golden Strawberry',
@@ -71,7 +71,8 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 	end
 	if context.setting_blind then
 		card.ability.extra.condition_satisfied = true
-		if context.blind.boss or G.GAME.modifiers.ccc_bside then
+		if context.blind.boss 
+		or (G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1)) then
 			card.ability.extra.after_boss = true
 		else
 			card.ability.extra.after_boss = false
