@@ -7,7 +7,7 @@
 --- PRIORITY: 10
 --- DISPLAY_NAME: CCC
 --- BADGE_COLOUR: ffc0ff
---- DEPENDENCIES: [Steamodded>=1.0.0~BETA-0307b]
+--- DEPENDENCIES: [Steamodded>=1.0.0~BETA-0308a]
 --- VERSION: 0.35.0
 
 
