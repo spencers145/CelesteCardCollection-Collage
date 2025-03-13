@@ -16,21 +16,6 @@ end
 '''
 match_indent = true
 
-# this should be increasing pack size using grubble to prevent them from being squished but i can't get it to work, so instead it just increases size if grubble is detected
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = "G.GAME.pack_choices = self.config.center.config.choose or 1"
-position = "before"
-payload = '''
-if next(find_joker('ccc_Green Booster')) then
-	if G.GAME.pack_size < 5 then
-		G.GAME.pack_size = G.GAME.pack_size + 1
-	end
-end
-'''
-match_indent = true
-
 # variable to prevent softlock if player has more choices than number of cards
 [[patches]]
 [patches.pattern]
@@ -65,13 +50,13 @@ if this_works == true then
 '''
 match_indent = true
 
-# overwrite :(
+# not overwrite :)
 [[patches]]
 [patches.pattern]
 target = "card.lua"
 pattern = "for i = 1, _size do"
-position = "at"
+position = "before"
 payload = '''
-for i = 1, _size + (ccc_grubble_bonus_choices or 0) do
+_size = _size + (ccc_grubble_bonus_choices or 0)
 '''
 match_indent = true

@@ -50,31 +50,37 @@ function ccc_find_mirror()
 	return false
 end
 
-local endroundref = end_round
-function end_round()
-	local destroyed_cards = {}
-	for i, v in ipairs(G.playing_cards) do
-		if v.edition and v.edition.ccc_mirrored then
-			if not ccc_find_mirror() then
-				destroyed_cards[#destroyed_cards+1] = v
+local gfevref = G.FUNCS.evaluate_round
+G.FUNCS.evaluate_round = function()
+	gfevref()
+	G.E_MANAGER:add_event(Event({
+		trigger = 'after',
+		delay = 0.0,
+		func = function()
+		local destroyed_cards = {}
+		for i, v in ipairs(G.playing_cards) do
+			if v.edition and v.edition.ccc_mirrored then
+				if not ccc_find_mirror() then
+					destroyed_cards[#destroyed_cards+1] = v
+				end
 			end
 		end
-	end
-	for j=1, #G.jokers.cards do
-		eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = destroyed_cards})
-	end
-	for i=1, #destroyed_cards do
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				if destroyed_cards[i].ability.name == 'Glass Card' then 
-					destroyed_cards[i]:shatter()
-				else
-					destroyed_cards[i]:start_dissolve()
+		for j=1, #G.jokers.cards do
+			eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = destroyed_cards})
+		end
+		for i=1, #destroyed_cards do
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					if destroyed_cards[i].ability.name == 'Glass Card' then 
+						destroyed_cards[i]:shatter()
+					else
+						destroyed_cards[i]:start_dissolve()
+					end
+				return true
 				end
-			return true
-			end
-		}))
-	end
-	endroundref()
+			}))
+		end
+		return true
+	end}))
 end
 -- endregion Mirrored

@@ -23,6 +23,9 @@ local joker_order = assert(assert(SMODS.load_file("lua_files/jokers.lua"))(), "J
 -- load joker files in jokers folder
 local full_path = SMODS.current_mod.path:gsub("\\", "/")
 local mods_start = string.find(full_path, "Mods/")
+if not mods_start then 
+	mods_start = string.find(full_path, "mods/")
+end
 local end_of_mod_name = string.find(full_path, "/", mods_start + 5)
 local mod_path = string.sub(full_path, mods_start, end_of_mod_name)
 
