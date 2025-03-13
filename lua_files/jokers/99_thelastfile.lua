@@ -31,4 +31,6 @@ local lastjoker = {
     end
 }
 
+sendDebugMessage("[CCC] Last Joker file loaded")
+
 return lastjoker
