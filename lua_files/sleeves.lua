@@ -99,7 +99,7 @@ CardSleeves.Sleeve({
 	config = {all_jokers_modded = true},
 	unlocked = true,
 	loc_txt = {
-		name = "Heartside Deck",
+		name = "Heartside Sleeve",
 		text = {
 			"Only {C:attention}Modded{} Jokers may appear",
 			"{s:0.75}(and maybe {C:legendary,E:1,s:0.75}jimbo{}{s:0.75})"

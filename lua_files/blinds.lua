@@ -180,6 +180,93 @@ end
 
 -- endregion Berry
 
+-- region Gap
+
+local gap = SMODS.Blind{
+	name = "ccc_The Gap",
+	slug = "gap", 
+	key = 'gap',
+	atlas = 'bl_ccc_blinds',
+	pos = {x = 0, y = 5},
+	dollars = 5, 
+	mult = 2, 
+	vars = {}, 
+	debuff = {},
+	discovered = true,
+	boss = {min = 3, max = 10},
+	boss_colour = HEX('b3c9ff'),
+	set_blind = function(self, reset, silent)
+		G.GAME.ccc_gap_active = 2
+	end,
+	loc_txt = {
+        	['default'] = {
+			name = "The Gap",
+			text = {
+				"Every other played",
+				"card is debuffed"
+			}
+		}
+	}
+}
+gap.disable = function(self)
+	G.GAME.ccc_gap_active = nil
+	for k, v in pairs(G.playing_cards) do
+		v.ccc_gaptarget = nil
+	end
+end
+gap.defeat = function(self)
+	G.GAME.ccc_gap_active = nil
+	for k, v in pairs(G.playing_cards) do
+		v.ccc_gaptarget = nil
+	end
+end
+gap.press_play = function(self)
+        for i, v in ipairs(G.hand.highlighted) do
+		if v.ccc_gaptarget then
+			v:set_debuff(true)	-- scuffed
+			if v.debuff then v.debuffed_by_blind = true end
+			v.ccc_gaptarget = nil
+		end
+        end
+	G.GAME.ccc_gap_active = (#G.hand.highlighted % 2 == 1) and G.GAME.ccc_gap_active - 1 or G.GAME.ccc_gap_active
+	if G.GAME.ccc_gap_active == 0 then G.GAME.ccc_gap_active = 2 end	-- there's definitely a smarter way to do this logic but whatever
+end
+
+SMODS.DrawStep {
+    key = 'ccc_gaptarget',
+    order = 71,
+    func = function(self)
+        if self.ccc_gaptarget then
+            self.children.center:draw_shader('debuff', nil, self.ARGS.send_to_shader)
+            if self.children.front and (self.ability.delayed or (self.ability.effect ~= 'Stone Card' and not self.config.center.replace_base_card)) then
+                self.children.front:draw_shader('debuff', nil, self.ARGS.send_to_shader)
+            end
+        end
+    end,
+    conditions = { vortex = false, facing = 'front' },
+}
+local caalref = CardArea.align_cards
+function CardArea:align_cards()
+	caalref(self)
+	if G.GAME.ccc_gap_active and self.config.type == 'hand' and G.GAME.STOP_USE <= 0 then
+		table.sort(self.highlighted, function (a, b) return a.T.x + a.T.w/2 < b.T.x + b.T.w/2 end)
+		for i, v in ipairs(self.highlighted) do
+			if i % 2 == G.GAME.ccc_gap_active % 2 then
+				v.ccc_gaptarget = true
+			else
+				v.ccc_gaptarget = nil
+			end
+		end
+		for i, v in ipairs(self.cards) do
+			if not v.highlighted then
+				v.ccc_gaptarget = nil
+			end
+		end
+	end
+end
+
+-- endregion Gap
+
 -- region Fallacy
 
 local fallacy = SMODS.Blind{
@@ -232,6 +319,51 @@ fallacy.press_play = function(self)
 end
 
 -- endregion Fallacy
+
+-- region Shriek
+
+local shriek = SMODS.Blind{
+	name = "ccc_The Shriek",
+	slug = "shriek", 
+	key = 'shriek',
+	atlas = 'bl_ccc_blinds',
+	pos = {x = 0, y = 6},
+	dollars = 5, 
+	mult = 2, 
+	vars = {}, 
+	debuff = {},
+	discovered = true,
+	boss = {min = 3, max = 10},
+	boss_colour = HEX('591829'),
+	loc_txt = {
+        	['default'] = {
+			name = "The Shriek",
+			text = {
+				"Cards held in hand",
+				"debuffed after hand played"
+			}
+		}
+	}
+}
+
+shriek.recalc_debuff = function(self, card, from_blind)
+	if card.ability.ccc_shriek then	-- originally i was gonna keep undebuff tech, but it undebuffed too frequently
+		return true
+	end
+end
+
+shriek.disable = function(self)
+	for k, v in pairs(G.playing_cards) do
+		v.ability.ccc_shriek = nil
+	end
+end
+shriek.defeat = function(self)
+	for k, v in pairs(G.playing_cards) do
+		v.ability.ccc_shriek = nil
+	end
+end
+
+-- endregion Shriek
 
 -- region Golden Crown
 

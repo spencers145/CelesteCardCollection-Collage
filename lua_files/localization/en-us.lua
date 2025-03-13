@@ -43,7 +43,7 @@ G.localization.misc.labels.k_ccc_strawberry_badge = "Strawberry"
 -- here so they can change for squared effects
 if CardSleeves then
 	G.localization.descriptions.Sleeve.sleeve_ccc_bside = {
-		name = "B-Side Deck",
+		name = "B-Side Sleeve",
 		text = {
 			"Every blind is a {C:red}boss blind{}",
 			"Start from {C:attention}Ante 0{}",
