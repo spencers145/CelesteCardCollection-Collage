@@ -22,19 +22,13 @@ local joker_order = assert(assert(SMODS.load_file("lua_files/jokers.lua"))(), "J
 
 -- load joker files in jokers folder
 local full_path = SMODS.current_mod.path:gsub("\\", "/")
-local mods_start = string.find(full_path, "Mods/")
-if not mods_start then 
-	mods_start = string.find(full_path, "mods/")
-end
-local end_of_mod_name = string.find(full_path, "/", mods_start + 5)
-local mod_path = string.sub(full_path, mods_start, end_of_mod_name)
-
 local joker_data = {}
 
-function loadFiles(prefix, files) 
-	for k, file in ipairs(files) do
-		if love.filesystem.isDirectory(mod_path .. prefix .. file) then 
-			loadFiles(prefix .. file .. "/", love.filesystem.getDirectoryItems(mod_path .. prefix .. file))
+function loadFiles(prefix, files)
+	for k, file in ipairs(files) do            
+		local file_type = NFS.getInfo(full_path .. prefix .. file).type
+		if file_type == 'directory' then 
+			loadFiles(prefix .. file .. "/", NFS.getDirectoryItems(full_path .. prefix .. file))
 		else 
 			local joker = assert(assert(SMODS.load_file(prefix .. file))(), "Trying to load joker file " .. prefix .. file .. " failed! Returned false value, did you forget to return the config?")
 
@@ -43,7 +37,7 @@ function loadFiles(prefix, files)
 	end
 end
 
-local files = love.filesystem.getDirectoryItems(mod_path .. "lua_files/jokers")
+local files = NFS.getDirectoryItems(full_path .. "lua_files/jokers")
 loadFiles("lua_files/jokers/", files)
 
 local key_lookup = {}
@@ -68,7 +62,7 @@ for i, joker in ipairs(joker_data) do
 	SMODS.Joker(joker)
 end
 
-sendDebugMessage("[CCC] Joker files loaded")
+sendDebugMessage("[CCC] Joker files load attempted, if you do not see a 'Last Joker file loaded' before this it failed!")
 
 -- endregion JOKERS
 
