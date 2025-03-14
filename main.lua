@@ -75,9 +75,6 @@ assert(SMODS.load_file("lua_files/vouchers.lua"))()
 SMODS.Atlas({key = "bl_ccc_blinds", path = "bl_ccc_blinds.png", px = 34, py = 34, frames = 21, atlas_table = "ANIMATION_ATLAS"})
 assert(SMODS.load_file("lua_files/blinds.lua"))()
 
--- SMODS.Atlas({key = "i_ccc_instapix", path = "i_ccc_instapix.png", px = 71, py = 95, atlas = "asset_atlas"})
--- assert(SMODS.load_file("lua_files/instapix.lua"))()
-
 SMODS.Atlas({key = "c_ccc_consumables", path = "c_ccc_consumables.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(SMODS.load_file("lua_files/consumables.lua"))()
 
