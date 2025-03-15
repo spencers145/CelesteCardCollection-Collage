@@ -12,8 +12,8 @@ local theocrystal = {
 		text = {
 			"Forces 1 card to",
 			"{C:attention}always{} be selected",
-			"Adds {C:green}+#1#{} to all {C:attention}listed{}",
-			"{C:green,E:1}probabilities{} at round end",
+			"Adds {C:green}+#1#{} to {C:attention}listed{} {C:green,E:1}probabilities{}",
+			"on defeat of {C:attention}Boss Blind",
 			"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
 			"{C:inactive}(Currently {C:green}+#2#{C:inactive})"
 		}
@@ -74,8 +74,26 @@ local theocrystal = {
 
 -- also using lovely to hijack Blind:drawn_to_hand? this is so scuffed
 
+theocrystal.set_ability = function(self, card, initial, delay_sprites)
+	if (G.GAME.blind_on_deck and G.GAME.blind_on_deck == "Boss") or 
+	(G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1)) then
+		card.ability.extra.boss = true
+	else
+		card.ability.extra.boss = false
+	end
+end
+
 theocrystal.calculate = function(self, card, context)
-	if context.end_of_round and not context.blueprint and not context.individual and not context.repetition then
+	if context.setting_blind and not context.blueprint then
+		if context.blind.boss 
+		or (G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1)) then
+			card.ability.extra.boss = true
+		else
+			card.ability.extra.boss = false
+		end
+	end
+	
+	if context.end_of_round and card.ability.extra.boss and not context.blueprint and not context.individual and not context.repetition then
 		card.ability.extra.base_probs = card.ability.extra.base_probs + card.ability.extra.base_scale
 		local oops_factor = 1
 		for i = 1, #G.jokers.cards do
@@ -89,7 +107,7 @@ theocrystal.calculate = function(self, card, context)
 			G.GAME.probabilities[k] = v +
 			card.ability.extra.base_scale * oops_factor                    -- this is fragile but should work in normal circumstances
 		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "+" .. (oops_factor), colour = G.C.GREEN })
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "+" .. (card.ability.extra.base_scale*oops_factor), colour = G.C.GREEN })
 	end
 end
 

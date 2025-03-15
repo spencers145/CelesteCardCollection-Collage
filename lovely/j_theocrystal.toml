@@ -28,6 +28,7 @@ if self.ability.name == 'ccc_Theo Crystal' then
 match_indent = true
 
 # HUIGDNOOIYOJDHIVGHIKJOLIKJPSHUGDYVGHUKHBIVG WHY AM I INJECTING BLIND.LUA???? FOR A JOKER???? THIS RUNS EVERY TIME A HAND IS DRAWN?? I HATE THIS
+# ok this isn't that bad
 [[patches]]
 [patches.pattern]
 target = "blind.lua"
@@ -35,15 +36,27 @@ pattern = "function Blind:drawn_to_hand()"
 position = "after"
 payload = '''
 if next(SMODS.find_card('j_ccc_theocrystal')) then
-	local any_forced = nil
-	for k, v in ipairs(G.hand.cards) do
+	local count = #SMODS.find_card('j_ccc_theocrystal')
+	if self.name == 'Cerulean Bell' and not self.disabled then
+		count = count + 1
+	end
+	local temp_hand = {}
+	
+	G.hand:unhighlight_all()
+	
+	for k, v in ipairs(G.hand.cards) do 
 		if v.ability.forced_selection then
-			any_forced = true
+			count = math.max(0, count - 1)
+		else
+			temp_hand[#temp_hand+1] = v
 		end
 	end
-	if not any_forced and #G.hand.cards > 0 then 
-		G.hand:unhighlight_all()
-		local forced_card = pseudorandom_element(G.hand.cards, pseudoseed('cerulean_bell'))
+	table.sort(temp_hand, function (a, b) return not a.playing_card or not b.playing_card or a.playing_card < b.playing_card end)
+	pseudoshuffle(temp_hand, pseudoseed('theocrystal'))
+	
+	local count = math.min(5, math.min(#temp_hand, count))
+	for i = 1, #SMODS.find_card('j_ccc_theocrystal') do
+		local forced_card = table.remove(temp_hand, 1)
 		forced_card.ability.forced_selection = true
 		G.hand:add_to_highlighted(forced_card)
 	end

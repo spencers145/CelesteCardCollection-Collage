@@ -11,7 +11,7 @@ local moveblock = {
         text = {
 			"{C:mult}+#1#{} Mult per discard,",
 			"{C:attention}resets{} if played hand",
-			"contains a {C:attention}Pair",
+			"contains a {C:attention}Three of a Kind",
 			"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
         }
     },
@@ -41,7 +41,7 @@ moveblock.calculate = function(self, card, context)
 		end
 	end
 	if context.before and not context.blueprint then
-		if next(context.poker_hands['Pair']) then
+		if next(context.poker_hands['Three of a Kind']) then
 			card.ability.extra.mult = 0
 			return {
 				message = localize('k_reset')
