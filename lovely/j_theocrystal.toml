@@ -55,7 +55,7 @@ if next(SMODS.find_card('j_ccc_theocrystal')) then
 	pseudoshuffle(temp_hand, pseudoseed('theocrystal'))
 	
 	local count = math.min(5, math.min(#temp_hand, count))
-	for i = 1, #SMODS.find_card('j_ccc_theocrystal') do
+	for i = 1, count do
 		local forced_card = table.remove(temp_hand, 1)
 		forced_card.ability.forced_selection = true
 		G.hand:add_to_highlighted(forced_card)
