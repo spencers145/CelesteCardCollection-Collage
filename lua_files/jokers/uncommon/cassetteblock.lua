@@ -3,7 +3,7 @@
 local cassetteblock = {
 	name = "ccc_Cassette Block",
 	key = "cassetteblock",
-	config = { extra = { chips = 0, mult = 0, chips_scale = 8, mult_scale = 3, pink = false, pos_override = { x = 6, y = 2 } } },
+	config = { extra = { chips = 0, mult = 0, chips_scale = 12, mult_scale = 3, pink = false, pos_override = { x = 6, y = 2 } } },
 	pos = { x = 6, y = 2 },
 	loc_txt = {
 		name = ('Cassette Block'),
@@ -15,7 +15,7 @@ local cassetteblock = {
 		}
 	},
 	rarity = 2,
-	cost = 8,
+	cost = 6,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -26,7 +26,7 @@ local cassetteblock = {
 		code = "toneblock",
 		concept = "Gappie"
 	},
-	description = "Blue: Gains +8 Chips for each unused hand at the end of round. Pink: Gains +3 Mult for each unused discard at the end of round. Swaps at start of round",
+	description = "Blue: Gains +12 Chips for each unused hand at the end of round. Pink: Gains +3 Mult for each unused discard at the end of round. Swaps at start of round",
 	process_loc_text = function(self)
 		SMODS.process_loc_text(G.localization.descriptions[self.set], self.key, self.loc_txt)
 		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {

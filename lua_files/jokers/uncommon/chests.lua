@@ -9,9 +9,9 @@ local chests = {
 		name = 'Huge Mess: Chests',
 		text = {
 			"When played hand contains a",
-			"{C:attention}Three of a Kind{}, gains",
-			"{C:mult}+#2#{} Mult for each possible",
-			"{C:attention}Pair{} held in hand",
+			"{C:attention}Three of a Kind{}, gains {C:mult}+#2#{} Mult",
+			"for each possible {C:attention}Pair{} of a",
+			"{C:attention}different{} rank held in hand",
 			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
 		}
 	},
@@ -32,6 +32,7 @@ local chests = {
 
 chests.calculate = function(self, card, context)
 	if context.before and (context.poker_hands ~= nil and next(context.poker_hands['Three of a Kind'])) and not context.blueprint then
+		local used_rank = context.scoring_hand[1] and context.scoring_hand[1]:get_id() or nil
 		card.boxes_rank_array = {}
 		card.boxes_card_array_length = 0
 		card.boxes_pair_amounts = 0
@@ -49,13 +50,15 @@ chests.calculate = function(self, card, context)
 					card.boxes_card_pair_candidate = card.boxes_card_pair_candidate + 1
 				end
 			end
+			if used_rank and used_rank == v + 1 then 
+				card.boxes_card_pair_candidate = 0
+			end
 			card.boxes_pair_amounts = card.boxes_pair_amounts +
 			((card.boxes_card_pair_candidate - 1) * (card.boxes_card_pair_candidate)) / 2
 		end
 		
 		if card.boxes_pair_amounts > 0 then
-			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts) * card.ability.extra
-			.mult_scale
+			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts) * card.ability.extra.mult_scale
 			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.MULT })
 		end
 	end

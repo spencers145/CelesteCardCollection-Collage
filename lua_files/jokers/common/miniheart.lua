@@ -3,7 +3,7 @@
 local miniheart = {
 	name = "ccc_Mini Heart",
 	key = "miniheart",
-	config = { extra = { prob_success = 18 } },
+	config = { extra = { prob_success = 15 } },
 	pos = { x = 5, y = 0 },
 	loc_txt = {
 		name = 'Mini Heart',
@@ -25,7 +25,7 @@ local miniheart = {
 		code = "toneblock",
 		concept = "toneblock"
 	},
-    description = "1 in 18 chance to add Foil edition to scored cards before scoring"
+    description = "1 in 15 chance to add Foil edition to scored cards before scoring"
 }
 
 miniheart.calculate = function(self, card, context)

@@ -3,7 +3,7 @@
 local templeeyes = {
 	name = "ccc_Temple Eyes",
 	key = "templeeyes",
-	config = { extra = { max_money = 4 } },
+	config = { extra = { max_money = 9 } },
 	pos = { x = 1, y = 0 },
 	loc_txt = {
 		name = 'Temple Eyes',
@@ -15,7 +15,7 @@ local templeeyes = {
 		}
 	},
 	rarity = 2,
-	cost = 7,
+	cost = 6,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -26,7 +26,7 @@ local templeeyes = {
 		code = "toneblock",
 		concept = "toneblock"
 	},
-    description = "If Blind is selected with $4 or less, create a Hanged Man"
+    description = "If Blind is selected with $9 or less, create a Hanged Man"
 }
 
 templeeyes.calculate = function(self, card, context)

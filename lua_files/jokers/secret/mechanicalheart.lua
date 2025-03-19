@@ -3,15 +3,15 @@
 local mechanicalheart = {
 	name = "ccc_Mechanical Heart",
 	key = "mechanicalheart",
-	config = {},
+	config = {extra = {xmult = 2}},
 	pos = { x = 0, y = 8 },
 	loc_txt = {
 		name = 'Mechanical Heart',
 		text = {
 			"If played hand is a",
-			"single {C:attention}Ace{} of {C:clubs}Clubs{},",
-			"turn {C:attention}all{} {C:clubs}Clubs{} held in",
-			"hand into {C:attention}Steel Cards{}",
+			"single {C:attention}Ace{} of {C:clubs}Clubs{}, turn",
+			"{C:attention}all{} {C:clubs}Clubs{} held in hand into",
+			"{C:attention}Steel Cards{} with {X:mult,C:white}X2{} Mult",
 			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
 		}
 	},
@@ -36,6 +36,7 @@ mechanicalheart.calculate = function(self, card, context)
 		for i = 1, #G.hand.cards do
 			if G.hand.cards[i]:is_suit('Clubs', true) then
 				G.hand.cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
+				G.hand.cards[i].ability.h_x_mult = card.ability.extra.xmult
 				G.hand.cards[i]:juice_up()
 				steels = steels + 1
 			end

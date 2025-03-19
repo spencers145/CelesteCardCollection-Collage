@@ -3,7 +3,7 @@
 local wingedstrawberry = {
 	name = "ccc_Winged Strawberry",
 	key = "wingedstrawberry",
-	config = { extra = { winged_poker_hand = 'Pair', money = 2 } },
+	config = { extra = { winged_poker_hand = 'Pair', money = 3 } },
 	pos = { x = 2, y = 1 },
 	loc_txt = {
 		name = 'Winged Strawberry',
@@ -14,7 +14,7 @@ local wingedstrawberry = {
 		}
 	},
 	rarity = 1,
-	cost = 5,
+	cost = 7,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -25,7 +25,7 @@ local wingedstrawberry = {
 		code = "toneblock",
 		concept = "Gappie"
 	},
-    description = "Earn $2 if poker hand does not contain a randomly chosen hand. Changes each round",
+    description = "Earn $3 if poker hand does not contain a randomly chosen hand. Changes each round",
     set_badges = function(self, card, badges)
 		badges[#badges+1] = create_badge(localize('k_ccc_strawberry_badge', "labels"), G.C.RED, G.C.WHITE, 1)
 	end,

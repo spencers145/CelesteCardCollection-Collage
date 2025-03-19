@@ -3,7 +3,7 @@
 local quietheart = {
 	name = "ccc_Quiet Heart",
 	key = "quietheart",
-	config = { extra = { add = 15 } },
+	config = { extra = { add = 18 } },
 	pos = { x = 9, y = 4 },
 	loc_txt = {
 		name = 'Quiet Heart',

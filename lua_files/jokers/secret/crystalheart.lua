@@ -2,7 +2,7 @@
 local crystalheart = {
 	name = "ccc_Crystal Heart",
 	key = "crystalheart",
-    config = {},
+    config = {extra = {cards = 2}},
 	pos = {x = 7, y = 4},
 	loc_txt = {
         name = 'Crystal Heart',
@@ -10,7 +10,7 @@ local crystalheart = {
 			"If played hand is a",
 			"single {C:attention}Ace{} of {C:hearts}Hearts{},",
 			"apply a random {C:dark_edition}Edition{}",
-			"to a card held in hand",
+			"to {C:attention}#1#{} cards held in hand",
 			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
         }
     },
@@ -39,28 +39,34 @@ crystalheart.calculate = function(self, card, context)
 			end
 		end
 		if #edition_card_candidates > (G.GAME.ccc_edition_buffer and G.GAME.ccc_edition_buffer or 0) then
-			G.GAME.ccc_edition_buffer = (G.GAME.ccc_edition_buffer and G.GAME.ccc_edition_buffer or 0) + 1 
+			G.GAME.ccc_edition_buffer = (G.GAME.ccc_edition_buffer and G.GAME.ccc_edition_buffer or 0) + card.ability.extra.cards
 			return {
 				G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-					local edition_card_candidates_2 = {}
-					for i = 1, #G.hand.cards do
-						if not G.hand.cards[i].edition then
-							edition_card_candidates_2[#edition_card_candidates_2 + 1] = G.hand.cards[i]
+					for i = 1, card.ability.extra.cards do
+						local edition_card_candidates_2 = {}
+						for i = 1, #G.hand.cards do
+							if not G.hand.cards[i].edition then
+								edition_card_candidates_2[#edition_card_candidates_2 + 1] = G.hand.cards[i]
+							end
 						end
+						if #edition_card_candidates_2 > 0 then
+							local edition_card = pseudorandom_element(edition_card_candidates_2, pseudoseed('crystal_heart_card'))
+							local edition = poll_edition('crystal_heart_ed', nil, true, true)
+							edition_card:set_edition(edition, true)
+							card:juice_up()
+						end
+						G.GAME.ccc_edition_buffer = G.GAME.ccc_edition_buffer - 1
 					end
-					if #edition_card_candidates_2 > 0 then
-						local edition_card = pseudorandom_element(edition_card_candidates_2, pseudoseed('crystal_heart'))
-						local edition = poll_edition('crystal_heart', nil, true, true)
-						edition_card:set_edition(edition, true)
-						card:juice_up()
-					end
-					G.GAME.ccc_edition_buffer = G.GAME.ccc_edition_buffer - 1 
 				return true end })),
 				message = "Applied",
 				colour = G.C.DARK_EDITION
 			}
 		end
 	end
+end
+
+function crystalheart.loc_vars(self, info_queue, card)
+	return { vars = { card.ability.extra.cards } }
 end
 
 crystalheart.yes_pool_flag = 'secretheart'

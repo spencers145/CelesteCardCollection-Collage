@@ -55,7 +55,7 @@ if CardSleeves then
 		name = "B-Side Sleeve",
 		text = {
 			"Every blind is {C:red}partnered{}",
-			"{C:blue}+#1#{} hand, {C:red}+#2#{} discard, and {C:attention}+#3#{} Joker Slot",
+			"Start with {C:blue,T:v_grabber}Grabber{}, {C:red,T:v_wasteful}Wasteful{}, and {C:attention,T:v_blank}Blank{}",
 		}
 	}
 	G.localization.descriptions.Sleeve.sleeve_ccc_virus = {

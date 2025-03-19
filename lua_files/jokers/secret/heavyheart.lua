@@ -10,8 +10,8 @@ local heavyheart = {
 		text = {
 			"If played hand is a",
 			"single {C:attention}Ace{} of {C:diamonds}Diamonds{},",
-			"gives {C:money}$#1#{} {C:attention}multiplied{} by the",
-			"{C:attention}amount{} of cards held in hand",
+			"earn {C:money}$#1#{} for each",
+			"card held in hand",
 			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
 		}
 	},

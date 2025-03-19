@@ -284,11 +284,11 @@ SMODS.Consumable:take_ownership('grim', {
 								end
 								if _suit == 'Clubs' then
 									_cards[i]:set_ability(G.P_CENTERS.m_steel, nil, true)
-									_cards[i]:set_seal("Red", true, true)
+									_cards[i].ability.h_x_mult = _joker.ability.extra.xmult
 								end
 								if _suit == 'Spades' then
 									_cards[i].ability.perma_bonus = _cards[i].ability.perma_bonus or 0
-									_cards[i].ability.perma_bonus = _cards[i].ability.perma_bonus + 75
+									_cards[i].ability.perma_bonus = _cards[i].ability.perma_bonus + (_joker.ability.extra.add*5)
 								end
 								if _suit == 'Diamonds' then
 									_cards[i]:set_ability(G.P_CENTERS.m_gold, nil, true)

@@ -47,8 +47,7 @@ end
 
 moonberry.calculate = function(self, card, context)
 	if context.setting_blind and not context.blueprint then
-		card.ability.extra.old_winged_poker_hand = card.ability.extra
-		.winged_poker_hand                                                        -- delay old_winged_poker_hand from changing due to brainstorm
+		card.ability.extra.old_winged_poker_hand = card.ability.extra.winged_poker_hand		-- delay old_winged_poker_hand from changing due to brainstorm
 	end
 	if context.end_of_round and not context.repetition and not context.individual then
 		local card_type = 'Planet'

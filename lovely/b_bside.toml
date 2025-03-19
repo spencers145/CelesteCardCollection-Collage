@@ -711,10 +711,10 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "game.lua"
-pattern = '''{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = G.GAME.blind:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},'''
+pattern = '''{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME.blind:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},'''
 position = "at"
 payload = '''
-{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = G.GAME[G.boss_throw_hand]:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},
+{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME[G.boss_throw_hand]:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},
 '''
 match_indent = true
 
@@ -858,23 +858,17 @@ match_indent = true
 [patches.pattern]
 target = "functions/state_events.lua"
 pattern = '''
-        hand_chips = mod_chips(0)
-        G.E_MANAGER:add_event(Event({
-            trigger = 'immediate',
-            func = (function()
-                SMODS.juice_up_blind()
+if SMODS.hand_debuff_source then SMODS.hand_debuff_source:juice_up(0.3,0) else SMODS.juice_up_blind() end
 '''
 position = "at"
 payload = '''
-hand_chips = mod_chips(0)
-G.E_MANAGER:add_event(Event({
-	trigger = 'immediate',
-	func = (function()
-	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text, true) then
-		SMODS.juice_up_blind('ccc_bonus_blind')
-	end
-	if G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text, true) then
-		SMODS.juice_up_blind()
+	if SMODS.hand_debuff_source then SMODS.hand_debuff_source:juice_up(0.3,0) else
+		if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and G.GAME.ccc_bonus_blind:debuff_hand(G.play.cards, poker_hands, text, true) then
+			SMODS.juice_up_blind('ccc_bonus_blind')
+		end
+		if G.GAME.blind:debuff_hand(G.play.cards, poker_hands, text, true) then
+			SMODS.juice_up_blind()
+		end
 	end
 '''
 match_indent = true
@@ -978,12 +972,12 @@ match_indent = true
 [patches.pattern]
 target = "blind.lua"
 pattern = '''
-function Blind:stay_flipped(area, card)
+function Blind:stay_flipped(area, card, from_area)
 '''
 position = "after"
 payload = '''
 if self ~= G.GAME.ccc_bonus_blind and G.GAME.ccc_bonus_blind.config.blind then
-	local ret = G.GAME.ccc_bonus_blind:stay_flipped(area, card)
+	local ret = G.GAME.ccc_bonus_blind:stay_flipped(area, card, from_area)
 	if ret then return ret end
 end
 '''
@@ -1009,14 +1003,14 @@ match_indent = true
 [patches.pattern]
 target = "functions/state_events.lua"
 pattern = '''
-mult, hand_chips, modded = G.GAME.blind:modify_hand(G.play.cards, poker_hands, text, mult, hand_chips)
+mult, hand_chips, modded = G.GAME.blind:modify_hand(G.play.cards, poker_hands, text, mult, hand_chips, scoring_hand)
 '''
 position = "before"
 payload = '''
 if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	local ccc_modded = false
 
-	mult, hand_chips, ccc_modded = G.GAME.ccc_bonus_blind:modify_hand(G.play.cards, poker_hands, text, mult, hand_chips)
+	mult, hand_chips, ccc_modded = G.GAME.ccc_bonus_blind:modify_hand(G.play.cards, poker_hands, text, mult, hand_chips, scoring_hand)
 	mult, hand_chips = mod_mult(mult), mod_chips(hand_chips)
 	if ccc_modded then update_hand_text({sound = 'chips2', modded = 'ccc_bonus_blind'}, {chips = hand_chips, mult = mult}) end
 end

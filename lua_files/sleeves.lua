@@ -68,7 +68,7 @@ CardSleeves.Sleeve({
 	name = "ccc_B-Side Sleeve",
 	atlas = "s_ccc_sleeves",
 	pos = { x = 2, y = 0 },
-	config = {everything_is_boss = true, hands = 1, discards = 1, joker_slots = 1},
+	config = {everything_is_boss = true, ccc_vouchers = {'v_grabber', 'v_wasteful', 'v_blank'}},
 	unlocked = true,
 	loc_txt = {
 	},
@@ -84,9 +84,16 @@ CardSleeves.Sleeve({
 	apply = function(self)
 		G.GAME.modifiers.ccc_bside = (G.GAME.modifiers.ccc_bside or 0) + 1
 		if self.get_current_deck_key() == "b_ccc_bside" then
-			G.GAME.starting_params.hands = G.GAME.starting_params.hands + self.config.hands
-			G.GAME.starting_params.discards = G.GAME.starting_params.discards + self.config.discards
-			G.GAME.starting_params.joker_slots = G.GAME.starting_params.joker_slots + self.config.joker_slots
+			for k, v in pairs(self.config.ccc_vouchers) do
+				G.GAME.used_vouchers[v] = true
+				G.GAME.starting_voucher_count = (G.GAME.starting_voucher_count or 0) + 1
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						Card.apply_to_run(nil, G.P_CENTERS[v])
+						return true
+					end
+				}))
+			end
 		end
 	end,
 })

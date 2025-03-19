@@ -10,8 +10,8 @@ local partofyou = {
 		text = {
 			"If {C:attention}first hand{} of round",
 			"contains exactly {C:attention}2{} cards,",
-			"convert their {C:attention}ranks{}",
-			"into their {C:attention}complements{}"
+			"convert their {C:attention}ranks{} into",
+			"their {C:dark_edition}Mirrored{} {C:attention}complements{}",
 		}
 	},
 	rarity = 3,
@@ -38,14 +38,6 @@ partofyou.calculate = function(self, card, context)
 			G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.15, func = function()
 				context.full_hand[2]:flip(); play_sound('card1', 1, 0.6); context.full_hand[2]:juice_up(0.3, 0.3); return true
 			end }))
-			G.E_MANAGER:add_event(Event({
-				trigger = 'before',
-				func = function()
-					card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-						{ message = "Mirrored!", colour = G.C.FILTER })
-					return true
-				end
-			}))
 			for i = 1, 2 do
 				local suit = string.sub(context.full_hand[i].config.card.suit, 1, 1) .. "_"
 				local _table = { "", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2", "A", "K" }
@@ -63,6 +55,7 @@ partofyou.calculate = function(self, card, context)
 					func = function()
 						G.P_CARDS[suit .. rank].delay_change = nil -- this is blasphemous but it shouldn't break anything????????
 						context.full_hand[i]:set_base(G.P_CARDS[suit .. rank])
+						context.full_hand[i]:set_edition({ ccc_mirrored = true }, true, true)
 						return true
 					end
 				}))
@@ -81,6 +74,7 @@ end
 
 function partofyou.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'partofyou_complements', set = 'Other' }
+	info_queue[#info_queue + 1] = { key = 'e_mirrored', set = 'Other' }
 end
 
 -- scuffed
