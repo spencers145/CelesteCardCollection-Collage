@@ -33,6 +33,18 @@ local chests = {
 chests.calculate = function(self, card, context)
 	if context.before and (context.poker_hands ~= nil and next(context.poker_hands['Three of a Kind'])) and not context.blueprint then
 		local used_rank = context.scoring_hand[1] and context.scoring_hand[1]:get_id() or nil
+		local rank_counters = {}
+		for i, v in ipairs(context.scoring_hand) do
+			local num = tostring(v:get_id())
+			rank_counters[num] = rank_counters[num] and rank_counters[num] + 1 or 1
+		end
+		local most = 0
+		for k, v in pairs(rank_counters) do
+			if v > most then
+				used_rank = tonumber(k)
+				most = v
+			end
+		end
 		card.boxes_rank_array = {}
 		card.boxes_card_array_length = 0
 		card.boxes_pair_amounts = 0
