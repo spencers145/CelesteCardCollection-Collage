@@ -4,16 +4,15 @@
 local moonberry = {
 	name = "ccc_Moon Berry",
 	key = "moonberry",
-	config = { extra = { condition_satisfied = false, winged_poker_hand = 'Pair', old_winged_poker_hand = 'Pair' } }, -- old_winged_poker_hand is internal, winged_poker_hand is external
+	config = { extra = { condition_satisfied = false, winged_poker_hand = 'Pair', old_winged_poker_hand = 'Pair', levels = 2 } }, -- old_winged_poker_hand is internal, winged_poker_hand is external
 	pos = { x = 5, y = 1 },
 	loc_txt = {
 		name = 'Moon Berry',
 		text = {
 			"If round ends without playing",
-			"hand that contains a {C:attention}#1#{},",
-			"create its {C:planet}Planet{} card with",
-			"added {C:dark_edition}Negative{} edition,",
-			"{s:0.8}poker hand changes at end of round"
+			"your most played {C:attention}poker hand{},",
+			"upgrade its level {C:attention}#2#{} times",
+			"{C:inactive,s:0.8}(Currently: {C:attention,s:0.8}#1#{C:inactive,s:0.8})"
 		}
 	},
 	rarity = 2,
@@ -35,13 +34,14 @@ local moonberry = {
 }
 
 moonberry.set_ability = function(self, card, initial, delay_sprites)
-	local _poker_hands = {}
+	local _handname, _played, _order = 'High Card', -1, 100
 	for k, v in pairs(G.GAME.hands) do
-		if v.visible and k ~= 'High Card' then
-			_poker_hands[#_poker_hands + 1] = k
+		if v.played > _played or (v.played == _played and _order > v.order) then 
+			_played = v.played
+			_handname = k
 		end
 	end
-	card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE'))
+	card.ability.extra.winged_poker_hand = _handname
 	card.ability.extra.old_winged_poker_hand = card.ability.extra.winged_poker_hand
 end
 
@@ -51,11 +51,13 @@ moonberry.calculate = function(self, card, context)
 	end
 	if context.end_of_round and not context.repetition and not context.individual then
 		local card_type = 'Planet'
+		local _card = context.blueprint_card or card
 		if card.ability.extra.condition_satisfied == true then
 			G.E_MANAGER:add_event(Event({
 				trigger = 'before',
 				delay = 0.0,
 				func = (function()
+					--[[
 					local _planet = 0
 					for k, v in pairs(G.P_CENTER_POOLS.Planet) do
 						if v.config.hand_type == card.ability.extra.old_winged_poker_hand then -- use old_winged_poker_hand
@@ -66,6 +68,11 @@ moonberry.calculate = function(self, card, context)
 					card:set_edition({ negative = true }, true)
 					card:add_to_deck()
 					G.consumeables:emplace(card)
+					]]
+					local _hand = card.ability.extra.old_winged_poker_hand
+					update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(_hand, 'poker_hands'),chips = G.GAME.hands[_hand].chips, mult = G.GAME.hands[_hand].mult, level=G.GAME.hands[_hand].level})
+					level_up_hand(_card, _hand, nil, card.ability.extra.levels)
+					update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
 					return true
 				end)
 			}))
@@ -75,13 +82,14 @@ moonberry.calculate = function(self, card, context)
 				trigger = 'after',
 				delay = 0.0,
 				func = (function()
-					local _poker_hands = {}
+					local _handname, _played, _order = 'High Card', -1, 100
 					for k, v in pairs(G.GAME.hands) do
-						if v.visible and k ~= card.ability.extra.winged_poker_hand and k ~= 'High Card' then
-							_poker_hands[#_poker_hands + 1] = k
+						if v.played > _played or (v.played == _played and _order > v.order) then 
+							_played = v.played
+							_handname = k
 						end
 					end
-					card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('SPAAAAAAAACE')) -- change winged_poker_hand
+					card.ability.extra.winged_poker_hand = _handname
 					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset", colour = G.C.FILTER })
 					return true
 				end)
@@ -89,14 +97,16 @@ moonberry.calculate = function(self, card, context)
 		end
 		if card.ability.extra.condition_satisfied == true then
 			card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-				{ message = localize('k_plus_planet'), colour = G.C.SECONDARY_SET.Planet })
+				{ message = localize('k_level_up_ex'), colour = G.C.FILTER })
 			return nil, true
 		end
 	end
 	if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
-			if next(context.poker_hands[card.ability.extra.winged_poker_hand]) then
+			if context.scoring_name == card.ability.extra.winged_poker_hand and not context.blueprint then
 				card.ability.extra.condition_satisfied = false
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
+				{ message = localize(card.ability.extra.winged_poker_hand, 'poker_hands'), colour = G.C.RED })
 			end
 		end
 	end
@@ -107,7 +117,7 @@ end
 
 function moonberry.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'e_negative_consumable', set = 'Edition', config = { extra = 1 } }
-	return { vars = { card.ability.extra.winged_poker_hand } }
+	return { vars = { card.ability.extra.winged_poker_hand, card.ability.extra.levels } }
 end
 
 return moonberry
