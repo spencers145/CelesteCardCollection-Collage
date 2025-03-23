@@ -4,7 +4,7 @@ local quietheart = {
 	name = "ccc_Quiet Heart",
 	key = "quietheart",
 	config = { extra = { add = 18 } },
-	pos = { x = 9, y = 4 },
+	pos = { x = 1, y = 8 },
 	loc_txt = {
 		name = 'Quiet Heart',
 		text = {

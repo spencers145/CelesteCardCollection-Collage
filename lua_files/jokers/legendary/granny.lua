@@ -3,8 +3,8 @@ local granny = {
 	name = "ccc_Granny",
 	key = "granny",
     config = {extra = {draw = 1}},
-	pos = {x = 9, y = 4}, --pos = {x = 0, y = 5},
-	--soul_pos = {x = 0, y = 6},
+	pos = {x = 2, y = 5},
+	soul_pos = {x = 2, y = 6},
 	loc_txt = {
         name = 'Granny',
         text = {
@@ -21,7 +21,7 @@ local granny = {
 	perishable_compat = false,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "MiiK",
 		code = "toneblock",
 		concept = "Fytos"
 	}

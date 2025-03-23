@@ -4,7 +4,7 @@ local refundpolicy = {
 	name = "ccc_Refund Policy",
 	key = "refundpolicy",
 	config = { },
-	pos = { x = 9, y = 4 },
+	pos = { x = 4, y = 8 },
 	loc_txt = {
 		name = 'Refund Policy',
 		text = {
@@ -21,7 +21,7 @@ local refundpolicy = {
 	perishable_compat = true,
 	atlas = "j_ccc_jokers",
 	credit = {
-		art = "N/A",
+		art = "MiiK",
 		code = "toneblock",
 		concept = "Bred"
 	},
