@@ -4,7 +4,7 @@ local heavyheart = {
 	name = "ccc_Heavy Heart",
 	key = "heavyheart",
 	config = { extra = { money = 2 } },
-	pos = { x = 9, y = 4 },
+	pos = { x = 2, y = 8 },
 	loc_txt = {
 		name = 'Heavy Heart',
 		text = {
