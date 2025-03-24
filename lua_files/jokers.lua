@@ -205,6 +205,7 @@ j_ccc_iceball
 j_ccc_crumblejoker
 j_ccc_pico8joker
 j_ccc_refundpolicy
+j_ccc_smotsgaming
 j_ccc_madeline
 j_ccc_badeline
 j_ccc_granny
