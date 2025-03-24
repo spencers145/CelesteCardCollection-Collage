@@ -78,12 +78,6 @@ local movexyref = Moveable.move_xy
 function Moveable:move_xy(dt)
 	if self.is_a_smotscoin then
 		local rate = math.exp(-1.7 * dt)
-		print(self.T.x)
-		print(self.T.y)
-		print('---------')
-		print(self.T.y/G.ROOM.T.h)
-		print(self.T.x/G.ROOM.T.w)
-		print('$=========$')
 		local function reverse(s, t, vt)
 			s = -s
 			t = vt - (t - vt)
