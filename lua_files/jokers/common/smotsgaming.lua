@@ -38,9 +38,9 @@ local smotsgaming = {
 					local coin = Card(G.play.T.x + G.play.T.w/2, G.play.T.y, G.CARD_W, G.CARD_H, nil, G.P_CENTERS.e_base, {})
 					coin.children.center.atlas = G.ASSET_ATLAS['ccc_smotscoin']
 					coin.children.center:set_sprite_pos({x = 0, y = 0})
-					coin.T.h = coin.T.h*(31/95)
+					coin.T.h = coin.T.h*(62/95)
 					coin.T.w = coin.T.h
-					coin.children.center.scale.y = coin.children.center.scale.y*(31/95)
+					coin.children.center.scale.y = coin.children.center.scale.y*(62/95)
 					coin.children.center.scale.x = coin.children.center.scale.y
 					coin.is_a_smotscoin = true
 					card.smotscoin = coin
@@ -84,24 +84,40 @@ function Moveable:move_xy(dt)
 			return s, t
 		end
 		-- what in the actual fuck am i doing here
+		local bounce = 0
 		if (self.VT.y + (self.velocity.y*rate))/G.ROOM.T.h < -0.10 then
 			if self.velocity.y < 0 then
 				self.velocity.y, self.T.y = reverse(self.velocity.y, self.T.y, self.VT.y)
+				bounce = bounce + 1
 			end
 		end
 		if (self.VT.y + (self.velocity.y*rate))/G.ROOM.T.h > 1.00 then
 			if self.velocity.y > 0 then
 				self.velocity.y, self.T.y = reverse(self.velocity.y, self.T.y, self.VT.y)
+				bounce = bounce + 1
 			end
 		end
 		if (self.VT.x + (self.velocity.x*rate))/G.ROOM.T.w < -0.09 then
 			if self.velocity.x < 0 then
 				self.velocity.x, self.T.x = reverse(self.velocity.x, self.T.x, self.VT.x)
+				bounce = bounce + 1
 			end
 		end
 		if (self.VT.x + (self.velocity.x*rate))/G.ROOM.T.w > 1.05 then
 			if self.velocity.x > 0 then
 				self.velocity.x, self.T.x = reverse(self.velocity.x, self.T.x, self.VT.x)
+				bounce = bounce + 1
+			end
+		end
+		if bounce >= 1 then
+			bounce = math.min(2, bounce)
+			sound = self.edition and G.P_CENTERS['e_'..self.edition.type].sound or 'multhit'..bounce
+			
+			local pitch = math.abs(self.velocity.x/(dt*60)) + math.abs(self.velocity.y/(dt*60))
+			play_sound('multhit'..bounce, pitch, 0.2+(bounce == 2 and 0.2 or 0.0) )
+			if self.edition and math.random() < 0.01 then
+				local _s = G.P_CENTERS['e_'..self.edition.type].sound
+				play_sound(_s.sound, (_s.per or 1)*pitch, (_s.vol or 1)*0.40)
 			end
 		end
 		self.T.x = self.T.x + (self.velocity.x*rate)
@@ -111,7 +127,7 @@ function Moveable:move_xy(dt)
 	movexyref(self, dt)
 end
 
-SMODS.Atlas({key = "smotscoin", path = "smotscoin.png", px = 31, py = 31, atlas = "asset_atlas"})
+SMODS.Atlas({key = "smotscoin", path = "smotscoin.png", px = 71, py = 95, atlas = "asset_atlas"})
 
 smotsgaming.calculate = function(self, card, context)
 end
