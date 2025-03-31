@@ -31,7 +31,11 @@ local kevin = {
 local evalcard_ref = eval_card
 function eval_card(card, context)
 	local ccard = card
-	if context.cardarea == G.play and card.playing_card and card:is_face() and #SMODS.find_card('j_ccc_kevin') >= 1 then
+	
+	if context.cardarea == G.play 
+	and card.playing_card and card:is_face() 
+	and #SMODS.find_card('j_ccc_kevin') >= 1 
+	and #G.play.cards >= 1 then
 		ccard = G.play.cards[#G.play.cards]
 	end
 	return evalcard_ref(ccard, context)
