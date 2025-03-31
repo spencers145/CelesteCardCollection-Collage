@@ -81,7 +81,7 @@ function Card.calculate_joker(self, context)
 
 		if type(self.ability.extra) == "table" and (orig_values.extra and type(orig_values.extra) == "table") then
 			for index, value in pairs(orig_values.extra) do
-				if type(value) == "number" and self.ability.extra[index] < orig_values.extra[index]  then
+				if type(value) == "number" and (self.ability.extra[index] and self.ability.extra[index] < orig_values.extra[index]) then
 					self.ability.extra[index] = orig_values.extra[index] 
 					card_eval_status_text(prevent, 'extra', nil, nil, nil, {
 						message = "Prevent!",
