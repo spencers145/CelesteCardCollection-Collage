@@ -1,0 +1,405 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# multiplayer overrides a bunch of stuff related to blinds
+# pretty expected, but annoying
+# most of these patches are copypasted from b-side deck
+
+# =================================== golden resolve
+
+# do not
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''
+end
+
+G.FUNCS.draw_from_hand_to_discard()
+'''
+position = "after"
+payload = '''
+if not (G.GAME.ccc_golden_progress and G.GAME.ccc_golden_progress > 1) then
+'''
+match_indent = true
+
+# end wrap
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''
+end
+
+local start_run_ref = Game.start_run
+'''
+position = "before"
+payload = '''
+else
+	G.FUNCS.draw_from_discard_to_deck()
+	delay(0.8)
+	local function _reset()
+		G.GAME.chips = G.GAME.blind.config.blind.key == "bl_mp_nemesis" and G.GAME.chips or 0
+		G.GAME.current_round.discards_left = math.max(0, G.GAME.round_resets.discards + G.GAME.round_bonus.discards)
+		G.GAME.current_round.hands_left = (math.max(1, G.GAME.round_resets.hands + G.GAME.round_bonus.next_hands))
+		G.GAME.current_round.hands_played = 0
+		G.GAME.current_round.discards_used = 0
+		G.GAME.ccc_golden_progress = G.GAME.ccc_golden_progress - 1
+		G.GAME.blind:set_text()
+		if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
+			G.GAME.ccc_bonus_blind:set_text()
+		end
+	end
+	G.E_MANAGER:add_event(Event({
+		trigger = 'immediate',
+		func = function()
+			for i, v in ipairs({'blind', 'ccc_bonus_blind'}) do
+				if G.GAME[v].name == 'ccc_Golden Crown' then
+					SMODS.juice_up_blind(v)
+				end
+			end
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.06*G.SETTINGS.GAMESPEED, blockable = false, blocking = false, func = function()
+				play_sound('tarot2', 0.76, 0.4);_reset();return true end}))
+			play_sound('tarot2', 1, 0.4)
+			return true
+		end
+	}))
+	delay(0.8)
+
+	-- literally just copypasted an entire set_blind chunk (i can't run the rest of it)
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
+		for i, v in ipairs({'blind', 'ccc_bonus_blind'}) do
+			local self = G.GAME[v]
+			local obj = self.config.blind
+			self.disabled = false
+			if self.name == 'The Eye' and not reset then
+				obj = G.P_BLINDS['bl_small']	-- nuke obj to avoid smods ownership
+				self.hands = {}
+				for _, v in ipairs(G.handlist) do
+					self.hands[v] = false
+				end
+			end
+			if not self.name == 'ccc_Golden Crown' and obj.set_blind and type(obj.set_blind) == 'function' then
+				obj:set_blind()
+			elseif self.name == 'The Mouth' and not reset then
+				self.only_hand = false
+			elseif self.name == 'The Fish' and not reset then 
+				self.prepped = nil
+			elseif self.name == 'The Water' and not reset then 
+				self.discards_sub = G.GAME.current_round.discards_left
+				ease_discard(-self.discards_sub)
+			elseif self.name == 'The Needle' and not reset then 
+				self.hands_sub = G.GAME.round_resets.hands - 1
+				ease_hands_played(-self.hands_sub)
+			elseif self.name == 'The Manacle' and not reset then
+				G.hand:change_size(-1)
+			elseif self.name == 'Amber Acorn' and not reset and #G.jokers.cards > 0 then
+				G.jokers:unhighlight_all()
+				for k, v in ipairs(G.jokers.cards) do
+					if v.facing == 'front' then
+						v:flip()
+					end
+				end
+				if #G.jokers.cards > 1 then 
+					G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.2, func = function() 
+						G.E_MANAGER:add_event(Event({ func = function() G.jokers:shuffle('aajk'); play_sound('cardSlide1', 0.85);return true end })) 
+						delay(0.15)
+						G.E_MANAGER:add_event(Event({ func = function() G.jokers:shuffle('aajk'); play_sound('cardSlide1', 1.15);return true end })) 
+						delay(0.15)
+						G.E_MANAGER:add_event(Event({ func = function() G.jokers:shuffle('aajk'); play_sound('cardSlide1', 1);return true end })) 
+						delay(0.5)
+					return true end })) 
+				end
+			end
+		end
+		for _, v in ipairs(G.playing_cards) do
+			G.GAME.blind:debuff_card(v)
+		end
+		for _, v in ipairs(G.jokers.cards) do
+			if not reset then G.GAME.blind:debuff_card(v, true) end
+		end
+	end
+
+	G.GAME.blind:alert_debuff(true)
+	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
+		G.GAME.ccc_bonus_blind:alert_debuff(true)
+	end
+	SMODS.calculate_context({setting_blind = true, blind = G.GAME.round_resets.blind})
+	
+	-- TARGET: setting_blind effects
+	delay(0.4)
+	G.E_MANAGER:add_event(Event({
+		trigger = 'immediate',
+		func = function()
+			G.STATE = G.STATES.DRAW_TO_HAND
+			G.deck:shuffle('nr'..G.GAME.round_resets.ante)
+			G.deck:hard_set_T()
+			G.STATE_COMPLETE = false
+			return true
+		end
+	}))
+end
+'''
+match_indent = true
+
+
+# =================================== b-side start
+
+
+# basic boss rush stuff
+
+# big blind doesn't increase ante
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = "if G.GAME.blind:get_type() == 'Boss' then"
+position = "at"
+payload = "if G.GAME.blind_on_deck == 'Boss' then"
+match_indent = true
+
+# mark small blind as defeated
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = "if G.GAME.round_resets.blind == G.P_BLINDS.bl_small then"
+position = "at"
+payload = "if G.GAME.blind_on_deck == 'Small' then"
+match_indent = true
+
+# mark big blind as defeated
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = "elseif G.GAME.round_resets.blind == G.P_BLINDS.bl_big then"
+position = "at"
+payload = "elseif G.GAME.blind_on_deck == 'Big' then"
+match_indent = true
+
+
+
+# skip button
+
+# deal with button
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''_blind_choice.alignment.offset.y = -0.9
+if _tag and _tag_container then'''
+position = "after"
+payload = '''
+if not ( (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
+'''
+match_indent = true
+
+# back on my bullshit
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = "_sprite.config.force_focus = nil"
+position = "after"
+payload = '''
+else
+	_tag.children[2].config.button = 'skip_blind'	-- should be nil but tag colour isn't updating
+	_tag.config.outline_colour = G.C.UI.BACKGROUND_INACTIVE
+	_tag.children[2].config.hover = false
+	_tag.children[2].config.colour = G.C.UI.BACKGROUND_INACTIVE
+	_tag.children[2].children[1].config.colour = G.C.UI.TEXT_INACTIVE
+	local _sprite = _tag.config.ref_table
+	_sprite.config.force_focus = true
+end
+'''
+match_indent = true
+
+
+
+# =================================== blind select
+
+# this is the annoying part
+# repatching stuff
+
+# another one
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''local blind_choice = {'''
+position = "before"
+payload = '''
+local ccc_bonus = G.GAME.round_resets.blind_choices.ccc_bonus[type] or nil
+local ccc_bonus_blind_choice = {}
+
+if ccc_bonus then
+	ccc_bonus_blind_choice.config = G.P_BLINDS[ccc_bonus]
+	ccc_bonus_blind_choice.animation = AnimatedSprite(0,0, 1.4, 1.4, G.ANIMATION_ATLAS[ccc_bonus_blind_choice.config.atlas] or G.ANIMATION_ATLAS['blind_chips'],  ccc_bonus_blind_choice.config.pos)
+	ccc_bonus_blind_choice.animation:define_draw_steps({
+		{shader = 'dissolve', shadow_height = 0.05},
+		{shader = 'dissolve'}
+	})
+end
+'''
+match_indent = true
+
+# another one
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''{ n = G.UIT.O, config = { object = blind_choice.animation } },'''
+position = "before"
+payload = '''
+ccc_bonus and {n=G.UIT.O, config={object = ccc_bonus_blind_choice.animation}} or nil,
+'''
+match_indent = true
+
+# stylua is incredible
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''
+{
+	n = G.UIT.O,
+	config = {
+		object = DynaText({
+			string = loc_name,
+			colours = { disabled and G.C.UI.TEXT_INACTIVE or G.C.WHITE },
+			shadow = not disabled,
+			float = not disabled,
+			y_offset = -4,
+			scale = 0.45,
+			maxw = 2.8,
+		}),
+	},
+},'''
+position = "at"
+payload = '''
+ccc_bonus and {n=G.UIT.R, config={align = "cm"}, nodes={
+	{n=G.UIT.O, config={object = DynaText({string = ccc_bonus_loc_name..' &', colours = {disabled and G.C.UI.TEXT_INACTIVE or G.C.WHITE}, shadow = not disabled, float = not disabled, y_offset = -4, scale = 0.45, maxw =2.8})}}
+}} or nil,
+ccc_bonus and {n=G.UIT.R, config={align = "cm"}, nodes={
+	{n=G.UIT.O, config={object = DynaText({string = loc_name, colours = {disabled and G.C.UI.TEXT_INACTIVE or G.C.WHITE}, shadow = not disabled, float = not disabled, y_offset = -4, scale = 0.45, maxw =2.8})}}
+}} or nil,
+not ccc_bonus and {n=G.UIT.O, config={object = DynaText({string = loc_name, colours = {disabled and G.C.UI.TEXT_INACTIVE or G.C.WHITE}, shadow = not disabled, float = not disabled, y_offset = -4, scale = 0.45, maxw =2.8})}} or nil,
+'''
+match_indent = true
+
+# show multiname
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''local blind_state = G.GAME.round_resets.blind_states[type]'''
+position = "before"
+payload = '''
+-- double blind loc
+
+local ccc_bonus_target = ccc_bonus and {type = 'raw_descriptions', key = ccc_bonus_blind_choice.config.key, set = 'Blind', vars = {}} or nil
+if ccc_bonus and ccc_bonus_blind_choice.config.name == 'The Ox' then
+	ccc_bonus_target.vars = {localize(G.GAME.current_round.most_played_poker_hand, 'poker_hands')}
+end
+local ccc_obj = ccc_bonus_blind_choice.config or nil
+if ccc_obj and ccc_obj.loc_vars and _G['type'](ccc_obj.loc_vars) == 'function' then
+	local res = ccc_obj:loc_vars() or {}
+	ccc_bonus_target.vars = res.vars or ccc_bonus_target.vars
+	ccc_bonus_target.key = res.key or ccc_bonus_target.key
+end
+local ccc_bonus_loc_target = ccc_bonus and localize(ccc_bonus_target) or nil
+local ccc_bonus_loc_name = ccc_bonus and localize{type = 'name_text', key = ccc_bonus_blind_choice.config.key, set = 'Blind'} or nil
+
+if ccc_bonus then
+	text_table = copy_table(ccc_bonus_loc_target)
+	for i, v in ipairs(loc_target) do
+		table.insert(text_table, v)
+	end
+end
+'''
+match_indent = true
+
+# the hell
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''
+		} or nil,
+	},
+} or nil,'''
+position = "before"
+payload = '''
+} or nil,
+text_table[3] and {
+	n = G.UIT.R,
+	config = { align = "cm", maxw = 2.8 },
+	nodes = {
+		{
+			n = G.UIT.T,
+			config = {
+				text = text_table[3] or "-",
+				scale = 0.32,
+				colour = disabled and G.C.UI.TEXT_INACTIVE
+					or G.C.WHITE,
+				shadow = not disabled,
+			},
+		},
+	},
+} or nil,
+text_table[4] and {
+	n = G.UIT.R,
+	config = { align = "cm", maxw = 2.8 },
+	nodes = {
+		{
+			n = G.UIT.T,
+			config = {
+				text = text_table[4] or "-",
+				scale = 0.32,
+				colour = disabled and G.C.UI.TEXT_INACTIVE
+					or G.C.WHITE,
+				shadow = not disabled,
+			},
+		},
+	},
+'''
+match_indent = true
+
+# man
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''
+not run_info and {
+	n = G.UIT.R,
+	config = {
+		id = "select_blind_button",
+		align = "cm",
+		ref_table = blind_choice.config,
+		colour = disabled and G.C.UI.BACKGROUND_INACTIVE or G.C.ORANGE,
+		minh = 0.6,
+		minw = 2.7,
+		padding = 0.07,
+		r = 0.1,
+		shadow = true,
+		hover = true,
+		one_press = true,
+		func = G.GAME.round_resets.blind_choices[type] == "bl_mp_nemesis"
+			and "pvp_ready_button"
+		or nil,
+		button = "select_blind",
+	},
+	nodes = {
+'''
+position = "at"
+payload = '''
+not run_info and {n=G.UIT.R, config={id = 'select_blind_button', align = "cm", ref_table = blind_choice.config, ccc_bonus_ref_table = ccc_bonus and ccc_bonus_blind_choice.config, colour = disabled and G.C.UI.BACKGROUND_INACTIVE or G.C.ORANGE, minh = 0.6, minw = 2.7, padding = 0.07, r = 0.1, shadow = true, hover = true, one_press = true, func = G.GAME.round_resets.blind_choices[type] == "bl_mp_nemesis" and "pvp_ready_button" or nil, button = 'select_blind'}, nodes={
+'''
+match_indent = true
+
+# blind amount
+[[patches]]
+[patches.pattern]
+target = '''=[SMODS Multiplayer "ui/game.lua"]'''
+pattern = '''* G.GAME.starting_params.ante_scaling'''
+position = "after"
+payload = '''
+if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) and ccc_bonus_blind_choice.config then
+	local used_mult = 2
+	used_mult = used_mult*(ccc_bonus_blind_choice.config.mult / 2)
+	used_mult = used_mult*(blind_choice.config.mult / 2)
+	blind_amt = get_blind_amount(G.GAME.round_resets.ante)*used_mult*G.GAME.starting_params.ante_scaling
+end
+'''
+match_indent = true
