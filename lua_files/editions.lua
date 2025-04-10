@@ -21,6 +21,11 @@ local mirrored = SMODS.Edition({
     shader = 'mirrored',
     config = {},
     in_shop = false,
+	credit = {
+		art = "sunsetquasar",
+		code = "toneblock",
+		concept = "Gappie & Fytos"
+	},
     calculate = function(self, card, context)
 	-- yeah ngl i took this directly from ortalab... i hope this works?
 	if context.repetition_only or (context.retrigger_joker_check and context.other_card == card) then
