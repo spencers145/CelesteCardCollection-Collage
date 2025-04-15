@@ -4,6 +4,8 @@ A Balatro mod using Steamodded revolving around a Celeste card theme
 Made by AuroraAquir (Code), toneblock (Code), Gappie (Art), bein (Art), sunsetquasar (Code), goose (Art).
 Also featuring concepts from Bred and Fytos.
 
+Requires https://github.com/AuroraKy/3xCredits as a dependency.
+
 Below is a list of everything this mod adds
 
 # Decks
