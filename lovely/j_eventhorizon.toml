@@ -7,7 +7,7 @@ priority = 0
 [[patches]]
 [patches.pattern]
 target = "card.lua"
-pattern = "if self.ability.consumeable.max_highlighted then"
+pattern = "if not copier then set_consumeable_usage(self) end"
 position = "before"
 payload = '''
 if self.ability.set == 'Planet' then
