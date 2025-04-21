@@ -6,15 +6,6 @@ local cloud = {
 	key = "cloud",
 	config = { extra = { chips = 0, add = 30 } },
 	pos = { x = 4, y = 4 },
-	loc_txt = {
-		name = 'Cloud',
-		text = {
-			"Gains {C:chips}+#1#{} Chips",
-			"{C:attention}after{} each hand",
-			"played this round",
-			"{C:inactive}(Currently {C:blue}+#2#{C:inactive} Chips)"
-		}
-	},
 	rarity = 1,
 	cost = 4,
 	discovered = true,

@@ -105,13 +105,6 @@ CardSleeves.Sleeve({
 	pos = { x = 3, y = 0 },
 	config = {all_jokers_modded = true},
 	unlocked = true,
-	loc_txt = {
-		name = "Heartside Sleeve",
-		text = {
-			"Only {C:attention}Modded{} Jokers may appear",
-			"{s:0.75}(and maybe {C:legendary,E:1,s:0.75}jimbo{}{s:0.75})"
-		}
-	},
 	unlock_condition = { deck = "ccc_Heartside Deck", stake = 1 },
 	loc_vars = function(self)
 		return { vars = {} }

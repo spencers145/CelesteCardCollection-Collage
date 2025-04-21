@@ -3,17 +3,9 @@
 local bunnyhop = {
 	name = "ccc_Bunny Hop",
 	key = "bunnyhop",
-    config = {extra = {chips = 1}},
+	config = {extra = {chips = 1}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 9, y = 6},
-	loc_txt = {
-        name = 'Bunny Hop',
-        text = {
-			"Permanently give {C:chips}+#1#{} Chip",
-			"to {C:attention}all{} cards held in hand",
-			"on discarding a {C:attention}card{}",
-        }
-    },
 	rarity = 1,
 	cost = 5,
 	discovered = true,

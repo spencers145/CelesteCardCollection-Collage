@@ -6,15 +6,6 @@ local moonberry = {
 	key = "moonberry",
 	config = { extra = { condition_satisfied = false, winged_poker_hand = 'Pair', old_winged_poker_hand = 'Pair', levels = 2 } }, -- old_winged_poker_hand is internal, winged_poker_hand is external
 	pos = { x = 5, y = 1 },
-	loc_txt = {
-		name = 'Moon Berry',
-		text = {
-			"If round ends without playing",
-			"your most played {C:attention}poker hand{},",
-			"upgrade its level {C:attention}#2#{} times",
-			"{C:inactive,s:0.8}(Currently: {C:attention,s:0.8}#1#{C:inactive,s:0.8})"
-		}
-	},
 	rarity = 2,
 	cost = 8,
 	discovered = true,

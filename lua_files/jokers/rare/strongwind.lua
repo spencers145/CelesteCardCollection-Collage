@@ -5,14 +5,6 @@ local strongwinds = {
 	key = "strongwinds",
     config = {extra = {xmult = 2.22}},
 	pos = {x = 4, y = 2},
-	loc_txt = {
-        name = 'Strong Winds',
-        text = {
-	"{X:mult,C:white} X#1# {} Mult",
-	"The highest-{C:attention}ranked{} scoring",
-	"card is {C:red}destroyed{}"
-        }
-    },
 	rarity = 3,
 	cost = 7,
 	discovered = true,

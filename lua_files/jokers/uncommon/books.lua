@@ -4,30 +4,8 @@
 local books = {
 	name = "ccc_Huge Mess: Books",
 	key = "books",
-	config = { extra = { xmult = 1, xmult_scale = 0.14 } },
+	config = { extra = { xmult = 1, xmult_scale = 0.17 } },
 	pos = { x = 2, y = 3 },
-	loc_txt = {
-		default = {
-			name = 'Huge Mess: Books',
-			text = {
-				"When played hand contains a",
-				"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult for",
-				"each additional card held in hand",
-				"that extends the played {C:attention}Straight{}",
-				"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
-			}
-		},
-		fr = {
-			name = 'Huge Mess: Books',
-			text = {
-				"When played hand contains a",
-				"{C:attention}Straight{}, gains {X:mult,C:white} X#2# {} Mult",
-				"for each additional card in",
-				"the {C:attention}sequence{} held in hand",
-				"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult){}"
-			}
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,

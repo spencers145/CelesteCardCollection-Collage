@@ -5,14 +5,6 @@ local coreswitch = {
 	key = "coreswitch",
 	config = { extra = { pos_override = { x = 6, y = 0 }, discards = 1 } },
 	pos = { x = 6, y = 0 },
-	loc_txt = {
-		name = 'Core Switch',
-		text = {
-			"Swap {C:blue}hands{} and {C:red}discards{}",
-			"on blind select",
-			"{C:red}+#1#{} discard after swap"
-		}
-	},
 	rarity = 1,
 	cost = 3,
 	discovered = true,

@@ -5,14 +5,6 @@ local climbinggear = {
 	key = "climbinggear",
 	config = { d_size = 3 },
 	pos = { x = 6, y = 1 },
-	loc_txt = {
-		name = 'Climbing Gear',
-		text = {
-			"{C:red}+#1#{} discards",
-			"Played and discarded cards",
-			"are reshuffled into deck"
-		}
-	},
 	rarity = 2,
 	cost = 5,
 	discovered = true,

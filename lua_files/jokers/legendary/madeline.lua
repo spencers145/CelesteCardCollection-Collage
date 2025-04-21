@@ -4,17 +4,9 @@
 local madeline = {
 	name = "ccc_Madeline",
 	key = "madeline",
-    config = {},
+	config = {},
 	pos = {x = 1, y = 5},
 	soul_pos = {x = 1, y = 6},
-	loc_txt = {
-        name = 'Madeline',
-        text = {
-			"{C:attention}Prevents{} reduction and",
-			"resets of Joker {C:attention}values{}",
-			"through owned abilities"
-        }
-    },
 	rarity = 4,
 	cost = 20,
 	discovered = false,

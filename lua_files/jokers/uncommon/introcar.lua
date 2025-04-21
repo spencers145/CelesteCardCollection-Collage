@@ -5,14 +5,6 @@ local introcar = {
 	key = "introcar",
 	config = { extra = { add = 5 } },
 	pos = { x = 7, y = 3 },
-	loc_txt = {
-		name = 'Intro Car',
-		text = {
-			"Before each {C:attention}5{} or {C:attention}8{} is",
-			"scored, {C:attention}swap{} current",
-			"{C:chips}Chips{} and {C:mult}Mult{}"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

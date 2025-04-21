@@ -6,13 +6,6 @@ local bird = {
 	key = "bird",
 	config = { extra = { draw = 4, active = false } },
 	pos = { x = 2, y = 0 },
-	loc_txt = {
-		name = 'Bird',
-		text = {
-			"Whenever a {C:planet}Planet{} card",
-			"is used, {C:attention}draw{} {C:attention}#1#{} cards"
-		}
-	},
 	rarity = 3,
 	cost = 8,
 	discovered = true,

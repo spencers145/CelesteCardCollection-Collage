@@ -6,15 +6,6 @@ local wingedgoldenstrawberry = {
 	key = "wingedgoldenstrawberry",
 	config = { extra = { condition_satisfied = true, winged_poker_hand = 'Pair', after_boss = false, money = 18 } },
 	pos = { x = 4, y = 1 },
-	loc_txt = {
-		name = 'Winged Golden Strawberry',
-		text = {
-			"Earn {C:money}$#2#{} at end of {C:attention}Boss Blind{} if",
-			"beaten without playing a hand",
-			"that contains a {C:attention}#1#{},",
-			"{s:0.8}poker hand changes at end of round"
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,

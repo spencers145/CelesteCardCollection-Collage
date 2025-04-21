@@ -3,17 +3,9 @@
 local hyperdash = {
 	name = "ccc_Hyperdash",
 	key = "hyperdash",
-    config = {extra = {mult = 3}},
+	config = {extra = {mult = 3}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 6, y = 6},
-	loc_txt = {
-        name = 'Hyperdash',
-        text = {
-			"After {C:attention}discarding{} a hand that",
-			"contains {C:attention}Two Pair{}, {X:mult,C:white} X#1# {} Mult",
-			"for the {C:attention}next{} played hand"
-        }
-    },
 	rarity = 2,
 	cost = 6,
 	discovered = true,

@@ -5,14 +5,6 @@ local kevin = {
 	key = "kevin",
 	config = {},
 	pos = { x = 8, y = 3 },
-	loc_txt = {
-		name = 'Kevin',
-		text = {
-			"Scoring {C:attention}face cards{} act",
-			"as a copy of the",
-			"{C:attention}rightmost{} played card",
-		}
-	},
 	rarity = 3,
 	cost = 8,
 	discovered = true,

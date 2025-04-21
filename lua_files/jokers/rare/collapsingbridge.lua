@@ -5,15 +5,6 @@ local collapsingbridge = {
 	key = "collapsingbridge",
 	config = { extra = { xmult = 5, prob_success = 5 } },
 	pos = { x = 8, y = 1 },
-	loc_txt = {
-		name = 'Collapsing Bridge',
-		text = {
-			"{X:mult,C:white} X#2# {} Mult when played hand",
-			"contains a {C:attention}Straight{}",
-			"All {C:attention}played{} cards have a {C:green}#1# in #3#{}",
-			"chance of being {C:red}destroyed{}"
-		}
-	},
 	rarity = 3,
 	cost = 8,
 	discovered = true,

@@ -4,16 +4,6 @@ local crystalheart = {
 	key = "crystalheart",
     config = {extra = {cards = 2}},
 	pos = {x = 7, y = 4},
-	loc_txt = {
-        name = 'Crystal Heart',
-        text = {
-			"If played hand is a",
-			"single {C:attention}Ace{} of {C:hearts}Hearts{},",
-			"apply a random {C:dark_edition}Edition{}",
-			"to {C:attention}#1#{} cards held in hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-        }
-    },
 	rarity = 'ccc_secret',
 	cost = 15,
 	discovered = false,

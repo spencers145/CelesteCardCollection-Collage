@@ -4,17 +4,9 @@
 local badeline = {
 	name = "ccc_Badeline",
 	key = "badeline",
-    config = {extra = {xmult = 1.25}},
+	config = {extra = {xmult = 1.25}},
 	pos = {x = 0, y = 5},
 	soul_pos = {x = 0, y = 6},
-	loc_txt = {
-        name = 'Badeline',
-        text = {
-	"{C:attention}Sustain{} all {C:dark_edition}Mirrored{} and/or",
-	"{C:attention}Glass{} cards, they each give",
-	"{X:mult,C:white} X#1# {} Mult when scored",
-        }
-    },
 	rarity = 4,
 	cost = 20,
 	discovered = false,

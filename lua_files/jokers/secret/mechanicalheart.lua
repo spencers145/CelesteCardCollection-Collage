@@ -5,16 +5,6 @@ local mechanicalheart = {
 	key = "mechanicalheart",
 	config = {extra = {xmult = 2}},
 	pos = { x = 0, y = 8 },
-	loc_txt = {
-		name = 'Mechanical Heart',
-		text = {
-			"If played hand is a",
-			"single {C:attention}Ace{} of {C:clubs}Clubs{}, turn",
-			"{C:attention}all{} {C:clubs}Clubs{} held in hand into",
-			"{C:attention}Steel Cards{} with {X:mult,C:white}X2{} Mult",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 'ccc_secret',
 	cost = 15,
 	discovered = false,

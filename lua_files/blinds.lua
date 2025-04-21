@@ -13,15 +13,6 @@ local snow = SMODS.Blind{
 	discovered = true,
 	boss = {min = 2, max = 10},
 	boss_colour = HEX('d8d8d8'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Snow",
-			text = {
-				"All Clubs are",
-				"drawn face down"
-			}
-		}
-	}
 }
 
 -- Snow, Stone, Crystal and Berry use lovely to keep suits flipped
@@ -60,15 +51,6 @@ local stone = SMODS.Blind{
 	discovered = true,
 	boss = {min = 2, max = 10},
 	boss_colour = HEX('575f7d'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Stone",
-			text = {
-				"All Spades are",
-				"drawn face down"
-			}
-		}
-	}
 }
 
 stone.disable = function(self)
@@ -105,15 +87,6 @@ local crystal = SMODS.Blind{
 	discovered = true,
 	boss = {min = 2, max = 10},
 	boss_colour = HEX('fd7a30'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Crystal",
-			text = {
-				"All Diamonds are",
-				"drawn face down"
-			}
-		}
-	}
 }
 
 crystal.disable = function(self)
@@ -150,15 +123,6 @@ local berry = SMODS.Blind{
 	discovered = true,
 	boss = {min = 2, max = 10},
 	boss_colour = HEX('f3639b'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Berry",
-			text = {
-				"All Hearts are",
-				"drawn face down"
-			}
-		}
-	}
 }
 
 berry.disable = function(self)
@@ -198,15 +162,6 @@ local gap = SMODS.Blind{
 	set_blind = function(self, reset, silent)
 		G.GAME.ccc_gap_active = 2
 	end,
-	loc_txt = {
-        	['default'] = {
-			name = "The Gap",
-			text = {
-				"Every other played",
-				"card is debuffed"
-			}
-		}
-	}
 }
 gap.disable = function(self)
 	G.GAME.ccc_gap_active = nil
@@ -282,15 +237,6 @@ local fallacy = SMODS.Blind{
 	discovered = true,
 	boss = {min = 3, max = 10},
 	boss_colour = HEX('2f4063'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Fallacy",
-			text = {
-				"Playing cards lose",
-				"a rank when played"
-			}
-		}
-	}
 }
 
 fallacy.press_play = function(self)
@@ -335,15 +281,6 @@ local shriek = SMODS.Blind{
 	discovered = true,
 	boss = {min = 3, max = 10},
 	boss_colour = HEX('591829'),
-	loc_txt = {
-        	['default'] = {
-			name = "The Shriek",
-			text = {
-				"Cards held in hand",
-				"debuffed after hand played"
-			}
-		}
-	}
 }
 
 shriek.recalc_debuff = function(self, card, from_blind)
@@ -389,15 +326,6 @@ local goldencrown = SMODS.Blind{
 	set_blind = function(self, reset, silent)
 		G.GAME.ccc_golden_progress = self.vars.extra
 	end,
-	loc_txt = {
-        	['default'] = {
-			name = "Golden Crown",
-			text = {
-				"Defeat this blind",
-				"#1# time#2#"
-			}
-		}
-	}
 }
 goldencrown.disable = function(self)
 	G.GAME.ccc_golden_progress = 1

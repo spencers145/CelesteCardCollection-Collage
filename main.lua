@@ -86,8 +86,6 @@ assert(SMODS.load_file("lua_files/editions.lua"))()
 
 assert(SMODS.load_file("lua_files/rarity.lua"))()
 
-assert(SMODS.load_file("lua_files/localization/en-us.lua"))()
-
 SMODS.Atlas({key = "moveblock_pr", path = "moveblock_pr.png", px = 71, py = 95, atlas = "asset_atlas"})
 SMODS.Atlas({key = "moveblock_rl", path = "moveblock_rl.png", px = 71, py = 95, atlas = "asset_atlas"})
 

@@ -4,16 +4,6 @@ SMODS.Shader({key = 'mirrored', path = "mirrored.fs"})
 
 local mirrored = SMODS.Edition({
     key = "mirrored",
-    loc_txt = {
-        name = "Mirrored",
-        label = "Mirrored",
-        text = {
-		"If a {C:attention}Mirror{} is present,",
-		"{C:attention}retrigger{} this card,",
-		"otherwise it {C:red}self-destructs{}",
-		"at end of round",
-        }
-    },
     discovered = true,
     unlocked = true,
     disable_base_shader = true,
@@ -70,9 +60,6 @@ G.FUNCS.evaluate_round = function()
 				end
 			end
 		end
-		for j=1, #G.jokers.cards do
-			eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = destroyed_cards})
-		end
 		for i=1, #destroyed_cards do
 			G.E_MANAGER:add_event(Event({
 				func = function()
@@ -85,6 +72,7 @@ G.FUNCS.evaluate_round = function()
 				end
 			}))
 		end
+		SMODS.calculate_context({ remove_playing_cards = true, removed = destroyed_cards })
 		return true
 	end}))
 end

@@ -5,14 +5,6 @@ local miniheart = {
 	key = "miniheart",
 	config = { extra = { prob_success = 15 } },
 	pos = { x = 5, y = 0 },
-	loc_txt = {
-		name = 'Mini Heart',
-		text = {
-			"{C:green}#1# in #2#{} chance to add {C:dark_edition}Foil{}",
-			"edition to scored cards",
-			"{C:attention}before scoring{}"
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

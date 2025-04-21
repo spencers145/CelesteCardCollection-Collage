@@ -6,15 +6,6 @@ local coyotejump = {
     config = {extra = {discards = 1}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 9, y = 0},
-	loc_txt = {
-        name = 'Coyote Jump',
-        text = {
-	"If cards held in hand",
-	"do not form a {C:attention}Pair{},",
-	"{C:attention}Straight{}, or {C:attention}Flush{},",
-	"gain {C:red}+#1#{} discard"
-        }
-    },
 	rarity = 3,
 	cost = 8,
 	discovered = true,

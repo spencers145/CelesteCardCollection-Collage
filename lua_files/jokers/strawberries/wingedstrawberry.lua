@@ -5,14 +5,6 @@ local wingedstrawberry = {
 	key = "wingedstrawberry",
 	config = { extra = { winged_poker_hand = 'Pair', money = 3 } },
 	pos = { x = 2, y = 1 },
-	loc_txt = {
-		name = 'Winged Strawberry',
-		text = {
-			"Earn {C:money}$#2#{} if {C:attention}poker hand{} does",
-			"not contain a {C:attention}#1#{},",
-			"{s:0.8}poker hand changes at end of round"
-		}
-	},
 	rarity = 1,
 	cost = 7,
 	discovered = true,

@@ -5,16 +5,6 @@ local redspinner = {
 	key = "redspinner",
 	config = { extra = { prob_success = 2 } },
 	pos = { x = 2, y = 4 },
-	loc_txt = {
-		name = 'Red Spinner',
-		text = {
-			"When a card with a {C:red}Red Seal{}",
-			"is {C:attention}discarded{}, {C:green}#1# in #2#{} chance",
-			"to add a {C:red}Red Seal{} to each",
-			"{C:attention}adjacent{} card in discarded hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

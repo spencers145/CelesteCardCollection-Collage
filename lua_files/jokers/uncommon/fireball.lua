@@ -3,16 +3,8 @@
 local fireball = {
 	name = "ccc_Fireball",
 	key = "fireball",
-    config = {extra = {active = false, count = 0}},
+	config = {extra = {active = false, count = 0}},
 	pos = {x = 5, y = 7},
-	loc_txt = {
-        name = 'Fireball',
-        text = {
-			"If your {C:attention}score display{} catches {C:attention}fire{}",
-			"during the round, next shop will",
-			"have an {C:attention}extra Mega{} booster pack",
-        }
-    },
 	rarity = 2,
 	cost = 8,
 	discovered = true,

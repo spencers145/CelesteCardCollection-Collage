@@ -5,15 +5,6 @@ local checkpoint = {
 	key = "checkpoint",
 	config = { extra = { xmult = 1, xmult_scale = 0.75, did_you_discard = false, after_boss = false } },
 	pos = { x = 8, y = 2 },
-	loc_txt = {
-		name = 'Checkpoint',
-		text = {
-			"Gains {X:mult,C:white} X#2#{} Mult if",
-			"{C:attention}Boss Blind{} is defeated",
-			"without {C:red}discarding{}",
-			"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)"
-		}
-	},
 	rarity = 3,
 	cost = 7,
 	discovered = true,

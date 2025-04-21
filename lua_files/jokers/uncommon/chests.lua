@@ -5,16 +5,6 @@ local chests = {
 	key = "chests",
 	config = { extra = { mult = 0, mult_scale = 3 } },
 	pos = { x = 1, y = 3 },
-	loc_txt = {
-		name = 'Huge Mess: Chests',
-		text = {
-			"When played hand contains a",
-			"{C:attention}Three of a Kind{}, gains {C:mult}+#2#{} Mult",
-			"for each possible {C:attention}Pair{} of a",
-			"{C:attention}different{} rank held in hand",
-			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,

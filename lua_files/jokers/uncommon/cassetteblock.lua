@@ -5,15 +5,6 @@ local cassetteblock = {
 	key = "cassetteblock",
 	config = { extra = { chips = 0, mult = 0, chips_scale = 12, mult_scale = 3, pink = false, pos_override = { x = 6, y = 2 } } },
 	pos = { x = 6, y = 2 },
-	loc_txt = {
-		name = ('Cassette Block'),
-		text = {
-			"Gains {C:chips}+#3#{} Chips for each",
-			"{C:attention}unused{} {C:chips}hand{} at end of round",
-			"{C:mult}Swaps{} at start of round",
-			"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,
@@ -27,18 +18,6 @@ local cassetteblock = {
 		concept = "Gappie"
 	},
 	description = "Blue: Gains +12 Chips for each unused hand at the end of round. Pink: Gains +3 Mult for each unused discard at the end of round. Swaps at start of round",
-	process_loc_text = function(self)
-		SMODS.process_loc_text(G.localization.descriptions[self.set], self.key, self.loc_txt)
-		SMODS.process_loc_text(G.localization.descriptions[self.set], "Cassette Block", {
-			name = ('Cassette Block'),
-			text = {
-				"Gains {C:mult}+#4#{} Mult for each",
-				"{C:attention}unused{} {C:mult}discard{} at end of round",
-				"{C:chips}Swaps{} at start of round",
-				"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
-			}
-		})
-	end,
 	afterload = function(self, card, card_table, other_card)
 		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
 	end
@@ -145,7 +124,7 @@ cassetteblock.calculate = function(self, card, context)
 end
 
 function cassetteblock.loc_vars(self, info_queue, card)
-	return { key = (card.ability.extra.pink and "Cassette Block" or card.config.center.key), vars = { card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.chips_scale, card.ability.extra.mult_scale, card.ability.extra.pink } }
+	return { key = (card.ability.extra.pink and "j_ccc_cassette_block_pink" or card.config.center.key), vars = { card.ability.extra.chips, card.ability.extra.mult, card.ability.extra.chips_scale, card.ability.extra.mult_scale, card.ability.extra.pink } }
 end
 
 return cassetteblock

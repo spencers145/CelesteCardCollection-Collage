@@ -5,17 +5,6 @@ local tothesummit = {
 	key = "tothesummit",
 	config = { extra = { xmult = 1, min_money = 0, xmult_scale = 0.25 } }, -- rip debt lovers
 	pos = { x = 0, y = 1 },
-	loc_txt = {
-		name = 'To The Summit',
-		text = {
-			"Gains {X:mult,C:white} X#3# {} Mult for each",
-			"{C:attention}consecutive Blind{} selected",
-			"with more {C:money}money{} than",
-			"the {C:attention}previous Blind{}",
-			"{C:inactive}(Currently {X:mult,C:white} X#1# {C:inactive} Mult)",
-			"{C:inactive}(Previous: {C:money}$#2#{C:inactive})"
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,

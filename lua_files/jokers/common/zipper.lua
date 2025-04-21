@@ -5,14 +5,6 @@ local zipper = {
 	key = "zipper",
 	config = { extra = { chips = 0, chips_scale = 35 } },
 	pos = { x = 4, y = 0 },
-	loc_txt = {
-		name = 'Zipper',
-		text = {
-			"Gains {C:chips}+#2#{} Chips for each",
-			"{C:attention}Blind{} skipped this run",
-			"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

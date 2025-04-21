@@ -1,17 +1,8 @@
 local feather = {
 	name = "ccc_Feather",
 	key = "feather",
-    config = {extra = {xmult = 1, mult_scale = 0.04}},
+	config = {extra = {xmult = 1, mult_scale = 0.04}},
 	pos = {x = 0, y = 0},
-	loc_txt = {
-        name = 'Feather',
-        text = {
-	"Gains {X:mult,C:white} X#1# {} Mult when a",
-	"card is {C:attention}drawn{} from deck,",
-	"{C:red}resets{} at end of round",
-	"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"
-        }
-    },
 	rarity = 2,
 	cost = 6,
 	discovered = true,

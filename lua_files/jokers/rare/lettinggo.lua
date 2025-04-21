@@ -5,18 +5,6 @@ local lettinggo = {
 	key = "lettinggo",
 	config = { extra = { xmult = 1, prob_success = 2, xmult_scale = 0.15 } },
 	pos = { x = 2, y = 2 },
-	loc_txt = {
-		name = 'Letting Go',
-		text = {
-			"When a card is destroyed,",
-			"{C:green}#1# in #3#{} chance to create",
-			"a {C:tarot}Death{}",
-			"{C:inactive}(Must have room)",
-			"Gains {X:mult,C:white} X#4# {} Mult for each",
-			"{C:tarot}Death{} used",
-			"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)"
-		}
-	},
 	rarity = 3,
 	cost = 8,
 	discovered = true,

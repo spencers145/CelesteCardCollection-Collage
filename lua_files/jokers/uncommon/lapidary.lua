@@ -5,14 +5,6 @@ local lapidary = {
 	key = "lapidary",
 	config = { extra = 1.75 },
 	pos = { x = 6, y = 3 },
-	loc_txt = {
-		name = 'Lapidary',
-		text = {
-			"Jokers with a",
-			"{C:attention}unique{} rarity each",
-			"give {X:mult,C:white}X#1#{} Mult",
-		}
-	},
 	rarity = 2,
 	cost = 8,
 	discovered = true,

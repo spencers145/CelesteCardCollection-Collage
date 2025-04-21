@@ -5,18 +5,6 @@ local switchgate = {
 	key = "switchgate",
 	config = { extra = { chips = 0, chips_scale = 8, cards = { [1] = { rank = 'Ace', suit = 'Spades', id = 14 }, [2] = { rank = 'Ace', suit = 'Hearts', id = 14 }, [3] = { rank = 'Ace', suit = 'Clubs', id = 14 } } } },
 	pos = { x = 4, y = 3 },
-	loc_txt = {
-		name = 'Switch Gate',
-		text = {
-			"Gains {C:chips}+#8#{} Chips if {C:attention}any{} of the",
-			"following cards are scored:",
-			"{C:attention}#2#{} of {V:1}#3#{}",
-			"{C:attention}#4#{} of {V:2}#5#{}",
-			"{C:attention}#6#{} of {V:3}#7#{}",
-			"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
-			"{s:0.8}Cards change every round"
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

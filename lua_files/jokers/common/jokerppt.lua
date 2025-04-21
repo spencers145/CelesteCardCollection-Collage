@@ -3,18 +3,9 @@
 local jokerppt = {
 	name = "ccc_joker_ppt",
 	key = "jokerppt",
-    config = {extra = {winged_poker_hand = 'Pair', active = false}},
+	config = {extra = {winged_poker_hand = 'Pair', active = false}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 5, y = 6},
-	loc_txt = {
-        name = 'joker.ppt',
-        text = {
-			"If {C:attention}#1#{} is played {C:attention}during",
-			"the round, create its {C:planet}Planet{}",
-			"card at the end of round,",
-			"{s:0.8}poker hand changes at end of round",
-        }
-    },
 	rarity = 1,
 	cost = 6,
 	discovered = true,

@@ -5,14 +5,6 @@ local hardlist = {
 	key = "hardlist",
 	config = { extra = { mult = 20, sub = 4 } }, -- mult should be a multiple of sub for this card
 	pos = { x = 5, y = 3 },
-	loc_txt = {
-		name = '5-Star Hardlist',
-		text = {
-			"{C:mult}+#1#{} Mult",
-			"{C:mult}-#2#{} Mult on purchase of a",
-			"{C:attention}Joker{} or {C:attention}Buffoon Pack{}",
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

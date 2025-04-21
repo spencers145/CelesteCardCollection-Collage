@@ -3,17 +3,9 @@
 local cornerjump = {
 	name = "ccc_Cornerjump",
 	key = "cornerjump",
-    config = {extra = {chips = 90}},
+	config = {extra = {chips = 90}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 8, y = 6},
-	loc_txt = {
-        name = 'Cornerjump',
-        text = {
-			"{C:chips}+#1#{} Chips if played hand",
-			"contains an {C:attention}Ace{}, and",
-			"either a {C:attention}King{} or a {C:attention}2{}",
-        }
-    },
 	rarity = 1,
 	cost = 4,
 	discovered = true,

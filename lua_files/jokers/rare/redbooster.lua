@@ -6,14 +6,6 @@ local redbooster = {
 	key = "redbooster",
 	config = { extra = { choices = 1 } },
 	pos = { x = 3, y = 3 },
-	loc_txt = {
-		name = 'Red Booster',
-		text = {
-			"Allows you to {C:attention}pick{}",
-			"{C:attention}#1#{} extra card from",
-			"all {C:attention}Booster Packs{}"
-		}
-	},
 	rarity = 3,
 	cost = 8,
 	discovered = true,

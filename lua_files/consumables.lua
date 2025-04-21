@@ -6,14 +6,6 @@ local crystallic = SMODS.Consumable({
 	set = "Spectral",
 	config = {extra = {destroy = 2, add = 2}},
 	pos = {x = 0, y = 0},
-	loc_txt = {
-		name = 'Crystallic',
-		text = {
-			"Destroys {C:attention}#1#{} random cards in",
-			"hand, then adds {C:dark_edition}Mirrored{} to",
-			"{C:attention}all{} other cards in hand",
-		}
-	},
 	cost = 4,
 	discovered = true,
 	atlas = "c_ccc_consumables",
@@ -54,9 +46,6 @@ function crystallic.use(self, card, area, copier)
                 used_card:juice_up(0.3, 0.5)
                 return true end 
 	}))
-	for j=1, #G.jokers.cards do
-		eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = destroyed_cards})
-	end
 	G.E_MANAGER:add_event(Event({
 		trigger = 'after',
 		delay = 0.1,
@@ -71,6 +60,7 @@ function crystallic.use(self, card, area, copier)
 			end
 		return true end 
 	}))
+	SMODS.calculate_context({ remove_playing_cards = true, removed = destroyed_cards })
 	delay(0.5)
 	for i = 1, #mirrored_cards do
 		local _card = mirrored_cards[i]

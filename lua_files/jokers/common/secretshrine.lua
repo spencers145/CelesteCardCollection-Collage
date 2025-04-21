@@ -5,14 +5,6 @@ local secretshrine = {
 	key = "secretshrine",
 	config = { extra = { seven_tally = 4, factor = 3 } },
 	pos = { x = 6, y = 5 },
-	loc_txt = {
-		name = 'Secret Shrine',
-		text = {
-			"Gives {C:mult}+#2#{} Mult for",
-			"each {C:attention}7{} in {C:attention}full deck{}",
-			"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult){}"
-		}
-	},
 	rarity = 1,
 	cost = 7,
 	discovered = true,

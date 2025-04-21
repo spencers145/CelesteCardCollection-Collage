@@ -5,13 +5,6 @@ local smotsgaming = {
 	key = "smotsgaming",
 	config = {extra = {slot = 1}},
 	pos = {x = 5, y = 9},
-	loc_txt = {
-		name = 'smots gaming',
-		text = {
-			"{C:dark_edition}+1{} Joker Slot",
-			"{C:inactive}smots gaming",
-		}
-	},
 	rarity = 1,
 	cost = 1,
 	discovered = true,

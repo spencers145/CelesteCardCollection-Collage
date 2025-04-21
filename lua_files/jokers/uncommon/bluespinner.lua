@@ -5,16 +5,6 @@ local bluespinner = {
 	key = "bluespinner",
 	config = { extra = { prob_success = 2 } },
 	pos = { x = 0, y = 4 },
-	loc_txt = {
-		name = 'Blue Spinner',
-		text = {
-			"When a card with a {C:planet}Blue Seal{}",
-			"is scored, {C:green}#1# in #2#{} chance",
-			"to add a {C:planet}Blue Seal{} to each",
-			"{C:attention}adjacent{} card in scored hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

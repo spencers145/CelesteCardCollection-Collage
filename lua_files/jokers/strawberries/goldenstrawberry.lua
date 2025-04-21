@@ -5,13 +5,6 @@ local goldenstrawberry ={
 	key = "goldenstrawberry",
 	config = { extra = { after_boss = false, money = 15 } },
 	pos = { x = 3, y = 1 },
-	loc_txt = {
-		name = 'Golden Strawberry',
-		text = {
-			"Earn {C:money}$#1#{} at end of",
-			"{C:attention}Boss Blind{}"
-		}
-	},
 	rarity = 2,
 	cost = 8,
 	discovered = true,

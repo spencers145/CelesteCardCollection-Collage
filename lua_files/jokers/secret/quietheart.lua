@@ -5,16 +5,6 @@ local quietheart = {
 	key = "quietheart",
 	config = { extra = { add = 18 } },
 	pos = { x = 1, y = 8 },
-	loc_txt = {
-		name = 'Quiet Heart',
-		text = {
-			"If played hand is a",
-			"single {C:attention}Ace{} of {C:spades}Spades{},",
-			"give permanent {C:chips}+#1#{} Chips",
-			"to {C:attention}all{} cards held in hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 'ccc_secret',
 	cost = 15,
 	discovered = false,

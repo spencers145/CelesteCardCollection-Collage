@@ -7,17 +7,6 @@ local theocrystal = {
 	config = { extra = { base_probs = 0, base_scale = 1, scale = 1, probs = 0 } },
 	pixel_size = { w = 71, h = 71 },
 	pos = { x = 9, y = 2 },
-	loc_txt = {
-		name = 'Theo Crystal',
-		text = {
-			"Forces 1 card to",
-			"{C:attention}always{} be selected",
-			"Adds {C:green}+#1#{} to {C:attention}listed{} {C:green,E:1}probabilities{}",
-			"on defeat of {C:attention}Boss Blind",
-			"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
-			"{C:inactive}(Currently {C:green}+#2#{C:inactive})"
-		}
-	},
 	rarity = 3,
 	cost = 12,
 	discovered = true,

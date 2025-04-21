@@ -3,16 +3,8 @@
 local freeze = {
 	name = "ccc_Freeze",
 	key = "freeze",
-    config = {extra = {chips = 15}},
+	config = {extra = {chips = 15}},
 	pos = {x = 0, y = 7},
-	loc_txt = {
-        name = 'Freeze',
-        text = {
-			"Cards held in hand",
-			"gain {C:chips}+#1#{} Chips",
-			"until end of round",
-        }
-    },
 	rarity = 1,
 	cost = 5,
 	discovered = true,

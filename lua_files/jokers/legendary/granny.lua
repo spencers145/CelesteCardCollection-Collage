@@ -2,17 +2,9 @@
 local granny = {
 	name = "ccc_Granny",
 	key = "granny",
-    config = {extra = {draw = 1}},
+	config = {extra = {draw = 1}},
 	pos = {x = 2, y = 5},
 	soul_pos = {x = 2, y = 6},
-	loc_txt = {
-        name = 'Granny',
-        text = {
-	"After {C:red}discarding{} cards,",
-	"{C:attention}draw{} {C:attention}#1#{} additional card",
-	"for each card discarded"
-        }
-    },
 	rarity = 4,
 	cost = 20,
 	discovered = false,

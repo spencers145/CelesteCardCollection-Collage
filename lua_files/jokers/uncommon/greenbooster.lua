@@ -5,13 +5,6 @@ local greenbooster = {
 	key = "greenbooster",
 	config = { extra = { choices = 1 } },
 	pos = { x = 3, y = 2 },
-	loc_txt = {
-		name = 'Green Booster',
-		text = {
-			"Adds {C:attention}#1#{} extra option",
-			"to all {C:attention}Booster Packs{}"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

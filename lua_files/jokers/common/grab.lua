@@ -3,16 +3,9 @@
 local grab = {
 	name = "ccc_Grab",
 	key = "grab",
-    config = {extra = {mult = 6}},
+	config = {extra = {mult = 6}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 8, y = 7},
-	loc_txt = {
-        name = 'Grab',
-        text = {
-			"{C:mult}+#1#{} Mult if there is",
-			"a {C:attention}Joker{} to the right",
-        }
-    },
 	rarity = 1,
 	cost = 2,
 	discovered = true,

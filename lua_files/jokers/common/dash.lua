@@ -3,15 +3,9 @@
 local dash = {
 	name = "ccc_Dash",
 	key = "dash",
-    config = {extra = {mult = 1.5}},
+	config = {extra = {mult = 1.5}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 7, y = 7},
-	loc_txt = {
-        name = 'Dash',
-        text = {
-			"{X:mult,C:white} X#1#{} Mult",
-        }
-    },
 	rarity = 1,
 	cost = 2,
 	discovered = true,

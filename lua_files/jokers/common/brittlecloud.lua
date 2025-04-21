@@ -5,13 +5,6 @@ local brittlecloud = {
 	key = "brittlecloud",
 	config = { extra = { chips = 125 } },
 	pos = { x = 5, y = 4 },
-	loc_txt = {
-		name = 'Brittle Cloud',
-		text = {
-			"{C:chips}+#1#{} Chips in",
-			"{C:attention}first{} hand of round",
-		}
-	},
 	rarity = 1,
 	cost = 4,
 	discovered = true,

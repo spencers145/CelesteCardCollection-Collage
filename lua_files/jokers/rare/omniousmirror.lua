@@ -5,17 +5,6 @@ local ominousmirror = {
 	key = "ominousmirror",
 	config = { extra = { broken = false, pos_override = { x = 0, y = 2 }, prob_success = 3, prob_break = 7 } },
 	pos = { x = 0, y = 2 },
-	loc_txt = {
-		name = ('Ominous Mirror'),
-		text = {
-			"{C:green}#1# in #3#{} chance to add a",
-			"permanent, {C:dark_edition}Mirrored{} copy of",
-			"each scored card to your hand,",
-			"{C:green}#1# in #4#{} chance to {C:inactive}break{}",
-			"at end of round, becoming",
-			"a {C:attention}Broken Mirror{}"
-		}
-	},
 	rarity = 3,
 	cost = 11,
 	discovered = true,
@@ -29,15 +18,6 @@ local ominousmirror = {
 		concept = "Gappie"
 	},
     description = "1 in 3 chance to add a permanent, Mirrored copy of each scored card to your hand. 1 in 7 chance to break at the end of round becoming Broken Mirror",
-	process_loc_text = function(self)
-		SMODS.process_loc_text(G.localization.descriptions[self.set], self.key, self.loc_txt)
-		SMODS.process_loc_text(G.localization.descriptions[self.set], "Broken Mirror", {
-			name = ('Broken Mirror'),
-			text = {
-				"{C:inactive}Does nothing."
-			}
-		})
-	end,
 	afterload = function(self, card, card_table, other_card)
 		card.children.center:set_sprite_pos(card_table.ability.extra.pos_override)
 	end
@@ -125,7 +105,7 @@ end
 
 function ominousmirror.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'e_mirrored', set = 'Other' }
-	return { key = card.ability.extra.broken and "Broken Mirror" or card.config.center.key, vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.prob_success, card.ability.extra.prob_break } }
+	return { key = card.ability.extra.broken and "j_ccc_broken_mirror" or card.config.center.key, vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.prob_success, card.ability.extra.prob_break } }
 end
 
 return ominousmirror

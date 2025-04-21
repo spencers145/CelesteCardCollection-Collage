@@ -5,16 +5,6 @@ local oneup = {
 	key = "1up",
 	config = { extra = { money = 2, money_mod = 4, money_minus = 1 } },
 	pos = { x = 9, y = 3 },
-	loc_txt = {
-		name = '1UP',
-		text = {
-			"Earn {C:money}$#1#{} at end of the round.",
-			"This Joker increases by {C:money}$#2#{} when",
-			"any {C:attention}Strawberry{} is sold, then",
-			"reduces its increase by {C:money}$#3#{}",
-			"{C:inactive}(Minimum of {C:money}$1{C:inactive})",
-		}
-	},
 	rarity = 2,
 	cost = 5,
 	discovered = true,

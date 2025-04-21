@@ -6,13 +6,6 @@ local templerock = {
 	key = "templerock",
 	config = { extra = { chips = 66 } },
 	pos = { x = 8, y = 0 },
-	loc_txt = {
-		name = 'Temple Rock',
-		text = {
-			"Each {C:attention}Stone Card{} held",
-			"in hand gives {C:chips}+#1#{} chips"
-		}
-	},
 	rarity = 1,
 	cost = 4,
 	discovered = true,

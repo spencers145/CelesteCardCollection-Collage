@@ -3,16 +3,8 @@
 local iceball = {
 	name = "ccc_Iceball",
 	key = "iceball",
-    config = {extra = {active = true, xmult = 3, count = 0}},
+	config = {extra = {active = true, xmult = 3, count = 0}},
 	pos = {x = 5, y = 8},
-	loc_txt = {
-        name = 'Iceball',
-        text = {
-			"If your {C:attention}score display{} didn't",
-			"catch {C:attention}fire{} during the",
-			"{C:attention}previous{} round, {C:white,X:red}X3{} Mult",
-        }
-    },
 	rarity = 2,
 	cost = 8,
 	discovered = true,

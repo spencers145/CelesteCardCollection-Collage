@@ -51,22 +51,14 @@ end
 table.insert(trigger_effect_callbacks, virus_effect)
 
 local virus = SMODS.Back({
-    name = "ccc_Virus Deck",
-    key = "virus",
+	name = "ccc_Virus Deck",
+	key = "virus",
 	config = {virus = true},
 	pos = {x = 0, y = 0},
-	loc_txt = {
-        name = "Virus Deck",
-        text = {
-            "Each played card is retriggered",
-            "then {C:red}debuffed{}",
-	    "until the end of the ante"
-        }
-    },
-    apply = function(self)
-        G.GAME.modifiers.ccc_virus = (G.GAME.modifiers.ccc_virus or 0) + 1
-    end,
-    atlas= "b_ccc_decks",
+	apply = function(self)
+		G.GAME.modifiers.ccc_virus = (G.GAME.modifiers.ccc_virus or 0) + 1
+	end,
+	atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
 		code = "Aurora Aquir",
@@ -125,25 +117,16 @@ end
 --table.insert(trigger_effect_callbacks, summit_effect)
 
 local summit = SMODS.Back({
-    name = "ccc_Summit Deck",
-    key = "summit",
+	name = "ccc_Summit Deck",
+	key = "summit",
 	config = {joker_slot = -4, add_slot_each_ante = 1},
 	pos = {x = 1, y = 0},
-	loc_txt = {
-        name = "Summit Deck",
-        text = {
-	"{C:attention}-4{} Joker slots",
-            "{C:attention}+1{} Joker slot each Ante",
-			"without a {C:red}final boss{}",
-	    	"{s:0.75}(if Ante has not been reached before){}"
-        }
-    },
-    apply = function(self)
-        G.GAME.modifiers.ccc_summit = G.GAME.modifiers.ccc_summit or {minus = 0, add = 0}
-        G.GAME.modifiers.ccc_summit.minus = G.GAME.modifiers.ccc_summit.minus + self.config.joker_slot	-- this isn't used... oops
-        G.GAME.modifiers.ccc_summit.add = G.GAME.modifiers.ccc_summit.add + self.config.add_slot_each_ante
-    end,
-    atlas= "b_ccc_decks",
+	apply = function(self)
+		G.GAME.modifiers.ccc_summit = G.GAME.modifiers.ccc_summit or {minus = 0, add = 0}
+		G.GAME.modifiers.ccc_summit.minus = G.GAME.modifiers.ccc_summit.minus + self.config.joker_slot	-- this isn't used... oops
+		G.GAME.modifiers.ccc_summit.add = G.GAME.modifiers.ccc_summit.add + self.config.add_slot_each_ante
+	end,
+	atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
 		code = "Aurora Aquir",
@@ -156,23 +139,14 @@ local summit = SMODS.Back({
 -- region B-Side deck
 
 local bside = SMODS.Back({
-    name = "ccc_B-Side Deck",
-    key = "bside",
+	name = "ccc_B-Side Deck",
+	key = "bside",
 	config = {everything_is_boss = true},
 	pos = {x = 2, y = 0},
-	loc_txt = {
-        name = "B-Side Deck",
-        text = {
-		"Every blind is a {C:red}boss blind{}",
-		"Start from {C:attention}Ante 0{}",
-		"Skipping costs {C:red}$8{} multiplied",
-		"by ({C:attention}Current Ante{} + {C:attention}1{})",
-        }
-    },
-    apply = function(self)
-        G.GAME.modifiers.ccc_bside = (G.GAME.modifiers.ccc_bside or 0) + 1
-    end,
-    atlas= "b_ccc_decks",
+	apply = function(self)
+		G.GAME.modifiers.ccc_bside = (G.GAME.modifiers.ccc_bside or 0) + 1
+	end,
+	atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
 		code = "Aurora Aquir",
@@ -270,21 +244,14 @@ table.insert(start_run_after_callbacks, bside_start_run)
 -- region Heartside Deck
 
 local heartside = SMODS.Back({
-    name = "ccc_Heartside Deck",
-    key = "heartside",
+	name = "ccc_Heartside Deck",
+	key = "heartside",
 	config = {all_jokers_modded = true},
 	pos = {x = 3, y = 0},
-	loc_txt = {
-        name = "Heartside Deck",
-        text = {
-            "Only {C:attention}Modded{} Jokers may appear",
-			"{s:0.75}(and maybe {C:legendary,E:1,s:0.75}jimbo{}{s:0.75})"
-        }
-    },
-    apply = function(self)
-        G.GAME.modifiers.ccc_heartside = (G.GAME.modifiers.ccc_heartside or 0) + 1
-    end,
-    atlas= "b_ccc_decks",
+	apply = function(self)
+		G.GAME.modifiers.ccc_heartside = (G.GAME.modifiers.ccc_heartside or 0) + 1
+	end,
+	atlas= "b_ccc_decks",
 	credit = {
 		art = "Aurora Aquir",
 		code = "Aurora Aquir",

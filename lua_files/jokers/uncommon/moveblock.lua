@@ -3,18 +3,9 @@
 local moveblock = {
 	name = "ccc_Move Block",
 	key = "moveblock",
-    config = {extra = {mult = 0, mult_scale = 1}},
+	config = {extra = {mult = 0, mult_scale = 1}},
 	pos = {x = 5, y = 5},
 	pixel_size = { w = 71, h = 91 },
-	loc_txt = {
-        name = 'Move Block',
-        text = {
-			"{C:mult}+#1#{} Mult per discard,",
-			"{C:attention}resets{} if played hand",
-			"contains a {C:attention}Three of a Kind",
-			"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
-        }
-    },
 	rarity = 2,
 	cost = 5,
 	discovered = true,

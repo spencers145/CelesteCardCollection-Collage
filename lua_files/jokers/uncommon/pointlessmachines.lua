@@ -5,12 +5,6 @@ local pointlessmachines = {
 	key = "pointlessmachines",
 	config = { extra = { chosen = 'Spades', incorrect = false, reset = false, count = 0, req = 3, suits = { [1] = 'Hearts', [2] = 'Spades', [3] = 'Diamonds', [4] = 'Clubs', [5] = 'Hearts' } } },
 	pos = { x = 9, y = 1 },
-	loc_txt = {
-		name = 'Pointless Machines',
-		text = {
-			"Bad signal?"
-		}
-	},
 	rarity = 2,
 	cost = 4,
 	discovered = true,

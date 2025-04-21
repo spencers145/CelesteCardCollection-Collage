@@ -5,16 +5,6 @@ local purplespinner = {
 	key = "purplespinner",
 	config = { extra = { prob_success = 2 } },
 	pos = { x = 1, y = 4 },
-	loc_txt = {
-		name = 'Purple Spinner',
-		text = {
-			"When a card with a {C:tarot}Purple Seal{}",
-			"is {C:attention}held{} in hand at end of round,",
-			"{C:green}#1# in #2#{} chance to add a {C:tarot}Purple Seal{}",
-			"to each {C:attention}adjacent{} card in hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

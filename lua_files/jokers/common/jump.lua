@@ -6,12 +6,6 @@ local jump = {
 	config = { extra = { chips = 40 } },
 	pixel_size = { w = 71, h = 81 },
 	pos = { x = 9, y = 7 },
-	loc_txt = {
-		name = 'Jump',
-		text = {
-			"{C:chips}+#1#{} Chips",
-		}
-	},
 	rarity = 1,
 	cost = 2,
 	discovered = true,

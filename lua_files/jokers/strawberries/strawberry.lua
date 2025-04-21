@@ -5,14 +5,6 @@ local strawberry = {
 	key = "strawberry",
 	config = { extra = { money = 7, money_reduce = 1 } },
 	pos = { x = 1, y = 1 },
-	loc_txt = {
-		name = 'Strawberry',
-		text = {
-			"Earn {C:money}$#1#{} at end of",
-			"round, reduces by {C:money}$#2#{}",
-			"upon cashing out"
-		}
-	},
 	rarity = 1,
 	cost = 6,
 	discovered = true,

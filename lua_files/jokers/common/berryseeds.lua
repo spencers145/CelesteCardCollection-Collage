@@ -3,17 +3,8 @@
 local berryseeds = {
 	name = "ccc_Berry Seeds",
 	key = "berryseeds",
-    config = {extra = {suit = 'Spades', count = 0, req = 8}},
+	config = {extra = {suit = 'Spades', count = 0, req = 8}},
 	pos = {x = 4, y = 7},
-	loc_txt = {
-        name = 'Berry Seeds',
-        text = {
-			"After scoring {C:attention}#2#{} {V:1}#3#{} cards,",
-			"sell this card to {C:attention}create{}",
-			"a random {C:attention}Strawberry{}",
-			"{C:inactive}(Currently {C:attention}#1#{C:inactive}/#2#)",
-        }
-    },
 	rarity = 1,
 	cost = 2,
 	discovered = true,

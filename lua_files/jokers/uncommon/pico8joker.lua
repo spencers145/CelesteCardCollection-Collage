@@ -3,15 +3,8 @@
 local picojoker = {
 	name = "ccc_PICO-8 Joker",
 	key = "pico8joker",
-    config = {extra = {}},
+	config = {extra = {}},
 	pos = {x = 1, y = 7},
-	loc_txt = {
-        name = 'PICO-8 Joker',
-        text = {
-			"Retrigger each",
-			"played {C:attention}Ace{}, {C:attention}8{}, or {C:attention}6{}",
-        }
-    },
 	rarity = 2,
 	cost = 4,
 	discovered = true,

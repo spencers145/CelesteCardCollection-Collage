@@ -3,16 +3,8 @@
 local crumblejoker = {
 	name = "ccc_Crumble Joker",
 	key = "crumblejoker",
-    config = {extra = {xmult = 2}},
+	config = {extra = {xmult = 2}},
 	pos = {x = 3, y = 7},
-	loc_txt = {
-        name = 'Crumble Joker',
-        text = {
-			"Played {C:attention}Stone Cards",
-			"each give {X:mult,C:white} X#1# {} Mult",
-			"and are {C:red}destroyed{}",
-        }
-    },
 	rarity = 2,
 	cost = 5,
 	discovered = true,

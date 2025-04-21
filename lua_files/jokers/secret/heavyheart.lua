@@ -5,16 +5,6 @@ local heavyheart = {
 	key = "heavyheart",
 	config = { extra = { money = 2 } },
 	pos = { x = 2, y = 8 },
-	loc_txt = {
-		name = 'Heavy Heart',
-		text = {
-			"If played hand is a",
-			"single {C:attention}Ace{} of {C:diamonds}Diamonds{},",
-			"earn {C:money}$#1#{} for each",
-			"card held in hand",
-			"{C:inactive,s:0.87}(Unaffected by retriggers){}"
-		}
-	},
 	rarity = 'ccc_secret',
 	cost = 15,
 	discovered = false,

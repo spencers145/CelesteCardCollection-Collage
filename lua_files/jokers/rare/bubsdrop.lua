@@ -3,17 +3,9 @@
 local bubsdrop = {
 	name = "ccc_Bubsdrop",
 	key = "bubsdrop",
-    config = {extra = {ante = 1, money = 15}},
+	config = {extra = {ante = 1, money = 15}},
 	pixel_size = { w = 71, h = 81 },
 	pos = {x = 7, y = 6},
-	loc_txt = {
-        name = 'Bubsdrop',
-        text = {
-			"On defeat of {C:attention}Boss Blind{},",
-			"{C:red}-$#2#{} and {C:attention}-#1#{} Ante, then",
-			"{C:red}disable{} this card",
-        }
-    },
 	rarity = 3,
 	cost = 10,
 	discovered = true,

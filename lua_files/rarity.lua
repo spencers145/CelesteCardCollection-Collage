@@ -5,7 +5,6 @@ SMODS.Gradient({
 })
 SMODS.Rarity({
     key="secret",
-    loc_txt = {name = 'Secret'},
     badge_colour=SMODS.Gradients.ccc_secret,
 })
 
@@ -17,7 +16,6 @@ SMODS.Gradient({
 })
 SMODS.Rarity({
     key="what",
-    loc_txt = {name = '???'},
     badge_colour=SMODS.Gradients.ccc_what,
     default_weight=0.033
 })

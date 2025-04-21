@@ -5,14 +5,6 @@ local slightmiscalculation ={
 	key = "slightmiscalculation",
     config = {extra = {mult = 9}},
 	pos = {x = 9, y = 5},
-	loc_txt = {
-        name = 'Slight Miscalculation',
-        text = {
-			"{C:mult}+#1#{} Mult if {C:attention}scoring hand{} starts",
-			"and ends with the {C:attention}same{} rank",
-			"{C:inactive}(ex: 3, 7, 7, 3)"
-        }
-    },
 	rarity = 1,
 	cost = 3,
 	discovered = true,

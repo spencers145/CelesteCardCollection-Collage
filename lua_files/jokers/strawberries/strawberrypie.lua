@@ -5,16 +5,6 @@ local strawberrypie = {
 	key = "strawberrypie",
 	config = { extra = { mult = 45, chips = 120, xmult = 5 } },
 	pos = { x = 8, y = 5 },
-	loc_txt = {
-		name = 'Strawberry Pie',
-		text = {
-			"Grants a large bonus",
-			"based on current {C:money}money{}:", -- scuffed text centering
-			"  {C:white}ii{}{C:money}$30{}-{C:money}$79{}: {C:chips}+#1#{} Chips",
-			"{C:money}$80{}-{C:money}$174{}: {C:mult}+#2#{} Mult",
-			"   {C:money}$175+{}: {X:mult,C:white} X#3# {} Mult{C:white}i{}",
-		}
-	},
 	rarity = 3,
 	cost = 13,
 	discovered = true,

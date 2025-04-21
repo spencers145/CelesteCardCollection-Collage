@@ -5,16 +5,6 @@ local thecrowd = {
 	key = "thecrowd",
 	config = { extra = { xmult = 1.1, money = 1 } },
 	pos = { x = 7, y = 5 },
-	loc_txt = {
-		name = 'The Crowd',
-		text = {
-			"If played hand contains a",
-			"{C:attention}Five of a Kind{}, {C:attention}scoring{} cards",
-			"give {C:money}$#2#{}. Afterwards, create the",
-			"played poker hand's {C:planet}Planet{} card",
-			"{C:inactive}(Must have room){}",
-		}
-	},
 	rarity = 3,
 	cost = 12,
 	discovered = true,

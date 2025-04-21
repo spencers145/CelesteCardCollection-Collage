@@ -5,15 +5,6 @@ local waterfall = {
 	key = "waterfall",
 	config = {},
 	pos = { x = 5, y = 2 },
-	loc_txt = {
-		name = 'Waterfall',
-		text = {
-			"If played hand contains a",
-			"{C:attention}Flush{}, convert a random",
-			"card {C:attention}held{} in hand to",
-			"the same {C:attention}suit{}"
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

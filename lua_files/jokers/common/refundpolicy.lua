@@ -3,18 +3,10 @@
 local refundpolicy = {
 	name = "ccc_Refund Policy",
 	key = "refundpolicy",
-	config = { },
+	config = { extra = { refund = 75 } },
 	pos = { x = 4, y = 8 },
-	loc_txt = {
-		name = 'Refund Policy',
-		text = {
-			"On skipping a {C:attention}Booster Pack{},",
-			"gain a {C:money}50% {C:attention}refund",
-			"{C:inactive,s:0.8}(Rounded down){}",
-		}
-	},
 	rarity = 1,
-	cost = 3,
+	cost = 4,
 	discovered = true,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -25,16 +17,21 @@ local refundpolicy = {
 		code = "toneblock",
 		concept = "Bred"
 	},
-    description = "On skipping a Booster Pack, gain a 50% refund"
+    description = "On skipping a Booster Pack, gain a 75% refund"
 }
 
 refundpolicy.calculate = function(self, card, context)
 	if context.skipping_booster then
 		if context.booster.cost > 0 then
-			return {dollars = math.max(1, math.floor(context.booster.cost/2))}
+			return {dollars = math.max(1, math.floor(context.booster.cost*card.ability.extra.refund))}
 		end
 	end
 end
+
+function refundpolicy.loc_vars(self, info_queue, card)
+	return { vars = { card.ability.extra.refund } }
+end
+
 
 return refundpolicy
 -- endregion Refund Policy

@@ -5,16 +5,6 @@ local towels = {
 	key = "towels",
 	config = { extra = { chips = 0, chips_scale = 7 } },
 	pos = { x = 0, y = 3 },
-	loc_txt = {
-		name = 'Huge Mess: Towels',
-		text = {
-			"When played hand contains a",
-			"{C:attention}Flush{}, gains {C:chips}+#2#{} Chips for",
-			"each card held in hand that",
-			"shares the same {C:attention}suit{}",
-			"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,

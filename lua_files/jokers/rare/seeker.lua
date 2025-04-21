@@ -6,15 +6,6 @@ local seeker = {
 	key = "seeker",
 	config = { extra = { suit = "Hearts", rank = "Ace" } },
 	pos = { x = 6, y = 4 },
-	loc_txt = {
-		name = 'Seeker',
-		text = {
-			"If card is drawn {C:attention}face up{} and",
-			"is not most owned {C:attention}rank{} ({C:attention}#1#{})",
-			"or {C:attention}suit{} ({V:1}#2#{}), reshuffle",
-			"it into {C:attention}deck{} and {C:attention}draw another"
-		}
-	},
 	rarity = 3,
 	cost = 10,
 	discovered = true,

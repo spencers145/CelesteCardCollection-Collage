@@ -3,17 +3,8 @@
 local eventhorizon = {
 	name = "ccc_Event Horizon",
 	key = "eventhorizon",
-	config = { extra = { uses = 0 } },
+	config = { extra = { count = 0, req = 4 } },
 	pos = { x = 8, y = 4 },
-	loc_txt = {
-		name = 'Event Horizon',
-		text = {
-			"Every {C:attention}5th{} {C:planet}Planet{} card",
-			"used acts as a",
-			"{C:legendary,E:1,S:1.1}Black Hole{}",
-			"{C:inactive}(Currently {C:attention}#1#{C:inactive}/{C:attention}5{C:inactive})"
-		}
-	},
 	rarity = 2,
 	cost = 7,
 	discovered = true,
@@ -31,58 +22,42 @@ local eventhorizon = {
 
 eventhorizon.calculate = function(self, card, context)
 	if context.using_consumeable then
-		if context.consumeable.ability.set == 'Planet' and not context.blueprint then
-			if card.ability.extra.uses < 3 then
+		if context.consumeable.ability.set == 'Planet' and not context.blueprint and card.ability.extra.count < card.ability.extra.req then
+			card.ability.extra.count = card.ability.extra.count + 1
+			if (card.ability.extra.count >= card.ability.extra.req) and not card.ccc_juiced then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.0,
+					func = (function()
+						local eval = function(_card) return _card.ability.extra.count >= _card.ability.extra.req end
+						juice_card_until(card, eval, true)
+						return true
+					end)
+				}))
+				card.ccc_juiced = true	-- doesn't get saved but neither does juice_card_until
+			end
+			if (card.ability.extra.count <= card.ability.extra.req) then
 				return {
-					G.E_MANAGER:add_event(Event({
-						trigger = 'after',
-						func = function()
-							card.ability.extra.uses = card.ability.extra.uses + 1
-							card_eval_status_text(card, 'extra', nil, nil, nil,
-								{ message = card.ability.extra.uses .. "/5", colour = G.C.FILTER })
-							return true
-						end
-					})),
+					message = (card.ability.extra.count < card.ability.extra.req) and (card.ability.extra.count..'/'..card.ability.extra.req) or localize('k_active_ex'),
+					colour = G.C.FILTER,
+					card = card
 				}
 			end
-			if card.ability.extra.uses == 3 then
-				return {
-					G.E_MANAGER:add_event(Event({
-						trigger = 'after',
-						func = function()
-							card.ability.extra.uses = card.ability.extra.uses + 1
-							card_eval_status_text(card, 'extra', nil, nil, nil,
-								{ message = localize('k_active_ex'), colour = G.C.FILTER })
-							ccc_GLOBAL_eventhorizon_override = (0 or ccc_GLOBAL_eventhorizon_override) + 1
-							return true
-						end
-					})),
-				}
-			end
-			if card.ability.extra.uses == 4 then
-				card:juice_up()
-				card.ability.extra.uses = 0
-				return {
-					G.E_MANAGER:add_event(Event({
-						trigger = 'after',
-						func = function()
-							if card.ability.extra.uses == 0 then
-								ccc_GLOBAL_eventhorizon_override = ccc_GLOBAL_eventhorizon_override - 1
-							end
-							card_eval_status_text(card, 'extra', nil, nil, nil,
-								{ message = localize('k_reset'), colour = G.C.FILTER })
-							return true
-						end
-					})),
-				}
-			end
+		end
+	elseif context.ccc_event_horizon and card.ability.extra.count >= card.ability.extra.req and not context.blueprint then
+		if not context.planet.event_horizoned then
+			card.ability.extra.count = card.ability.extra.count - card.ability.extra.req
+			context.planet.event_horizoned = true
+			card:juice_up()
 		end
 	end
 end
 
+
+
 function eventhorizon.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = G.P_CENTERS.c_black_hole
-	return { vars = { card.ability.extra.uses } }
+	return { vars = { card.ability.extra.count, card.ability.extra.req } }
 end
 
 return eventhorizon

@@ -5,14 +5,6 @@ local bumper = {
 	key = "bumper",
 	config = { extra = { mult = 16, chips = 60 } },
 	pos = { x = 7, y = 1 },
-	loc_txt = {
-		name = 'Bumper',
-		text = {
-			"If {C:mult}discards{} {C:attention}>{} {C:chips}hands{}, {C:mult}+#1#{} Mult",
-			"If {C:chips}hands{} {C:attention}>{} {C:mult}discards{}, {C:chips}+#2#{} Chips",
-			"If both are {C:attention}equal{}, does {C:inactive}nothing{}"
-		}
-	},
 	rarity = 1,
 	cost = 5,
 	discovered = true,

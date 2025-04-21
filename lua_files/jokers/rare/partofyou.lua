@@ -5,15 +5,6 @@ local partofyou = {
 	key = "partofyou",
 	config = {},
 	pos = { x = 3, y = 0 },
-	loc_txt = {
-		name = 'Part Of You',
-		text = {
-			"If {C:attention}first hand{} of round",
-			"contains exactly {C:attention}2{} cards,",
-			"convert their {C:attention}ranks{} into",
-			"their {C:dark_edition}Mirrored{} {C:attention}complements{}",
-		}
-	},
 	rarity = 3,
 	cost = 7,
 	discovered = true,

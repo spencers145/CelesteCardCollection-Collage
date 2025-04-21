@@ -3,15 +3,8 @@
 local v_gondola = SMODS.Voucher({
 	name = "ccc_Fast Track",
 	key = "gondola",  -- ACTUAL KEY IS "v_ccc_gondola"
-    config = {extra = 1},
+	config = {extra = 1},
 	pos = {x = 0, y = 0},
-	loc_txt = {
-        name = 'Fast Track',
-        text = {
-	"{C:attention}+1{} Ante",
-	"Blinds require {C:red}30%{} less chips"
-        }
-    },
 	cost = 10,
 	discovered = true,
 	unlocked = true,
@@ -54,14 +47,8 @@ end
 local v_feather = SMODS.Voucher({
 	name = "ccc_Mindfulness",
 	key = "feather", -- ACTUAL KEY IS "v_ccc_feather"
-    config = {},
+	config = {},
 	pos = {x = 0, y = 1},
-	loc_txt = {
-        name = 'Mindfulness',
-        text = {
-	"Blinds require {C:red}30%{} less chips"
-        }
-    },
 	cost = 10,
 	discovered = true,
 	unlocked = true,

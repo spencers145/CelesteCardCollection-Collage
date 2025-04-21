@@ -5,15 +5,6 @@ local templeeyes = {
 	key = "templeeyes",
 	config = { extra = { max_money = 9 } },
 	pos = { x = 1, y = 0 },
-	loc_txt = {
-		name = 'Temple Eyes',
-		text = {
-			"If {C:attention}Blind{} is selected with",
-			"{C:money}$#1#{} or less, create a",
-			"{C:tarot}Hanged Man{}",
-			"{C:inactive}(Must have room)"
-		}
-	},
 	rarity = 2,
 	cost = 6,
 	discovered = true,

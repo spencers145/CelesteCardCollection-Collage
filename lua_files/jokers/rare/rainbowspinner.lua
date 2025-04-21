@@ -6,13 +6,6 @@ local rainbowspinner = {
 	key = "rainbowspinner",
 	config = {},
 	pos = { x = 3, y = 4 },
-	loc_txt = {
-		name = 'Rainbow Spinner',
-		text = {
-			"{C:money}Gold Seals{} act as",
-			"{C:attention}every{} {C:money}s{C:red}e{C:tarot}a{C:planet}l"
-		}
-	},
 	rarity = 3,
 	cost = 11,
 	discovered = true,
