@@ -23,7 +23,7 @@ local refundpolicy = {
 refundpolicy.calculate = function(self, card, context)
 	if context.skipping_booster then
 		if context.booster.cost > 0 then
-			return {dollars = math.max(1, math.floor(context.booster.cost*card.ability.extra.refund))}
+			return {dollars = math.max( 1, math.floor( context.booster.cost*(card.ability.extra.refund/100) ) )}
 		end
 	end
 end
