@@ -37,8 +37,8 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/button_callbacks.lua"
-pattern = "G.deck:shuffle('cashout'..G.GAME.round_resets.ante)"
-position = "after"
+pattern = "G.deck:hard_set_T()"
+position = "before"
 payload = '''
 for i = 1, #G.jokers.cards do
 	G.jokers.cards[i]:calculate_joker({ccc_cash_out = true})
