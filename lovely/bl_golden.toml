@@ -121,7 +121,6 @@ else
 	if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
 		G.GAME.ccc_bonus_blind:alert_debuff(true)
 	end
-	SMODS.calculate_context({setting_blind = true, blind = G.GAME.round_resets.blind})
 	
 	-- TARGET: setting_blind effects
 	delay(0.4)
