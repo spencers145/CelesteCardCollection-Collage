@@ -149,11 +149,6 @@ return {
 					"drawn face down",
 				},
 			},
-			["bl_wheel"] = {
-				["text"] = {
-					"#1# in 7 cards get",
-				},
-			},
 			["bl_ccc_gap"] = {
 				["name"] = "The Gap",
 				["text"] = {
