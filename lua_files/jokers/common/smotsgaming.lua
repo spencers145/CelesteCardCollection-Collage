@@ -136,5 +136,13 @@ function smotsgaming.in_pool(self)
 	return false
 end
 
+local gfcfbs = G.FUNCS.check_for_buy_space
+G.FUNCS.check_for_buy_space = function(card)
+	if (card.ability.name == "ccc_smots gaming" and card.ability.extra.slot >= 1) then
+		return true
+	end
+	return gfcfbs(card)
+end
+
 return smotsgaming
 -- endregion smots gaming
