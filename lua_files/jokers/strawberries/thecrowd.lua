@@ -65,7 +65,7 @@ thecrowd.calculate = function(self, card, context)
 			]]
 		end
 	end
-	if context.individual and not context.blueprint then
+	if context.individual then
 		if context.cardarea == G.play then
 			if (next(context.poker_hands['Five of a Kind'])) then
 				return {
