@@ -60,6 +60,10 @@ strawberry.calculate = function(self, card, context)
 	end
 end
 
+strawberry.calc_dollar_bonus = function(self, card)
+	return card.ability.extra.money
+end
+
 function strawberry.loc_vars(self, info_queue, card)
 	return { vars = { card.ability.extra.money, card.ability.extra.money_reduce } }
 end

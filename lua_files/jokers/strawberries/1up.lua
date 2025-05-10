@@ -48,6 +48,10 @@ oneup.calculate = function(self, card, context)
 	end
 end
 
+oneup.calc_dollar_bonus = function(self, card)
+	return card.ability.extra.money
+end
+
 function oneup.loc_vars(self, info_queue, card)
 	return { vars = { card.ability.extra.money, card.ability.extra.money_mod, card.ability.extra.money_minus } }
 end

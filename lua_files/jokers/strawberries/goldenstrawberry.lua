@@ -45,6 +45,12 @@ goldenstrawberry.calculate = function(self, card, context)
 	end
 end
 
+goldenstrawberry.calc_dollar_bonus = function(self, card)
+	if card.ability.extra.after_boss == true then 
+		return card.ability.extra.money
+	end
+end
+
 function goldenstrawberry.loc_vars(self, info_queue, card)
 	return { vars = { card.ability.extra.money } }
 end

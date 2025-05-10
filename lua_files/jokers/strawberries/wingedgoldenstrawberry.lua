@@ -71,6 +71,14 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 	end
 end
 
+wingedgoldenstrawberry.calc_dollar_bonus = function(self, card)
+	if card.ability.extra.after_boss == true then
+		if card.ability.extra.condition_satisfied == true then
+			return card.ability.extra.money
+		end
+	end
+end
+
 function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
 	return { vars = { card.ability.extra.winged_poker_hand, card.ability.extra.money } }
 end
