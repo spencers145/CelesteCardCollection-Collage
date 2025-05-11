@@ -42,9 +42,11 @@ secretshrine.calculate = function(self, card, context)
 end
 
 function secretshrine.loc_vars(self, info_queue, card)
-	card.ability.extra.seven_tally = 0
-	for k, v in pairs(G.playing_cards) do
-		if v:get_id() == 7 then card.ability.extra.seven_tally = card.ability.extra.seven_tally+1 end
+	if G.STAGE == G.STAGES.RUN then
+		card.ability.extra.seven_tally = 0
+		for k, v in pairs(G.playing_cards) do
+			if v:get_id() == 7 then card.ability.extra.seven_tally = card.ability.extra.seven_tally+1 end
+		end
 	end
 	return { vars = { card.ability.extra.factor * card.ability.extra.seven_tally, card.ability.extra.factor } }
 end
