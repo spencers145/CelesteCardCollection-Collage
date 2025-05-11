@@ -204,7 +204,7 @@ return {
 				["name"] = "Collapsing Bridge",
 				["text"] = {
 					"If played hand contains a",
-					"{C:attention}Straight{}, {X:mult,C:white} X#2# {} Mult, and all",
+					"{C:attention}Straight{}: {X:mult,C:white} X#2# {} Mult, and all",
 					"{C:attention}played{} cards have a {C:green}#1# in #3#{}",
 					"chance of being {C:red}destroyed{}",
 				},
