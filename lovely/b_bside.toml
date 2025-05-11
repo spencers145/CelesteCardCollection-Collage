@@ -1078,3 +1078,16 @@ end
 '''
 match_indent = true
 
+# fix bug or something
+# i frankly don't know why it broke and i frankly don't know why this fixes it
+[[patches]]
+[patches.pattern]
+target = "blind.lua"
+pattern = '''
+if self.dollars > 0 then
+'''
+position = "at"
+payload = '''
+if self.dollars and (self.dollars > 0) then
+'''
+match_indent = true

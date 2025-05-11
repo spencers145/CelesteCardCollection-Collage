@@ -3,7 +3,7 @@
 local collapsingbridge = {
 	name = "ccc_Collapsing Bridge",
 	key = "collapsingbridge",
-	config = { extra = { xmult = 5, prob_success = 5 } },
+	config = { extra = { xmult = 5, prob_success = 3 } },
 	pos = { x = 8, y = 1 },
 	rarity = 3,
 	cost = 8,
@@ -17,7 +17,7 @@ local collapsingbridge = {
 		code = "toneblock",
 		concept = "Gappie"
 	},
-    description = "X5 Mult when played hand contains a Straight. All played cards have a 1 in 5 chance of being destroyed"
+    description = "if played hand contains a Straigh, X5 Mult and all played cards have a 1 in 3 chance of being destroyed"
 }
 
 collapsingbridge.calculate = function(self, card, context)
@@ -34,7 +34,7 @@ collapsingbridge.calculate = function(self, card, context)
 		end
 	end
 
-	if context.destroying_card and (context.cardarea == G.play or context.cardarea == "unscored") then
+	if context.destroying_card and (context.cardarea == G.play or context.cardarea == "unscored") and next(context.poker_hands['Straight']) then
 		if pseudorandom('bridge') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
 			return { remove = true }
 		end

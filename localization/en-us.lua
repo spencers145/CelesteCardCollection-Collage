@@ -203,9 +203,9 @@ return {
 			["j_ccc_collapsingbridge"] = {
 				["name"] = "Collapsing Bridge",
 				["text"] = {
-					"{X:mult,C:white} X#2# {} Mult when played hand",
-					"contains a {C:attention}Straight{}",
-					"All {C:attention}played{} cards have a {C:green}#1# in #3#{}",
+					"If played hand contains a",
+					"{C:attention}Straight{}, {X:mult,C:white} X#2# {} Mult, and all",
+					"{C:attention}played{} cards have a {C:green}#1# in #3#{}",
 					"chance of being {C:red}destroyed{}",
 				},
 			},
