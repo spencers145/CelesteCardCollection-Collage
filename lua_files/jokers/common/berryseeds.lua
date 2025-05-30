@@ -21,11 +21,7 @@ local berryseeds = {
 }
 
 berryseeds.set_ability = function(self, card, initial, delay_sprites)
-	local suits = {}
-	for k, v in pairs(SMODS.Suits) do
-		suits[#suits+1] = v.key
-	end
-	card.ability.extra.suit = pseudorandom_element(suits, pseudoseed('berryseeds'))
+	card.ability.extra.suit = pseudorandom_element(SMODS.Suits, pseudoseed('berryseeds')).key
 end
 
 berryseeds.calculate = function(self, card, context)
