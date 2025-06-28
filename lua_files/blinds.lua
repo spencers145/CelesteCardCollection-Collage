@@ -310,7 +310,7 @@ local goldencrown = SMODS.Blind{
 	key = 'goldencrown',
 	atlas = 'bl_ccc_blinds',
 	pos = {x = 0, y = 9},
-	dollars = 5, 
+	dollars = 8, 
 	mult = 2.5, 
 	vars = {extra = 3}, 
 	debuff = {},
