@@ -29,32 +29,32 @@ bluespinner.calculate = function(self, card, context)
 			rainbow_spinner_seal_override = false
 		end
 		bluespinner_seal_candidates = {}
+		local function check(_card)
+			if _card.seal == 'Blue' or (rainbow_spinner_seal_override == true and _card.seal == 'Gold') then
+				if SMODS.pseudorandom_probability(card, 'blue_spinner', 1, card.ability.extra.prob_success) then
+					return true
+				end
+			end
+			return false
+		end
 		for k = 1, #context.scoring_hand do
 			if k == 1 then
 				if k ~= #context.scoring_hand then
-					if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-						if pseudorandom('bloo1') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
-						end
+					if check(context.scoring_hand[k + 1]) then
+						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				end
 			elseif k == #context.scoring_hand then
 				if k ~= 1 then
-					if context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-						if pseudorandom('bloo2') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
-						end
+					if check(context.scoring_hand[k - 1]) then
+						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 					end
 				end
 			else
-				if context.scoring_hand[k + 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k + 1].seal == 'Gold') then
-					if pseudorandom('bloo3') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
-					end
-				elseif context.scoring_hand[k - 1].seal == 'Blue' or (rainbow_spinner_seal_override == true and context.scoring_hand[k - 1].seal == 'Gold') then
-					if pseudorandom('bloo4') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
-					end
+				if check(context.scoring_hand[k + 1]) then
+					bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
+				elseif check(context.scoring_hand[k - 1]) then
+					bluespinner_seal_candidates[#bluespinner_seal_candidates + 1] = context.scoring_hand[k]
 				end
 			end
 		end
@@ -82,7 +82,8 @@ end
 
 function bluespinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'blue_seal', set = 'Other' }
-	return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success } }
+	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'blue_spinner')
+	return { vars = { numerator, denominator } }
 end
 
 function bluespinner.in_pool(self)

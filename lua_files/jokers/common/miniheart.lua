@@ -25,7 +25,7 @@ miniheart.calculate = function(self, card, context)
 		local applied = false
 		for i, v in ipairs(context.scoring_hand) do
 			if not v.edition then
-				if pseudorandom('crystal') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
+				if SMODS.pseudorandom_probability(card, 'mini_heart', 1, card.ability.extra.prob_success) then
 					applied = true
 					v:set_edition({ foil = true })
 					if context.blueprint then -- idk why i need to put blueprint check here, should work without? but it doesn't
@@ -42,7 +42,8 @@ end
 
 function miniheart.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = G.P_CENTERS.e_foil
-	return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success } }
+        local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'mini_heart')
+        return { vars = { numerator, denominator } }
 end
 
 return miniheart

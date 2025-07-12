@@ -19,20 +19,3 @@ else
 end
 '''
 match_indent = true
-
-# sustain glass cards
-# patching smods for this
-# the problem is that this does a bunch of things like sixth sense, but any other patches specifically to glass destroy will nuke mod compatibility... whatever, nobody will notice
-[[patches]]
-[patches.pattern]
-target = '''=[SMODS _ "src/utils.lua"]'''
-pattern = "-- TARGET: card destroyed"
-position = "after"
-payload = '''
-if next(SMODS.find_card('j_ccc_badeline')) then
-	if SMODS.has_enhancement(card, 'm_glass') then
-		destroyed = false
-	end
-end
-'''
-match_indent = true

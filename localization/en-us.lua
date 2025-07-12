@@ -532,10 +532,10 @@ return {
 				["text"] = {
 					"Forces 1 card to",
 					"{C:attention}always{} be selected",
-					"Adds {C:green}+#1#{} to {C:attention}listed{} {C:green,E:1}probabilities{}",
+					"{C:green}#1#{} to {C:green,E:1}denominators{}",
 					"on defeat of {C:attention}Boss Blind",
-					"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}3 in 7{C:inactive})",
-					"{C:inactive}(Currently {C:green}+#2#{C:inactive})",
+					"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}2 in #3#{C:inactive})",
+					"{C:inactive}(Currently {C:green}#2#{C:inactive})",
 				},
 			},
 			["j_ccc_checkpoint"] = {
@@ -595,10 +595,10 @@ return {
 			["j_ccc_ominousmirror"] = {
 				["name"] = "Ominous Mirror",
 				["text"] = {
-					"{C:green}#1# in #3#{} chance to add a",
+					"{C:green}#1# in #2#{} chance to add a",
 					"permanent, {C:dark_edition}Mirrored{} copy of",
 					"each scored card to your hand,",
-					"{C:green}#1# in #4#{} chance to {C:inactive}break{}",
+					"{C:green}#3# in #4#{} chance to {C:inactive}break{}",
 					"at end of round, becoming",
 					"a {C:attention}Broken Mirror{}",
 				},

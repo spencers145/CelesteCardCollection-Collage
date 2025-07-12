@@ -190,7 +190,6 @@ function Card:set_ability(center, initial, delay_sprites)
 		elseif k == 'j_ccc_checkpoint' then
 			self.ability.extra.xmult_scale = self.ability.extra.xmult_scale/2
 		elseif k == 'j_ccc_theocrystal' then
-			self.ability.extra.base_scale = self.ability.extra.base_scale/2
 			self.ability.extra.scale = self.ability.extra.scale/2
 		end
 	end

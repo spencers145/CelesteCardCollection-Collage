@@ -57,6 +57,12 @@ badeline.calculate = function(self, card, context)
 			}
 		end
 	end
+	if context.fix_probability and context.identifier == 'glass' and not context.blueprint then
+		return {
+			numerator = 0,
+			denominator = math.max(1, context.denominator)
+		}
+	end
 end
 
 function badeline.loc_vars(self, info_queue, card)

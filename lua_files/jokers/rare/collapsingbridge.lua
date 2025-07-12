@@ -35,14 +35,15 @@ collapsingbridge.calculate = function(self, card, context)
 	end
 
 	if context.destroying_card and (context.cardarea == G.play or context.cardarea == "unscored") and next(context.poker_hands['Straight']) then
-		if pseudorandom('bridge') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
+		if SMODS.pseudorandom_probability(card, 'collapsing_bridge', 1, card.ability.extra.prob_success) then
 			return { remove = true }
 		end
 	end
 end
 
 function collapsingbridge.loc_vars(self, info_queue, card)
-	return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.xmult, card.ability.extra.prob_success } }
+	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'collapsing_bridge')
+	return { vars = { numerator, card.ability.extra.xmult, denominator } }
 end
 
 return collapsingbridge

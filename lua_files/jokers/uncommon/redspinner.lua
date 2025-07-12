@@ -29,32 +29,32 @@ redspinner.calculate = function(self, card, context)
 			rainbow_spinner_seal_override = false
 		end
 		redspinner_seal_candidates = {}
+		local function check(_card)
+			if _card.seal == 'Red' or (rainbow_spinner_seal_override == true and _card.seal == 'Gold') then
+				if SMODS.pseudorandom_probability(card, 'red_spinner', 1, card.ability.extra.prob_success) then
+					return true
+				end
+			end
+			return false
+		end
 		for k = 1, #G.hand.highlighted do
 			if k == 1 then
 				if k ~= #G.hand.highlighted then
-					if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-						if pseudorandom('RED1') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
-						end
+					if check(G.hand.highlighted[k + 1]) then
+						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				end
 			elseif k == #G.hand.highlighted then
 				if k ~= 1 then
-					if G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-						if pseudorandom('redge2') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
-						end
+					if check(G.hand.highlighted[k - 1]) then
+						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 					end
 				end
 			else
-				if G.hand.highlighted[k + 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k + 1].seal == 'Gold') then
-					if pseudorandom('reeeeeeeed3') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
-					end
-				elseif G.hand.highlighted[k - 1].seal == 'Red' or (rainbow_spinner_seal_override == true and G.hand.highlighted[k - 1].seal == 'Gold') then
-					if pseudorandom('dontknowhattoputhere4') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
-					end
+				if check(G.hand.highlighted[k + 1]) then
+					redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
+				elseif check(G.hand.highlighted[k - 1]) then
+					redspinner_seal_candidates[#redspinner_seal_candidates + 1] = G.hand.highlighted[k]
 				end
 			end
 		end
@@ -82,7 +82,8 @@ end
 
 function redspinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'red_seal', set = 'Other' }
-	return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success } }
+	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'red_spinner')
+	return { vars = { numerator, denominator } }
 end
 
 function redspinner.in_pool(self)

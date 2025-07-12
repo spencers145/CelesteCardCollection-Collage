@@ -3,30 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# injecting into card:update to deal with oops shenanigans 
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = "self.ability.mult = sell_cost"
-position = "after"
-payload = '''
-end
-if self.ability.name == 'ccc_Theo Crystal' then
-	local oops_factor = 1
-	if G.jokers ~= nil then
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i].ability.set == 'Joker' then
-				if G.jokers.cards[i].ability.name == 'Oops! All 6s' then
-					oops_factor = oops_factor*2
-				end
-			end
-		end
-	end
-	self.ability.extra.probs = self.ability.extra.base_probs*oops_factor
-	self.ability.extra.scale = self.ability.extra.base_scale*oops_factor
-'''
-match_indent = true
-
 # HUIGDNOOIYOJDHIVGHIKJOLIKJPSHUGDYVGHUKHBIVG WHY AM I INJECTING BLIND.LUA???? FOR A JOKER???? THIS RUNS EVERY TIME A HAND IS DRAWN?? I HATE THIS
 # ok this isn't that bad
 [[patches]]
@@ -51,7 +27,17 @@ if next(SMODS.find_card('j_ccc_theocrystal')) then
 			temp_hand[#temp_hand+1] = v
 		end
 	end
-	table.sort(temp_hand, function (a, b) return not a.playing_card or not b.playing_card or a.playing_card < b.playing_card end)
+	table.sort(temp_hand, function(a, b)
+		if (not a.playing_card) and (not b.playing_card) then
+			return false  -- consider them equal
+		elseif (not a.playing_card) then
+			return false
+		elseif (not b.playing_card) then
+			return true
+		else
+			return a.playing_card < b.playing_card
+		end
+	end)
 	pseudoshuffle(temp_hand, pseudoseed('theocrystal'))
 	
 	local count = math.min(5, math.min(#temp_hand, count))

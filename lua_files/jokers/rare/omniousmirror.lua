@@ -34,7 +34,7 @@ ominousmirror.calculate = function(self, card, context)
 		if not context.repetition and not context.individual and card.ability.extra.broken == false then
 			local _cards = {}
 			for k, v in ipairs(context.scoring_hand) do
-				if pseudorandom('ominous') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
+				if SMODS.pseudorandom_probability(card, 'ominous_copy', 1, card.ability.extra.prob_success) then
 					local _card = copy_card(v, nil, nil, G.playing_card)
 					_cards[#_cards + 1] = _card
 					_card.states.visible = nil
@@ -62,7 +62,7 @@ ominousmirror.calculate = function(self, card, context)
 		end
 	end
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and card.ability.extra.broken == false then
-		if pseudorandom('oopsidroppedit') < G.GAME.probabilities.normal / card.ability.extra.prob_break then
+		if SMODS.pseudorandom_probability(card, 'ominous_break', 1, card.ability.extra.prob_break) then
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
 				delay = 0.3,
@@ -105,7 +105,9 @@ end
 
 function ominousmirror.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'e_mirrored', set = 'Other' }
-	return { key = card.ability.extra.broken and "j_ccc_broken_mirror" or card.config.center.key, vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.broken, card.ability.extra.prob_success, card.ability.extra.prob_break } }
+	local numerator_a, denominator_a = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'ominous_copy')
+	local numerator_b, denominator_b = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_break, 'ominous_break')
+	return { key = card.ability.extra.broken and "j_ccc_broken_mirror" or card.config.center.key, vars = { numerator_a, denominator_a, numerator_b, denominator_b } }
 end
 
 return ominousmirror

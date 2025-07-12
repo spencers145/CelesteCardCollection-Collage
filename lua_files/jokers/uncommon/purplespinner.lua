@@ -29,32 +29,32 @@ purplespinner.calculate = function(self, card, context)
 			rainbow_spinner_seal_override = false
 		end
 		purplespinner_seal_candidates = {}
+		local function check(_card)
+			if _card.seal == 'Purple' or (rainbow_spinner_seal_override == true and _card.seal == 'Gold') then
+				if SMODS.pseudorandom_probability(card, 'purple_spinner', 1, card.ability.extra.prob_success) then
+					return true
+				end
+			end
+			return false
+		end
 		for k = 1, #G.hand.cards do
 			if k == 1 then
 				if k ~= #G.hand.cards then
-					if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-						if pseudorandom('purple1') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
-						end
+					if check(G.hand.cards[k + 1]) then
+						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				end
 			elseif k == #G.hand.cards then
 				if k ~= 1 then
-					if G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-						if pseudorandom('is2') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-							purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
-						end
+					if check(G.hand.cards[k - 1]) then
+						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 					end
 				end
 			else
-				if G.hand.cards[k + 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k + 1].seal == 'Gold') then
-					if pseudorandom('best3') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
-					end
-				elseif G.hand.cards[k - 1].seal == 'Purple' or (rainbow_spinner_seal_override == true and G.hand.cards[k - 1].seal == 'Gold') then
-					if pseudorandom('colour4') < G.GAME.probabilities.normal / card.ability.extra.prob_success then
-						purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
-					end
+				if check(G.hand.cards[k + 1]) then
+					purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]			
+				elseif check(G.hand.cards[k - 1]) then
+					purplespinner_seal_candidates[#purplespinner_seal_candidates + 1] = G.hand.cards[k]
 				end
 			end
 		end
@@ -82,7 +82,8 @@ end
 
 function purplespinner.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = { key = 'purple_seal', set = 'Other' }
-	return { vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), card.ability.extra.prob_success } }
+	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'purple_spinner')
+	return { vars = { numerator, denominator } }
 end
 
 function purplespinner.in_pool(self)
