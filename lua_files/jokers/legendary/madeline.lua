@@ -76,7 +76,7 @@ function Card.calculate_joker(self, context)
 				if type(value) == "number" and (self.ability.extra[index] and self.ability.extra[index] < orig_values.extra[index]) then
 					self.ability.extra[index] = orig_values.extra[index] 
 					card_eval_status_text(prevent, 'extra', nil, nil, nil, {
-						message = "Prevent!",
+						message = localize('k_ccc_prevent_ex'),
 						colour = G.C.RED
 					})
 					-- Give back hand size from turtle bean that would be taken (if bean will not be destroyed)
