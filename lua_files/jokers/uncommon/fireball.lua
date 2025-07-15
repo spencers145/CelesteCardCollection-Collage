@@ -33,13 +33,13 @@ fireball.calculate = function(self, card, context)
 	if context.ccc_fire and not context.blueprint then
 		card.ability.extra.active = true
 		card.ability.extra.count = 2
-		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Fire!", colour = G.C.RED})
+		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_ccc_fire_ex'), colour = G.C.RED})
 	end
 	if context.end_of_round and context.main_eval and not context.blueprint then
 		card.ability.extra.count = math.max(0, card.ability.extra.count - 1)
 	end
 	if context.ccc_shop_trigger and card.ability.extra.active then
-		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = '+1 Pack'})
+		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_ccc_a_pack')})
 		
 		local mega = false
 		local center = get_pack('ccc_fireball')

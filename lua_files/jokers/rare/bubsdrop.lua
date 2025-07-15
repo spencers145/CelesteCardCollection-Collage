@@ -55,7 +55,7 @@ bubsdrop.calculate = function(self, card, context)
 		G.E_MANAGER:add_event(Event({
 			func = function() 
 				ease_ante(-card.ability.extra.ante)
-				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = "-"..card.ability.extra.ante.." Ante", colour = G.C.FILTER})
+				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = localize { type = 'variable', key = 'ccc_a_ante_minus', vars = { card.ability.extra.ante } }, colour = G.C.FILTER})
 				return true
 			end
 		}))

@@ -30,7 +30,7 @@ introcar.calculate = function(self, card, context)
 				hand_chips = mod_chips(temp_mult)
 				mult = mod_mult(temp_chips)
 				update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Swap", colour = G.C.FILTER })
+				card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_swapped'), colour = G.C.FILTER })
 				delay(0.2)
 			end
 		end

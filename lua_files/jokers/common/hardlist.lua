@@ -30,7 +30,7 @@ hardlist.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(card, 'extra', nil, nil, nil, {
-							message = "Standard!",
+							message = localize('k_ccc_standard_ex'),
 							colour = G.C.RED
 						});
 						G.E_MANAGER:add_event(Event({
@@ -62,7 +62,7 @@ hardlist.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(card, 'extra', nil, nil, nil, {
-							message = string.format("%d-Star!", card.ability.extra.mult / card.ability.extra.sub),
+							message = localize { type = 'variable', key = 'ccc_hardlist_star', vars = { card.ability.extra.mult / card.ability.extra.sub } },
 							colour = G.C.RED
 						}); return true
 					end

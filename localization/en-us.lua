@@ -3,6 +3,35 @@ return {
 		["dictionary"] = {
 			["k_ccc_what"] = "???",
 			["k_ccc_secret"] = "Secret",
+			
+			["k_ccc_a_jslot"] = "+1 Joker Slot",
+			["k_ccc_a_pack"] = "+1 Pack",
+			["k_ccc_applied"] = "Applied",
+			["k_ccc_broken"] = "Broken",
+			["k_ccc_correct"] = "Correct",
+			["k_ccc_discarded"] = "Discarded",
+			["k_ccc_equal"] = "Equal",
+			["k_ccc_fire"] = "Fire",
+			["k_ccc_incorrect"] = "Incorrect",
+			["k_ccc_redraw"] = "Redraw",
+			["k_ccc_reset"] = "Reset",
+			["k_ccc_steel"] = "Steel",
+			["k_ccc_swapped"] = "Swapped",
+			["k_ccc_upgraded"] = "Upgraded",
+			
+			["k_ccc_active_ex"] = "Active!",
+			["k_ccc_fire_ex"] = "Fire!",
+			["k_ccc_prevent_ex"] = "Prevent!",
+			["k_ccc_standard_ex"] = "Standard!",
+			["k_ccc_strawberry_ex"] = "Strawberry!",
+			
+			["k_ccc_safe_eq"] = "Safe..?",
+		},
+		["v_dictionary"] = {
+			["ccc_a_ante_minus"] = "-#1# Ante",
+			["ccc_a_discard"] = "+#1# Discard",
+			["ccc_a_cards"] = "+#1# Cards",
+			["ccc_hardlist_star"] = "#1#-Star!",
 		},
 		["labels"] = {
 			["k_ccc_secret"] = "Secret",

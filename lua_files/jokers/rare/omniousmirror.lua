@@ -96,9 +96,9 @@ ominousmirror.calculate = function(self, card, context)
 					return true
 				end
 			}))
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Broken", colour = G.C.MULT })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_broken'), colour = G.C.MULT })
 		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Safe..?", colour = G.C.FILTER })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_safe_eq'), colour = G.C.FILTER })
 		end
 	end
 end

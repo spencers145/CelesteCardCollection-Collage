@@ -65,7 +65,7 @@ function Card.calculate_joker(self, context)
 			if type(value) == "number" and self.ability[index] < orig_values[index]  then
 				self.ability[index] = orig_values[index] 
 				card_eval_status_text(prevent, 'extra', nil, nil, nil, {
-					message = "Prevent!",
+					message = localize('k_ccc_prevent_ex'),
 					colour = G.C.RED
 				});
 			end

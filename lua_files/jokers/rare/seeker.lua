@@ -115,7 +115,7 @@ seeker.calculate = function(self, card, context)
 			G.E_MANAGER:add_event(Event({
 				trigger = "after",
 				func = function()
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Redraw", colour = G.C.FILTER })
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_redraw'), colour = G.C.FILTER })
 					local hand_count = #card_redraw_candidates
 					for i = 1, hand_count do
 						draw_card(G.hand, G.deck, i * 100 / hand_count, 'down', nil, card_redraw_candidates[i], 0.08)

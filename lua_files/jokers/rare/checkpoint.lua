@@ -42,7 +42,7 @@ checkpoint.calculate = function(self, card, context)
 
 	if context.discard and not context.blueprint then
 		if card.ability.extra.after_boss == true and card.ability.extra.did_you_discard == false then
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Discarded", colour = G.C.RED })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_discarded'), colour = G.C.RED })
 			card.ability.extra.did_you_discard = true
 		end
 	end

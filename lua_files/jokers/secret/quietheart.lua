@@ -28,7 +28,7 @@ quietheart.calculate = function(self, card, context)
 		end
 		if #G.hand.cards > 0 then
 			return {
-				message = "Upgraded",
+				message = localize('k_ccc_upgraded'),
 				colour = G.C.CHIPS
 			}
 		end

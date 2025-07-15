@@ -33,7 +33,7 @@ mechanicalheart.calculate = function(self, card, context)
 		end
 		if steels > 0 then
 			return {
-				message = "Steel",
+				message = localize('k_ccc_steel'),
 				colour = lighten(G.C.BLACK, 0.5)
 			}
 		end

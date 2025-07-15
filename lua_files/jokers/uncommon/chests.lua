@@ -61,7 +61,7 @@ chests.calculate = function(self, card, context)
 		
 		if card.boxes_pair_amounts > 0 then
 			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts) * card.ability.extra.mult_scale
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.MULT })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_upgrade_ex'), colour = G.C.MULT })
 		end
 	end
 

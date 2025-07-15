@@ -41,7 +41,7 @@ jokerppt.calculate = function(self, card, context)
 	end
 	if context.joker_main and context.scoring_name == card.ability.extra.winged_poker_hand and (not card.ability.extra.active) and (not context.blueprint) then
 		card.ability.extra.active = true
-		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Active!", colour = G.C.FILTER})
+		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_ccc_active_ex'), colour = G.C.FILTER})
 	end
 	if context.end_of_round and not context.individual and not context.repetition then
 		if (#G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit) and card.ability.extra.active then
@@ -76,7 +76,7 @@ jokerppt.calculate = function(self, card, context)
 				end
                     	end
 			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('powerpoint'))
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_ccc_reset'), colour = G.C.FILTER})
 			return true
             		end)}))
 		end
@@ -84,7 +84,7 @@ jokerppt.calculate = function(self, card, context)
 end
 
 function jokerppt.loc_vars(self, info_queue, card)
-	return {vars = {card.ability.extra.winged_poker_hand}}
+	return {vars = { localize(card.ability.extra.winged_poker_hand, "poker_hands") }}
 end
 
 return jokerppt

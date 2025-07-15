@@ -62,7 +62,7 @@ waterfall.calculate = function(self, card, context)
 		end
 		if #waterfall_card_candidates > 0 then -- this used to be bunco code but i changed it
 			return {
-				message = "Applied",
+				message = localize('k_ccc_applied'),
 				G.E_MANAGER:add_event(Event({
 					trigger = 'immediate',
 					func = function()

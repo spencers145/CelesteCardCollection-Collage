@@ -39,7 +39,7 @@ cassetteblock.calculate = function(self, card, context)
 							end
 						}))
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = "Swap", colour = G.C.RED })
+							{ message = localize('k_ccc_swapped'), colour = G.C.RED })
 						return true
 					end
 				}))
@@ -58,7 +58,7 @@ cassetteblock.calculate = function(self, card, context)
 							end
 						}))
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = "Swap", colour = G.C.BLUE })
+							{ message = localize('k_ccc_swapped'), colour = G.C.BLUE })
 						return true
 					end
 				}))
@@ -75,7 +75,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = "Upgrade!", colour = G.C.FILTER })
+							{ message = localize('k_upgrade_ex'), colour = G.C.FILTER })
 						return true
 					end
 				}))
@@ -88,7 +88,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = "Upgrade!", colour = G.C.FILTER })
+							{ message = localize('k_upgrade_ex'), colour = G.C.FILTER })
 						return true
 					end
 				}))

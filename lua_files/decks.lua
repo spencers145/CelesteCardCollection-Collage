@@ -99,7 +99,7 @@ function ease_ante(mod)
 						G.jokers.config.card_limit = G.jokers.config.card_limit + G.GAME.modifiers.ccc_summit.add
 						G.GAME.highest_ante = G.GAME.round_resets.ante
 						attention_text({
-							text = "+"..G.GAME.modifiers.ccc_summit.add.." Joker Slot"..(G.GAME.modifiers.ccc_summit.add > 1 and 's' or ''),
+							text = localize('k_ccc_a_jslot'),
 							scale = 0.5, 
 							hold = 3.3,
 							cover = G.jokers.children.area_uibox,

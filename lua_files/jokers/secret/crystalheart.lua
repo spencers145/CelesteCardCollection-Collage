@@ -48,7 +48,7 @@ crystalheart.calculate = function(self, card, context)
 						G.GAME.ccc_edition_buffer = G.GAME.ccc_edition_buffer - 1
 					end
 				return true end })),
-				message = "Applied",
+				message = localize('k_ccc_applied'),
 				colour = G.C.DARK_EDITION
 			}
 		end

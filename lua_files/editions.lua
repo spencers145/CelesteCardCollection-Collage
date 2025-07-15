@@ -53,9 +53,9 @@ G.FUNCS.evaluate_round = function()
 		delay = 0.0,
 		func = function()
 		local destroyed_cards = {}
-		for i, v in ipairs(G.playing_cards) do
-			if v.edition and v.edition.ccc_mirrored then
-				if not ccc_find_mirror() then
+		if not ccc_find_mirror() then
+			for i, v in ipairs(G.playing_cards) do
+				if v.edition and v.edition.ccc_mirrored then
 					destroyed_cards[#destroyed_cards+1] = v
 				end
 			end

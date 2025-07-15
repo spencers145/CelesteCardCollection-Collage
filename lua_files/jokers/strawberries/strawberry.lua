@@ -36,7 +36,7 @@ strawberry.calculate = function(self, card, context)
 		else
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Eaten!", colour = G.C.FILTER })
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_eaten_ex'), colour = G.C.FILTER })
 					play_sound('tarot1')
 					card.T.r = -0.2
 					card:juice_up(0.3, 0.4)

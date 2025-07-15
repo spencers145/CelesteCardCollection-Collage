@@ -51,7 +51,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 			end
 			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
 		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset", colour = G.C.FILTER })
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_reset'), colour = G.C.FILTER })
 	end
 	if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
@@ -80,7 +80,7 @@ wingedgoldenstrawberry.calc_dollar_bonus = function(self, card)
 end
 
 function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
-	return { vars = { card.ability.extra.winged_poker_hand, card.ability.extra.money } }
+	return { vars = { localize(card.ability.extra.winged_poker_hand, 'poker_hands'), card.ability.extra.money } }
 end
 
 return wingedgoldenstrawberry

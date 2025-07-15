@@ -42,7 +42,7 @@ bumper.calculate = function(self, card, context)
 			}
 		else
 			if not context.blueprint then
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Equal", colour = G.C.RED })
+				card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_equal'), colour = G.C.RED })
 			end
 		end
 	end

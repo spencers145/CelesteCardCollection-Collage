@@ -28,7 +28,7 @@ bird.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = "+" .. card.ability.extra.draw .. " Cards", colour = G.C.FILTER })
+							{ message = localize { type = 'variable', key = 'ccc_a_cards', vars = { card.ability.extra.draw } }, colour = G.C.FILTER })
 						G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw)
 						return true
 					end

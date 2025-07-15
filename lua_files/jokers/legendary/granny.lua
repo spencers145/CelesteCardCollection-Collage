@@ -29,7 +29,12 @@ granny.calculate = function(self, card, context)
 		local _card = context.blueprint_card or card
 		return {
 			G.E_MANAGER:add_event(Event({trigger = 'after', func = function()
-				card_eval_status_text(_card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.draw*G.GAME.ccc_after_discard_buffer.." Cards", colour = G.C.FILTER})
+				card_eval_status_text(
+					_card, 'extra', nil, nil, nil, {
+						message = localize { type = 'variable', key = 'ccc_a_cards', vars = { card.ability.extra.draw*G.GAME.ccc_after_discard_buffer } }, 
+						colour = G.C.FILTER 
+					}
+				)
 				G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw*G.GAME.ccc_after_discard_buffer)
 				G.GAME.ccc_after_discard = 0
 			return true end }))

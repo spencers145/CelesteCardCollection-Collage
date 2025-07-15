@@ -45,7 +45,7 @@ pointlessmachines.calculate = function(self, card, context)
 		if card.ability.extra.incorrect == false then
 			card.ability.extra.reset = true
 			card.ability.extra.count = card.ability.extra.count + 1
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Correct", colour = G.C.GREEN })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_correct'), colour = G.C.GREEN })
 			if card.ability.extra.count >= card.ability.extra.req then
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
@@ -116,7 +116,7 @@ pointlessmachines.calculate = function(self, card, context)
 			}
 			]]
 		else
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Incorrect", colour = G.C.RED })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_incorrect'), colour = G.C.RED })
 		end
 	end
 	--[[

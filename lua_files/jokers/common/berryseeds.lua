@@ -50,7 +50,7 @@ berryseeds.calculate = function(self, card, context)
 		end
 	end
 	if context.selling_self and (card.ability.extra.count >= card.ability.extra.req) then
-		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = 'Strawberry!'})
+		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_ccc_strawberry_ex')})
 		
 		local rarities = {{},{},{}}
 		

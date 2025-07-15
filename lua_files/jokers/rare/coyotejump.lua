@@ -54,20 +54,20 @@ coyotejump.calculate = function(self, card, context) -- thank you bred?????
 		}
 		if next(parts._straight) then
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Straight", colour = G.C.RED})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize("Straight", "poker_hands"), colour = G.C.RED})
 			return true end }))
 		elseif next(parts._flush) then
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Flush", colour = G.C.RED})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize("Flush", "poker_hands"), colour = G.C.RED})
 			return true end }))
 		elseif pair_found == true then
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
-			card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Pair", colour = G.C.RED})
+			card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize("Pair", "poker_hands"), colour = G.C.RED})
 			return true end }))
 		else
 			G.E_MANAGER:add_event(Event({trigger = 'before', delay = immediate, func = function()
 				ease_discard(card.ability.extra.discards, nil, true)
-				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "+"..card.ability.extra.discards.." Discard", colour = G.C.RED})
+				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize { type = 'variable', key = 'ccc_a_discard', vars = { card.ability.extra.discards } }, colour = G.C.RED})
 			return true end }))
 		end
 	end
