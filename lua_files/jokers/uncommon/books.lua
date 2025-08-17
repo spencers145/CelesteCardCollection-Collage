@@ -390,7 +390,7 @@ books.calculate = function(self, card, context)
 					key = 'a_xmult',
 					vars = { card.ability.extra.xmult }
 				},
-				mult_mod = card.ability.extra.xmult
+				Xmult_mod = card.ability.extra.xmult
 			}
 		end
 	end
