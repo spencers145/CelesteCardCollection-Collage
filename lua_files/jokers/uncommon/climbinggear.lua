@@ -7,7 +7,7 @@ local climbinggear = {
 	pos = { x = 6, y = 1 },
 	rarity = 2,
 	cost = 5,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,

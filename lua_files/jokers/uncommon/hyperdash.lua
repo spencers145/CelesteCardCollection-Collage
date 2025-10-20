@@ -8,7 +8,7 @@ local hyperdash = {
 	pos = {x = 6, y = 6},
 	rarity = 2,
 	cost = 6,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

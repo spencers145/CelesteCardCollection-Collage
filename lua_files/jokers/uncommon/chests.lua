@@ -3,11 +3,11 @@
 local chests = {
 	name = "ccc_Huge Mess: Chests",
 	key = "chests",
-	config = { extra = { mult = 0, mult_scale = 3 } },
+	config = { extra = { mult = 0, mult_scale = 1 } },
 	pos = { x = 1, y = 3 },
-	rarity = 2,
+	rarity = 3,
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -61,7 +61,7 @@ chests.calculate = function(self, card, context)
 		
 		if card.boxes_pair_amounts > 0 then
 			card.ability.extra.mult = card.ability.extra.mult + (card.boxes_pair_amounts) * card.ability.extra.mult_scale
-			card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_upgrade_ex'), colour = G.C.MULT })
+			card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Upgrade!", colour = G.C.MULT })
 		end
 	end
 

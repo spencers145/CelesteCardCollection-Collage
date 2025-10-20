@@ -4,7 +4,7 @@
 ---X B-Side^2 effect: double(partnered) boss blinds
 --- Heartside^2 effect: Add 11 meme jokers to the pool
 
-
+--[[
 CardSleeves.Sleeve({
 	key = "virus",
 	name = "ccc_Virus Sleeve",
@@ -28,7 +28,7 @@ CardSleeves.Sleeve({
 	apply = function(self)
 		G.GAME.modifiers.ccc_virus = (G.GAME.modifiers.ccc_virus or 0) + 1
 	end,
-})
+})]]
 
 CardSleeves.Sleeve({
 	key = "summit",
@@ -36,7 +36,7 @@ CardSleeves.Sleeve({
 	atlas = "s_ccc_sleeves",
 	pos = { x = 1, y = 0 },
 	config = {joker_slot = -4, add_slot_each_ante = 1},
-	unlocked = true,
+	unlocked = false,
 	unlock_condition = { deck = "ccc_Summit Deck", stake = 1 },
 	loc_vars = function(self)
 		local key
@@ -98,7 +98,7 @@ CardSleeves.Sleeve({
 	end,
 })
 
-CardSleeves.Sleeve({
+--[[CardSleeves.Sleeve({
 	key = "heartside",
 	name = "ccc_Heartside Sleeve",
 	atlas = "s_ccc_sleeves",
@@ -113,7 +113,7 @@ CardSleeves.Sleeve({
 	apply = function(self)
 		G.GAME.modifiers.ccc_heartside = (G.GAME.modifiers.ccc_heartside or 0) + 1
 	end,
-})
+})]]
 
 sendDebugMessage("[CCC] Sleeves loaded")
 ----------------------------------------------

@@ -6,9 +6,9 @@ local bird = {
 	key = "bird",
 	config = { extra = { draw = 4, active = false } },
 	pos = { x = 2, y = 0 },
-	rarity = 3,
-	cost = 8,
-	discovered = true,
+	rarity = 2,
+	cost = 6,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -28,7 +28,7 @@ bird.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = localize { type = 'variable', key = 'ccc_a_cards', vars = { card.ability.extra.draw } }, colour = G.C.FILTER })
+							{ message = "+" .. card.ability.extra.draw .. " Cards", colour = G.C.FILTER })
 						G.FUNCS.draw_from_deck_to_hand(card.ability.extra.draw)
 						return true
 					end

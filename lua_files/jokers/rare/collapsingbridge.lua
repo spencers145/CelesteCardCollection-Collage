@@ -3,11 +3,11 @@
 local collapsingbridge = {
 	name = "ccc_Collapsing Bridge",
 	key = "collapsingbridge",
-	config = { extra = { xmult = 5, prob_success = 3 } },
+	config = { extra = { xmult = 4, prob_success = 3 } },
 	pos = { x = 8, y = 1 },
 	rarity = 3,
 	cost = 8,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -35,15 +35,17 @@ collapsingbridge.calculate = function(self, card, context)
 	end
 
 	if context.destroying_card and (context.cardarea == G.play or context.cardarea == "unscored") and next(context.poker_hands['Straight']) then
-		if SMODS.pseudorandom_probability(card, 'collapsing_bridge', 1, card.ability.extra.prob_success) then
+		if SMODS.pseudorandom_probability(card, pseudorandom('bridge'), 1, card.ability.extra.odds, 'bridge') then
 			return { remove = true }
 		end
 	end
 end
 
 function collapsingbridge.loc_vars(self, info_queue, card)
-	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'collapsing_bridge')
-	return { vars = { numerator, card.ability.extra.xmult, denominator } }
+	local n,d = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success)
+	return {
+		vars = { n, card.ability.extra.xmult, d }
+	}
 end
 
 return collapsingbridge

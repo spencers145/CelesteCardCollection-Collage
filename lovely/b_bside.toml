@@ -16,7 +16,8 @@ if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
     G.GAME.round_resets.blind_choices.Small = get_new_boss()
     G.GAME.round_resets.blind_choices.Big = get_new_boss()
 else
-    G.GAME.round_resets.blind_choices.Big = 'bl_big'
+	G.GAME.round_resets.blind_choices.Small = get_new_small()
+	G.GAME.round_resets.blind_choices.Big = get_new_big()
 end
 if (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 2) then
 	for _, v in ipairs({'Small', 'Big', 'Boss'}) do
@@ -71,7 +72,7 @@ match_indent = true
 
 
 
-# skipping costs $8*ante
+# skipping costs $4*ante
 [[patches]]
 [patches.pattern]
 target = "functions/button_callbacks.lua"
@@ -79,7 +80,7 @@ pattern = "G.FUNCS.skip_blind = function(e)"
 position = "after"
 payload = '''
 if G.GAME and G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) then
-	local skipcost = 8*(G.GAME.round_resets.ante+1)
+	local skipcost = 4*(G.GAME.round_resets.ante+1)
 	if -skipcost < 0 then
 		if to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - skipcost ) < to_big(0) then
 			e.disable_button = false
@@ -103,7 +104,7 @@ position = "at"
 payload = '''
 {n=G.UIT.T, config={text = localize('b_skip_blind')..(
 	G.GAME and G.GAME.modifiers and (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and 
-		((-8*(G.GAME.round_resets.ante+1))<0 and ' (-' or ' (')..localize('$')..math.abs(-8*(G.GAME.round_resets.ante+1))..')' 
+		((-4*(G.GAME.round_resets.ante+1))<0 and ' (-' or ' (')..localize('$')..math.abs(-4*(G.GAME.round_resets.ante+1))..')' 
 	or ''
 ), scale = 0.4, colour = G.C.UI.TEXT_INACTIVE}}
 '''
@@ -117,7 +118,7 @@ pattern = '''_blind_choice.alignment.offset.y = -0.9
 if _tag and _tag_container then'''
 position = "after"
 payload = '''
-if not ( (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (8*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
+if not ( (G.GAME.modifiers.ccc_bside and G.GAME.modifiers.ccc_bside >= 1) and to_big( (G.GAME.dollars-G.GAME.bankrupt_at) - (4*(G.GAME.round_resets.ante+1)) ) < to_big(0) ) then
 '''
 match_indent = true
 
@@ -711,10 +712,10 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "game.lua"
-pattern = '''{n=G.UIT.O, config={func = "update_blind_debuff_text", object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME.blind:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},'''
+pattern = '''{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME.blind:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},'''
 position = "at"
 payload = '''
-{n=G.UIT.O, config={func = "update_blind_debuff_text", object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME[G.boss_throw_hand]:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},
+{n=G.UIT.O, config={object = DynaText({scale = 0.6, string = SMODS.debuff_text or G.GAME[G.boss_throw_hand]:get_loc_debuff_text(), maxw = 9, colours = {G.C.WHITE},float = true, shadow = true, silent = true, pop_in = 0, pop_in_rate = 6})}},
 '''
 match_indent = true
 

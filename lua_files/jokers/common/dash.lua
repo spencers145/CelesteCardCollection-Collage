@@ -8,7 +8,7 @@ local dash = {
 	pos = {x = 7, y = 7},
 	rarity = 1,
 	cost = 2,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

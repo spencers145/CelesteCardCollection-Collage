@@ -7,7 +7,7 @@ local picojoker = {
 	pos = {x = 1, y = 7},
 	rarity = 2,
 	cost = 4,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

@@ -3,11 +3,11 @@
 local strongwinds = {
 	name = "ccc_Strong Winds",
 	key = "strongwinds",
-    config = {extra = {xmult = 2.22}},
+    config = {extra = {xmult = 3.33}},
 	pos = {x = 4, y = 2},
 	rarity = 3,
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

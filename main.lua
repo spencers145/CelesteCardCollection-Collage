@@ -69,22 +69,10 @@ sendDebugMessage("[CCC] Joker files load attempted, if you do not see a 'Last Jo
 SMODS.Atlas({key = "b_ccc_decks", path = "b_ccc_decks.png", px = 71, py = 95, atlas = "asset_atlas"})
 assert(SMODS.load_file("lua_files/decks.lua"))()
 
-SMODS.Atlas({key = "v_ccc_vouchers", path = "v_ccc_vouchers.png", px = 71, py = 95, atlas = "asset_atlas"})
-assert(SMODS.load_file("lua_files/vouchers.lua"))()
-
-SMODS.Atlas({key = "bl_ccc_blinds", path = "bl_ccc_blinds.png", px = 34, py = 34, frames = 21, atlas_table = "ANIMATION_ATLAS"})
-assert(SMODS.load_file("lua_files/blinds.lua"))()
-
-SMODS.Atlas({key = "c_ccc_consumables", path = "c_ccc_consumables.png", px = 71, py = 95, atlas = "asset_atlas"})
-assert(SMODS.load_file("lua_files/consumables.lua"))()
-
 if CardSleeves then
 	SMODS.Atlas({key = "s_ccc_sleeves", path = "s_ccc_sleeves.png", px = 73, py = 95, atlas = "asset_atlas"})
 	assert(SMODS.load_file("lua_files/sleeves.lua"))()
 end
-assert(SMODS.load_file("lua_files/editions.lua"))()
-
-assert(SMODS.load_file("lua_files/rarity.lua"))()
 
 SMODS.Atlas({key = "moveblock_pr", path = "moveblock_pr.png", px = 71, py = 95, atlas = "asset_atlas"})
 SMODS.Atlas({key = "moveblock_rl", path = "moveblock_rl.png", px = 71, py = 95, atlas = "asset_atlas"})

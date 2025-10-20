@@ -7,7 +7,7 @@ local strawberrypie = {
 	pos = { x = 8, y = 5 },
 	rarity = 3,
 	cost = 13,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

@@ -54,6 +54,10 @@ local virus = SMODS.Back({
 	name = "ccc_Virus Deck",
 	key = "virus",
 	config = {virus = true},
+	unlocked = false,
+	check_for_unlock = function(self, args)
+        return G.PROFILES[G.SETTINGS.profile].career_stats.c_collage_wins >= 7
+    end,
 	pos = {x = 0, y = 0},
 	apply = function(self)
 		G.GAME.modifiers.ccc_virus = (G.GAME.modifiers.ccc_virus or 0) + 1
@@ -90,8 +94,8 @@ local virus = SMODS.Back({
 -- end
 
 local ease_anteRef = ease_ante
-function ease_ante(mod)
-	ease_anteRef(mod)
+function ease_ante(mod, ante_end)
+	ease_anteRef(mod, ante_end)
 	G.E_MANAGER:add_event(Event({
 		trigger = 'immediate',
 		func = function () 
@@ -99,7 +103,7 @@ function ease_ante(mod)
 						G.jokers.config.card_limit = G.jokers.config.card_limit + G.GAME.modifiers.ccc_summit.add
 						G.GAME.highest_ante = G.GAME.round_resets.ante
 						attention_text({
-							text = localize('k_ccc_a_jslot'),
+							text = "+"..G.GAME.modifiers.ccc_summit.add.." Joker Slot"..(G.GAME.modifiers.ccc_summit.add > 1 and 's' or ''),
 							scale = 0.5, 
 							hold = 3.3,
 							cover = G.jokers.children.area_uibox,
@@ -114,9 +118,9 @@ function ease_ante(mod)
 end
 
 
---table.insert(trigger_effect_callbacks, summit_effect)
+table.insert(trigger_effect_callbacks, summit_effect)
 
-local summit = SMODS.Back({
+--[[local summit = SMODS.Back({
 	name = "ccc_Summit Deck",
 	key = "summit",
 	config = {joker_slot = -4, add_slot_each_ante = 1},
@@ -134,11 +138,11 @@ local summit = SMODS.Back({
 	}
 })
 
-
+]]
 -- endregion summit deck-----------------------
 -- region B-Side deck
 
-local bside = SMODS.Back({
+--[[local bside = SMODS.Back({
 	name = "ccc_B-Side Deck",
 	key = "bside",
 	config = {everything_is_boss = true},
@@ -152,7 +156,7 @@ local bside = SMODS.Back({
 		code = "Aurora Aquir",
 		concept = "Bred"
 	}
-})
+})]]
 
 local get_type_ref = Blind.get_type
 function Blind:get_type()
@@ -240,24 +244,7 @@ table.insert(start_run_after_callbacks, bside_start_run)
 
 -- endregion B-Side deck
 
--- region Heartside Deck
-
-local heartside = SMODS.Back({
-	name = "ccc_Heartside Deck",
-	key = "heartside",
-	config = {all_jokers_modded = true},
-	pos = {x = 3, y = 0},
-	apply = function(self)
-		G.GAME.modifiers.ccc_heartside = (G.GAME.modifiers.ccc_heartside or 0) + 1
-	end,
-	atlas= "b_ccc_decks",
-	credit = {
-		art = "Aurora Aquir",
-		code = "Aurora Aquir",
-		concept = "Aurora Aquir"
-	}
-})
-
+-- region Heartside 
 
 function heartside_start_run(self)
 	if G.GAME.modifiers.ccc_heartside then

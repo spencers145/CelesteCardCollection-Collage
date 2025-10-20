@@ -7,7 +7,7 @@ local waterfall = {
 	pos = { x = 5, y = 2 },
 	rarity = 1,
 	cost = 5,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -62,7 +62,7 @@ waterfall.calculate = function(self, card, context)
 		end
 		if #waterfall_card_candidates > 0 then -- this used to be bunco code but i changed it
 			return {
-				message = localize('k_ccc_applied'),
+				message = "Applied",
 				G.E_MANAGER:add_event(Event({
 					trigger = 'immediate',
 					func = function()

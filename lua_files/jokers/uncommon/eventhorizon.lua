@@ -7,7 +7,7 @@ local eventhorizon = {
 	pos = { x = 8, y = 4 },
 	rarity = 2,
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,

@@ -3,11 +3,12 @@
 local coreswitch = {
 	name = "ccc_Core Switch",
 	key = "coreswitch",
-	config = { extra = { pos_override = { x = 6, y = 0 }, discards = 1 } },
+	config = { extra = { pos_override = { x = 6, y = 0 }, discards = 2 } },
 	pos = { x = 6, y = 0 },
-	rarity = 1,
-	cost = 3,
-	discovered = true,
+	rarity = 2,
+	cost = 5,
+	discovered = false,
+	unlocked = true,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -40,7 +41,7 @@ coreswitch.calculate = function(self, card, context)
 				card.ability.extra.discards + (G.GAME.current_round.hands_left - G.GAME.current_round.discards_left), nil,
 					true)
 				ease_hands_played(coreswitch_hand_juggle - G.GAME.current_round.hands_left, nil, true)
-				card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_swapped'), colour = G.C.FILTER })
+				card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Swapped", colour = G.C.FILTER })
 				if card.ability.extra.pos_override.x == 6 then
 					card.ability.extra.pos_override.x = 7
 					SMODS.calculate_context({ ccc_switch = { ice = true } })

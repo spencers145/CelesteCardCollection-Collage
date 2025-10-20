@@ -7,7 +7,7 @@ local towels = {
 	pos = { x = 0, y = 3 },
 	rarity = 2,
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,

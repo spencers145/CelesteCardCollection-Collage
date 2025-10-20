@@ -7,7 +7,7 @@ local crumblejoker = {
 	pos = {x = 3, y = 7},
 	rarity = 2,
 	cost = 5,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

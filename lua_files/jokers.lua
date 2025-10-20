@@ -33,7 +33,7 @@ local shattersong = SMODS.Joker({
     },
 	rarity = 2,
 	cost = 4,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -90,15 +90,12 @@ sendDebugMessage("[CCC] Joker main file loaded")
 -- order jokers are loaded in (for collection)
 return [[
 j_ccc_feather
-j_ccc_zipper
 j_ccc_templeeyes
 j_ccc_miniheart
 j_ccc_bird
-j_ccc_partofyou
 j_ccc_towels
 j_ccc_chests
 j_ccc_books
-j_ccc_ominousmirror
 j_ccc_strawberry
 j_ccc_wingedstrawberry
 j_ccc_goldenstrawberry
@@ -106,51 +103,30 @@ j_ccc_wingedgoldenstrawberry
 j_ccc_moonberry
 j_ccc_tothesummit
 j_ccc_coreswitch
-j_ccc_templerock
 j_ccc_strongwinds
-j_ccc_coyotejump
 j_ccc_climbinggear
 j_ccc_bluespinner
 j_ccc_purplespinner
 j_ccc_redspinner
 j_ccc_rainbowspinner
 j_ccc_lettinggo
-j_ccc_greenbooster
-j_ccc_redbooster
 j_ccc_cassetteblock
-j_ccc_bumper
 j_ccc_waterfall
 j_ccc_collapsingbridge
 j_ccc_switchgate
 j_ccc_checkpoint
 j_ccc_theocrystal
-j_ccc_lapidary
-j_ccc_hardlist
 j_ccc_cloud
 j_ccc_brittlecloud
-j_ccc_seeker
-j_ccc_pointlessmachines
-j_ccc_crystalheart
-j_ccc_mechanicalheart
-j_ccc_quietheart
-j_ccc_heavyheart
 j_ccc_eventhorizon
-j_ccc_introcar
-j_ccc_secretshrine
 j_ccc_kevin
 j_ccc_strawberrypie
 j_ccc_1up
 j_ccc_thecrowd
-j_ccc_jump
-j_ccc_grab
 j_ccc_dash
-j_ccc_bunnyhop
 j_ccc_hyperdash
-j_ccc_cornerjump
-j_ccc_bubsdrop
 j_ccc_shattersong
 j_ccc_slightmiscalculation
-j_ccc_freeze
 j_ccc_moveblock
 j_ccc_jokerppt
 j_ccc_berryseeds
@@ -159,9 +135,4 @@ j_ccc_iceball
 j_ccc_crumblejoker
 j_ccc_pico8joker
 j_ccc_refundpolicy
-j_ccc_smotsgaming
-j_ccc_madeline
-j_ccc_badeline
-j_ccc_granny
-j_ccc_thelastjoker
 ]]

@@ -8,7 +8,7 @@ local moonberry = {
 	pos = { x = 5, y = 1 },
 	rarity = 2,
 	cost = 8,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -81,7 +81,7 @@ moonberry.calculate = function(self, card, context)
 						end
 					end
 					card.ability.extra.winged_poker_hand = _handname
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_reset'), colour = G.C.FILTER })
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset", colour = G.C.FILTER })
 					return true
 				end)
 			}))
@@ -107,7 +107,8 @@ moonberry.calculate = function(self, card, context)
 end
 
 function moonberry.loc_vars(self, info_queue, card)
-	return { vars = { localize(card.ability.extra.winged_poker_hand, 'poker_hands'), card.ability.extra.levels } }
+	--info_queue[#info_queue + 1] = { key = 'e_negative_consumable', set = 'Edition', config = { extra = 1 } }
+	return { vars = { card.ability.extra.winged_poker_hand, card.ability.extra.levels } }
 end
 
 return moonberry

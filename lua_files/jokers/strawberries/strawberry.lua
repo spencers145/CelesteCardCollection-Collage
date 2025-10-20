@@ -3,11 +3,11 @@
 local strawberry = {
 	name = "ccc_Strawberry",
 	key = "strawberry",
-	config = { extra = { money = 7, money_reduce = 1 } },
+	config = { extra = { money = 6, money_reduce = 1 } },
 	pos = { x = 1, y = 1 },
 	rarity = 1,
 	cost = 6,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = false,
 	perishable_compat = true,
@@ -17,7 +17,7 @@ local strawberry = {
 		code = "toneblock",
 		concept = "Gappie"
 	},
-    description = "Earn $7 at the end of round, reduces by $1 upon cashing out",
+    description = "Earn $6 at the end of round, reduces by $1 upon cashing out",
 	set_badges = function(self, card, badges)
 		badges[#badges+1] = create_badge(localize('k_ccc_strawberry_badge', "labels"), G.C.RED, G.C.WHITE, 1)
 	end,
@@ -36,7 +36,7 @@ strawberry.calculate = function(self, card, context)
 		else
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_eaten_ex'), colour = G.C.FILTER })
+					card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Eaten!", colour = G.C.FILTER })
 					play_sound('tarot1')
 					card.T.r = -0.2
 					card:juice_up(0.3, 0.4)

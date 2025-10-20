@@ -3,11 +3,11 @@
 local lettinggo = {
 	name = "ccc_Letting Go",
 	key = "lettinggo",
-	config = { extra = { xmult = 1, prob_success = 2, xmult_scale = 0.15 } },
+	config = { extra = { xmult = 1, prob_success = 2, xmult_scale = 0.2 } },
 	pos = { x = 2, y = 2 },
 	rarity = 3,
 	cost = 8,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -28,7 +28,7 @@ lettinggo.calculate = function(self, card, context)
 		end
 		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if SMODS.pseudorandom_probability(card, 'letting_go', 1, card.ability.extra.prob_success) then
+				if SMODS.get_probability_vars(card, pseudoseed('lettinggo'), 1, card.ability.extra.prob_success, 'lettinggo') then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
 						func = (function()
@@ -60,7 +60,7 @@ lettinggo.calculate = function(self, card, context)
 		end
 		for i = 1, death_chances do
 			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				if SMODS.pseudorandom_probability(card, 'letting_go', 1, card.ability.extra.prob_success) then
+				if SMODS.get_probability_vars(card, pseudoseed('lettinggo'), 1, card.ability.extra.prob_success, 'lettinggo') then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
 						func = (function()
@@ -111,8 +111,8 @@ end
 
 function lettinggo.loc_vars(self, info_queue, card)
 	info_queue[#info_queue + 1] = G.P_CENTERS.c_death
-	local numerator, denominator = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'letting_go')
-	return { vars = { numerator, card.ability.extra.xmult, denominator, card.ability.extra.xmult_scale } }
+	local n, d = SMODS.get_probability_vars(card, 1, card.ability.extra.prob_success, 'lettinggo')
+	return { vars = { '' .. n, card.ability.extra.xmult, d, card.ability.extra.xmult_scale } }
 end
 
 return lettinggo

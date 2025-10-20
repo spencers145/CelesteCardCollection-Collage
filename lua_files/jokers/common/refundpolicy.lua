@@ -7,7 +7,7 @@ local refundpolicy = {
 	pos = { x = 4, y = 8 },
 	rarity = 1,
 	cost = 4,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

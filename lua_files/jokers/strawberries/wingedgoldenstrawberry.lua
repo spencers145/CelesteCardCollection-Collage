@@ -4,11 +4,11 @@
 local wingedgoldenstrawberry = {
 	name = "ccc_Winged Golden Strawberry",
 	key = "wingedgoldenstrawberry",
-	config = { extra = { condition_satisfied = true, winged_poker_hand = 'Pair', after_boss = false, money = 18 } },
+	config = { extra = { gave_postcard = false, cash = 1, --[[condition_satisfied = true, winged_poker_hand = 'Pair', after_boss = false, money = 18]] } },
 	pos = { x = 4, y = 1 },
-	rarity = 2,
-	cost = 7,
-	discovered = true,
+	rarity = 1,
+	cost = 4,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -24,7 +24,21 @@ local wingedgoldenstrawberry = {
 	end,
 }
 
-wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
+wingedgoldenstrawberry.add_to_deck = function (self, card)
+	if not card.ability.extra.gave_postcard and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+      G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+      card.ability.extra.gave_postcard = true
+      G.E_MANAGER:add_event(Event({
+        func = function()
+          SMODS.add_card({key='c_sarc_celeste'})
+          G.GAME.consumeable_buffer = 0
+          return true
+        end
+      }))
+    end
+end
+
+--[[wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites)
 	local _poker_hands = {}
 	for k, v in pairs(G.GAME.hands) do
 		if v.visible and k ~= 'High Card' then
@@ -38,10 +52,18 @@ wingedgoldenstrawberry.set_ability = function(self, card, initial, delay_sprites
 	else
 		card.ability.extra.after_boss = false
 	end
-end
+end]]
 
 wingedgoldenstrawberry.calculate = function(self, card, context)
-	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
+	if context.individual and SMODS.has_enhancement(context.other_card, 'm_sarc_strawberry') and not context.end_of_round then
+		if context.cardarea == G.play then
+			return {
+				dollars = card.ability.extra.cash,
+				card = context.other_card
+			}
+		end
+	end
+	--[[if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		if not context.blueprint then
 			local _poker_hands = {}
 			for k, v in pairs(G.GAME.hands) do
@@ -51,7 +73,7 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 			end
 			card.ability.extra.winged_poker_hand = pseudorandom_element(_poker_hands, pseudoseed('wingedgolden'))
 		end
-		card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize('k_ccc_reset'), colour = G.C.FILTER })
+		card_eval_status_text(card, 'extra', nil, nil, nil, { message = "Reset", colour = G.C.FILTER })
 	end
 	if context.cardarea == G.jokers then
 		if context.before and not context.end_of_round then
@@ -68,19 +90,22 @@ wingedgoldenstrawberry.calculate = function(self, card, context)
 		else
 			card.ability.extra.after_boss = false
 		end
-	end
+	end]]
 end
 
-wingedgoldenstrawberry.calc_dollar_bonus = function(self, card)
+--[[wingedgoldenstrawberry.calc_dollar_bonus = function(self, card)
 	if card.ability.extra.after_boss == true then
 		if card.ability.extra.condition_satisfied == true then
 			return card.ability.extra.money
 		end
 	end
-end
+end]]
 
 function wingedgoldenstrawberry.loc_vars(self, info_queue, card)
-	return { vars = { localize(card.ability.extra.winged_poker_hand, 'poker_hands'), card.ability.extra.money } }
+	if card.area ~= G.jokers then
+		info_queue[#info_queue+1] = G.P_CENTERS.c_sarc_celeste
+	end
+	return { key = card.area == G.jokers and "j_ccc_wingedgoldenstrawberry" or "j_ccc_wingedgoldenstrawberry_elsewhere", vars = { card.ability.extra.cash } }
 end
 
 return wingedgoldenstrawberry

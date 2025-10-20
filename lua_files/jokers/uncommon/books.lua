@@ -8,7 +8,7 @@ local books = {
 	pos = { x = 2, y = 3 },
 	rarity = 2,
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -390,7 +390,7 @@ books.calculate = function(self, card, context)
 					key = 'a_xmult',
 					vars = { card.ability.extra.xmult }
 				},
-				Xmult_mod = card.ability.extra.xmult
+				mult_mod = card.ability.extra.xmult
 			}
 		end
 	end

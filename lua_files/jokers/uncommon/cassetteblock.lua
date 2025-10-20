@@ -3,11 +3,11 @@
 local cassetteblock = {
 	name = "ccc_Cassette Block",
 	key = "cassetteblock",
-	config = { extra = { chips = 0, mult = 0, chips_scale = 12, mult_scale = 3, pink = false, pos_override = { x = 6, y = 2 } } },
+	config = { extra = { chips = 1, mult = 1, chips_scale = 0.2, mult_scale = 0.2, pink = false, pos_override = { x = 6, y = 2 } } },
 	pos = { x = 6, y = 2 },
 	rarity = 2,
 	cost = 6,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -39,7 +39,7 @@ cassetteblock.calculate = function(self, card, context)
 							end
 						}))
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = localize('k_ccc_swapped'), colour = G.C.RED })
+							{ message = "Swap", colour = G.C.RED })
 						return true
 					end
 				}))
@@ -58,7 +58,7 @@ cassetteblock.calculate = function(self, card, context)
 							end
 						}))
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = localize('k_ccc_swapped'), colour = G.C.BLUE })
+							{ message = "Swap", colour = G.C.BLUE })
 						return true
 					end
 				}))
@@ -75,7 +75,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = localize('k_upgrade_ex'), colour = G.C.FILTER })
+							{ message = "Upgrade!", colour = G.C.FILTER })
 						return true
 					end
 				}))
@@ -88,7 +88,7 @@ cassetteblock.calculate = function(self, card, context)
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-							{ message = localize('k_upgrade_ex'), colour = G.C.FILTER })
+							{ message = "Upgrade!", colour = G.C.FILTER })
 						return true
 					end
 				}))
@@ -98,25 +98,25 @@ cassetteblock.calculate = function(self, card, context)
 
 	if context.joker_main then
 		if card.ability.extra.pink == false then
-			if card.ability.extra.chips ~= 0 then
+			if card.ability.extra.chips ~= 1 then
 				return {
 					message = localize {
 						type = 'variable',
-						key = 'a_chips',
+						key = 'a_xchips',
 						vars = { card.ability.extra.chips }
 					},
-					chip_mod = card.ability.extra.chips
+					x_chips_mod = card.ability.extra.chips
 				}
 			end
 		else
-			if card.ability.extra.mult ~= 0 then
+			if card.ability.extra.mult ~= 1 then
 				return {
 					message = localize {
 						type = 'variable',
-						key = 'a_mult',
+						key = 'a_xmult',
 						vars = { card.ability.extra.mult }
 					},
-					mult_mod = card.ability.extra.mult
+					x_mult_mod = card.ability.extra.mult
 				}
 			end
 		end

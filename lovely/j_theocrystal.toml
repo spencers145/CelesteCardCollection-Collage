@@ -27,17 +27,7 @@ if next(SMODS.find_card('j_ccc_theocrystal')) then
 			temp_hand[#temp_hand+1] = v
 		end
 	end
-	table.sort(temp_hand, function(a, b)
-		if (not a.playing_card) and (not b.playing_card) then
-			return false  -- consider them equal
-		elseif (not a.playing_card) then
-			return false
-		elseif (not b.playing_card) then
-			return true
-		else
-			return a.playing_card < b.playing_card
-		end
-	end)
+	table.sort(temp_hand, function (a, b) return not a.playing_card or not b.playing_card or a.playing_card < b.playing_card end)
 	pseudoshuffle(temp_hand, pseudoseed('theocrystal'))
 	
 	local count = math.min(5, math.min(#temp_hand, count))

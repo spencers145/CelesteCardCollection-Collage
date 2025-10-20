@@ -7,7 +7,7 @@ local brittlecloud = {
 	pos = { x = 5, y = 4 },
 	rarity = 1,
 	cost = 4,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

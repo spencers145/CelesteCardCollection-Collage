@@ -5,7 +5,7 @@ local feather = {
 	pos = {x = 0, y = 0},
 	rarity = 2,
 	cost = 6,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -36,7 +36,7 @@ feather.calculate = function(self, card, context)
 	
 	if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then
 		card.ability.extra.xmult = 1
-		card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_ccc_reset'), colour = G.C.FILTER})
+		card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Reset", colour = G.C.FILTER})
 	end
 end
 

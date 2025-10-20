@@ -5,9 +5,10 @@ local tothesummit = {
 	key = "tothesummit",
 	config = { extra = { xmult = 1, min_money = 0, xmult_scale = 0.25 } }, -- rip debt lovers
 	pos = { x = 0, y = 1 },
-	rarity = 2,
+	rarity = 3,
+	
 	cost = 7,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,
@@ -28,7 +29,7 @@ tothesummit.calculate = function(self, card, context)
 			card.ability.extra.xmult = 1
 			if last_xmult > 1 then
 				card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil,
-					{ message = localize('k_reset'), colour = G.C.FILTER })
+					{ message = "Reset", colour = G.C.FILTER })
 			end
 			card.ability.extra.min_money = math.max(0, (G.GAME.dollars + (G.GAME.dollar_buffer or 0)))
 		elseif to_big(card.ability.extra.min_money) < math.max(0, (G.GAME.dollars + (G.GAME.dollar_buffer or 0))) then

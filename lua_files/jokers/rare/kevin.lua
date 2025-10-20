@@ -7,7 +7,7 @@ local kevin = {
 	pos = { x = 8, y = 3 },
 	rarity = 3,
 	cost = 8,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = false,
 	eternal_compat = true,
 	perishable_compat = true,

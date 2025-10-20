@@ -7,7 +7,7 @@ local templeeyes = {
 	pos = { x = 1, y = 0 },
 	rarity = 2,
 	cost = 6,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,

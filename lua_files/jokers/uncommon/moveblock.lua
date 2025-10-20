@@ -8,7 +8,7 @@ local moveblock = {
 	pixel_size = { w = 71, h = 91 },
 	rarity = 2,
 	cost = 5,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = false,

@@ -3,35 +3,6 @@ return {
 		["dictionary"] = {
 			["k_ccc_what"] = "???",
 			["k_ccc_secret"] = "Secret",
-			
-			["k_ccc_a_jslot"] = "+1 Joker Slot",
-			["k_ccc_a_pack"] = "+1 Pack",
-			["k_ccc_applied"] = "Applied",
-			["k_ccc_broken"] = "Broken",
-			["k_ccc_correct"] = "Correct",
-			["k_ccc_discarded"] = "Discarded",
-			["k_ccc_equal"] = "Equal",
-			["k_ccc_fire"] = "Fire",
-			["k_ccc_incorrect"] = "Incorrect",
-			["k_ccc_redraw"] = "Redraw",
-			["k_ccc_reset"] = "Reset",
-			["k_ccc_steel"] = "Steel",
-			["k_ccc_swapped"] = "Swapped",
-			["k_ccc_upgraded"] = "Upgraded",
-			
-			["k_ccc_active_ex"] = "Active!",
-			["k_ccc_fire_ex"] = "Fire!",
-			["k_ccc_prevent_ex"] = "Prevent!",
-			["k_ccc_standard_ex"] = "Standard!",
-			["k_ccc_strawberry_ex"] = "Strawberry!",
-			
-			["k_ccc_safe_eq"] = "Safe..?",
-		},
-		["v_dictionary"] = {
-			["ccc_a_ante_minus"] = "-#1# Ante",
-			["ccc_a_discard"] = "+#1# Discard",
-			["ccc_a_cards"] = "+#1# Cards",
-			["ccc_hardlist_star"] = "#1#-Star!",
 		},
 		["labels"] = {
 			["k_ccc_secret"] = "Secret",
@@ -54,10 +25,14 @@ return {
 			["b_ccc_virus"] = {
 				["name"] = "Virus Deck",
 				["text"] = {
-					"Each played card is retriggered",
-					"then {C:red}debuffed{}",
+					"Each played card is",
+					"{C:attention}retriggered{}, then {C:red}debuffed{}",
 					"until the end of the ante",
 				},
+				["unlock"] = {
+					"Win {C:attention}7{} runs with",
+					"{C:attention,E:1}Collage{} installed"
+				}
 			},
 			["b_ccc_heartside"] = {
 				["name"] = "Heartside Deck",
@@ -70,9 +45,11 @@ return {
 				["name"] = "B-Side Deck",
 				["text"] = {
 					"Every blind is a {C:red}boss blind{}",
+					"{s:0.2} {}",
 					"Start from {C:attention}Ante 0{}",
-					"Skipping costs {C:red}$8{} multiplied",
-					"by ({C:attention}Current Ante{} + {C:attention}1{})",
+					"{s:0.2} {}",
+					"Skipping costs {C:red}$4{}, plus",
+					"another {C:red}$4{} for each {C:attention}Ante{}",
 				},
 			},
 		},
@@ -81,9 +58,11 @@ return {
 				["name"] = "B-Side Sleeve",
 				["text"] = {
 					"Every blind is a {C:red}boss blind{}",
+					"{s:0.2} {}",
 					"Start from {C:attention}Ante 0{}",
-					"Skipping costs {C:red}$8{} multiplied",
-					"by ({C:attention}Current Ante{} + {C:attention}1{})",
+					"{s:0.2} {}",
+					"Skipping costs {C:red}$4{}, plus",
+					"another {C:red}$4{} for each {C:attention}Ante{}",
 				},
 			},
 			["sleeve_ccc_bside_alt"] = {
@@ -98,7 +77,7 @@ return {
 				["text"] = {
 					"Each played card is retriggered",
 					"then {C:red}debuffed{}",
-					"until the end of the ante",
+					"until the end of the {C:attention}Ante",
 				},
 			},
 			["sleeve_ccc_virus_alt"] = {
@@ -116,9 +95,10 @@ return {
 				["name"] = "Summit Sleeve",
 				["text"] = {
 					"{C:attention}-4{} Joker slots",
-					"{C:attention}+1{} Joker slot each Ante",
-					"without a {C:red}final boss{}",
-					"{s:0.75}(if Ante has not been reached before){}",
+					"{s:0.2} {}",
+					"{C:attention}+1{} Joker slot each",
+					"{C:attention}Ante{} without a {C:red}Finisher Blind{}",
+					"{c:inactive}(repeated Antes excluded){}",
 				},
 			},
 			["sleeve_ccc_summit_alt"] = {
@@ -249,8 +229,8 @@ return {
 			["j_ccc_rainbowspinner"] = {
 				["name"] = "Rainbow Spinner",
 				["text"] = {
-					"{C:money}Gold Seals{} act as",
-					"{C:attention}every{} {C:money}s{C:red}e{C:tarot}a{C:planet}l",
+					"{C:money}Gold Seals{} also act as",
+					"{C:red}Red{}, {C:tarot}Purple{}, and {C:planet}Blue Seals",
 				},
 			},
 			["j_ccc_granny"] = {
@@ -264,19 +244,20 @@ return {
 			["j_ccc_cassette_block_pink"] = {
 				["name"] = "Cassette Block",
 				["text"] = {
-					"Gains {C:mult}+#4#{} Mult for each",
-					"{C:attention}unused{} {C:mult}discard{} at end of round",
-					"{C:chips}Swaps{} at start of round",
-					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}",
+					{"Gains {C:white,X:mult}X#4#{} Mult for each",
+					"{C:attention}unused{} {C:red}discard{} at end of round",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"},
+					{"{C:chips}Swaps{} at start of round",
+					"{C:inactive,s:0.8}({C:white,X:inactive,s:0.8}X#1#{C:inactive,s:0.8} Chips){}"},
 				},
 			},
 			["j_ccc_feather"] = {
 				["name"] = "Feather",
 				["text"] = {
-					"Gains {X:mult,C:white} X#1# {} Mult when a",
-					"card is {C:attention}drawn{} from deck,",
-					"{C:red}resets{} at end of round",
-					"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}",
+					{"Gains {X:mult,C:white} X#1# {} Mult when a",
+					"card is {C:attention}drawn{} from deck",
+					"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult){}"},
+					{"{C:red}Resets{} at end of round"}
 				},
 			},
 			["j_ccc_badeline"] = {
@@ -290,9 +271,10 @@ return {
 			["j_ccc_wingedstrawberry"] = {
 				["name"] = "Winged Strawberry",
 				["text"] = {
-					"Earn {C:money}$#2#{} if {C:attention}poker hand{} does",
-					"not contain a {C:attention}#1#{},",
-					"{s:0.8}poker hand changes at end of round",
+					{"{C:strawberry}Strawberry Cards{} give",
+					"{C:mult}+#1#{} Mult when scored"},
+					{"{C:strawberry}Strawberry Cards{} give",
+					"{C:mult}+#2#{} Mult when held in hand"},
 				},
 			},
 			["j_ccc_zipper"] = {
@@ -344,11 +326,9 @@ return {
 			["j_ccc_thecrowd"] = {
 				["name"] = "The Crowd",
 				["text"] = {
-					"If played hand contains a",
-					"{C:attention}Five of a Kind{}, {C:attention}scoring{} cards",
-					"give {C:money}$#2#{}. Afterwards, create the",
-					"played poker hand's {C:planet}Planet{} card",
-					"{C:inactive}(Must have room){}",
+					"If scored hand contains",
+					"only {C:strawberry}Strawberry Cards{},",
+					"they {C:attention}recharge instantly"
 				},
 			},
 			["j_ccc_jump"] = {
@@ -430,10 +410,10 @@ return {
 			["j_ccc_chests"] = {
 				["name"] = "Huge Mess: Chests",
 				["text"] = {
-					"When played hand contains a",
-					"{C:attention}Three of a Kind{}, gains {C:mult}+#2#{} Mult",
-					"for each possible {C:attention}Pair{} of a",
-					"{C:attention}different{} rank held in hand",
+					"If played hand contains",
+					"a {C:attention}Three of a Kind{}, gains",
+					"{C:mult}+#2#{} Mult for each",
+					"possible {C:attention}Pair{} held in hand",
 					"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)",
 				},
 			},
@@ -487,10 +467,11 @@ return {
 			["j_ccc_cassetteblock"] = {
 				["name"] = "Cassette Block",
 				["text"] = {
-					"Gains {C:chips}+#3#{} Chips for each",
-					"{C:attention}unused{} {C:chips}hand{} at end of round",
-					"{C:mult}Swaps{} at start of round",
-					"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips){}",
+					{"Gains {C:white,X:chips}X#3#{} Chips for each",
+					"{C:attention}unused{} {C:blue}hand{} at end of round",
+					"{C:inactive}(Currently {C:white,X:chips}X#1#{C:inactive} Chips){}"},
+					{"{C:mult}Swaps{} at start of round",
+					"{C:inactive,s:0.8}({C:white,X:inactive,s:0.8}X#2#{C:inactive,s:0.8} Mult){}"},
 				},
 			},
 			["j_ccc_bubsdrop"] = {
@@ -551,20 +532,24 @@ return {
 			["j_ccc_strongwinds"] = {
 				["name"] = "Strong Winds",
 				["text"] = {
-					"{X:mult,C:white} X#1# {} Mult",
-					"The highest-{C:attention}ranked{} scoring",
-					"card is {C:red}destroyed{}",
+					{"{X:mult,C:white} X#1# {} Mult"},
+					{"The highest-{C:attention}ranked{} scoring",
+					"card is {C:red}destroyed{}"}
 				},
 			},
 			["j_ccc_theocrystal"] = {
 				["name"] = "Theo Crystal",
 				["text"] = {
+					{
 					"Forces 1 card to",
 					"{C:attention}always{} be selected",
-					"{C:green}#1#{} to {C:green,E:1}denominators{}",
-					"on defeat of {C:attention}Boss Blind",
-					"{C:inactive}(ex: {C:green}2 in 7{C:inactive} -> {C:green}2 in #3#{C:inactive})",
-					"{C:inactive}(Currently {C:green}#2#{C:inactive})",
+					},
+					{
+						"When {C:attention}Boss Blind{} is defeated,",
+						"add {X:green,C:white}X#1#{} to {C:attention}listed{} {C:green,E:1}probabilities{}",
+						"{C:inactive}(Currently {X:green,C:white}X#2#{C:inactive})"
+					}
+					
 				},
 			},
 			["j_ccc_checkpoint"] = {
@@ -598,18 +583,25 @@ return {
 			["j_ccc_coreswitch"] = {
 				["name"] = "Core Switch",
 				["text"] = {
-					"Swap {C:blue}hands{} and {C:red}discards{}",
-					"on blind select",
-					"{C:red}+#1#{} discard after swap",
+					{"Swap {C:blue}hands{} and {C:red}discards{}",
+					"on blind select"},
+					{"{C:red}+#1#{} discards"}
 				},
 			},
 			["j_ccc_wingedgoldenstrawberry"] = {
 				["name"] = "Winged Golden Strawberry",
 				["text"] = {
-					"Earn {C:money}$#2#{} at end of {C:attention}Boss Blind{} if",
-					"beaten without playing a hand",
-					"that contains a {C:attention}#1#{},",
-					"{s:0.8}poker hand changes at end of round",
+					"{C:strawberry}Strawberry Cards{} earn",
+					"{C:money}$#1#{} when scored"
+				},
+			},
+			["j_ccc_wingedgoldenstrawberry_elsewhere"] = {
+				["name"] = "Winged Golden Strawberry",
+				["text"] = {
+					{"{C:strawberry}Strawberry Cards{} earn",
+					"{C:money}$#1#{} when scored"},
+					{"When obtained, create a",
+					"{C:attention}Postcard from Mt. Celeste"},
 				},
 			},
 			["j_ccc_partofyou"] = {
@@ -624,10 +616,10 @@ return {
 			["j_ccc_ominousmirror"] = {
 				["name"] = "Ominous Mirror",
 				["text"] = {
-					"{C:green}#1# in #2#{} chance to add a",
+					"{C:green}#1# in #3#{} chance to add a",
 					"permanent, {C:dark_edition}Mirrored{} copy of",
 					"each scored card to your hand,",
-					"{C:green}#3# in #4#{} chance to {C:inactive}break{}",
+					"{C:green}#1# in #4#{} chance to {C:inactive}break{}",
 					"at end of round, becoming",
 					"a {C:attention}Broken Mirror{}",
 				},
@@ -676,7 +668,7 @@ return {
 				["text"] = {
 					"Earn {C:money}$#1#{} at end of the round.",
 					"This Joker increases by {C:money}$#2#{} when",
-					"any {C:attention}Strawberry{} is sold, then",
+					"any {C:strawberry}Strawberry{} is sold, then",
 					"reduces its increase by {C:money}$#3#{}",
 					"{C:inactive}(Minimum of {C:money}$1{C:inactive})",
 				},
@@ -720,13 +712,13 @@ return {
 			["j_ccc_lettinggo"] = {
 				["name"] = "Letting Go",
 				["text"] = {
-					"When a card is destroyed,",
+					{"When a card is destroyed,",
 					"{C:green}#1# in #3#{} chance to create",
 					"a {C:tarot}Death{}",
-					"{C:inactive}(Must have room)",
-					"Gains {X:mult,C:white} X#4# {} Mult for each",
+					"{C:inactive}(Must have room)"},
+					{"Gains {X:mult,C:white} X#4# {} Mult for each",
 					"{C:tarot}Death{} used",
-					"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
+					"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)"},
 				},
 			},
 			["j_ccc_secretshrine"] = {
@@ -750,9 +742,9 @@ return {
 			["j_ccc_climbinggear"] = {
 				["name"] = "Climbing Gear",
 				["text"] = {
-					"{C:red}+#1#{} discards",
-					"Played and discarded cards",
-					"are reshuffled into deck",
+					{"{C:red}+#1#{} discards"},
+					{"Played and discarded cards",
+					"are reshuffled into deck",}
 				},
 			},
 			["j_ccc_pointlessmachines"] = {
@@ -803,7 +795,7 @@ return {
 				["text"] = {
 					"After scoring {C:attention}#2#{} {V:1}#3#{} cards,",
 					"sell this card to {C:attention}create{}",
-					"a random {C:attention}Strawberry{}",
+					"a random {C:strawberry}Strawberry{}",
 					"{C:inactive}(Currently {C:attention}#1#{C:inactive}/#2#)",
 				},
 			},

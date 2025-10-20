@@ -7,7 +7,7 @@ local iceball = {
 	pos = {x = 5, y = 8},
 	rarity = 2,
 	cost = 8,
-	discovered = true,
+	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
 	perishable_compat = true,
@@ -28,7 +28,7 @@ iceball.calculate = function(self, card, context)
 	end
 	if context.ccc_fire and not context.blueprint then
 		card.ability.extra.count = 2	-- this int is to track state
-		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_ccc_fire'), colour = G.C.RED})
+		card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = "Fire", colour = G.C.RED})
 	end
 	if context.end_of_round and context.main_eval and not context.blueprint then
 		card.ability.extra.count = math.max(0, card.ability.extra.count - 1)
