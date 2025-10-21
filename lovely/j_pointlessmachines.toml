@@ -8,7 +8,7 @@ priority = 0
 [[patches]]
 [patches.pattern]
 target = "card.lua"
-pattern = "elseif self.ability.name == 'Banner' then loc_vars = {self.ability.extra}"
+pattern = "BLOCKER_STRING_CCCelseif self.ability.name == 'Banner' then loc_vars = {self.ability.extra}"
 position = "after"
 payload = '''
 elseif self.ability.name == 'ccc_Pointless Machines' then
@@ -75,7 +75,7 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/misc_functions.lua"
-pattern = '''if r_tally > 0 and g_tally > 0 then'''
+pattern = '''BLOCKER_STRING_CCCif r_tally > 0 and g_tally > 0 then'''
 position = "at"
 payload = '''
 local ccc_r_sec, ccc_r_tally = {}, 0
@@ -99,7 +99,7 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = "functions/misc_functions.lua"
-pattern = '''if not r_leg[get_first_legendary(seed_found)] then seed_found = nil end'''
+pattern = '''BLOCKER_STRING_CCCif not r_leg[get_first_legendary(seed_found)] then seed_found = nil end'''
 position = "at"
 payload = '''
 if r_tally > 0 and g_tally > 0 then
