@@ -5,8 +5,8 @@ local wingedstrawberry = {
 	key = "wingedstrawberry",
 	config = { extra = { --[[winged_poker_hand = 'Pair', money = 4,]] mult_scored = 2, mult_in_hand = 1 } },
 	pos = { x = 2, y = 1 },
-	rarity = 2,
-	cost = 7,
+	rarity = 1,
+	cost = 5,
 	discovered = false,
 	blueprint_compat = true,
 	eternal_compat = true,
@@ -113,6 +113,7 @@ end
 
 
 function wingedstrawberry.loc_vars(self, info_queue, card)
+	info_queue[#info_queue+1] = G.P_CENTERS.m_sarc_strawberry
 	return { vars = { card.ability.extra.mult_scored, card.ability.extra.mult_in_hand } }
 end
 
