@@ -25,17 +25,35 @@ local full_path = SMODS.current_mod.path:gsub("\\", "/")
 local joker_data = {}
 
 function loadFiles(prefix, files)
-	for k, file in ipairs(files) do            
-		local file_type = NFS.getInfo(full_path .. prefix .. file).type
-		if file_type == 'directory' then 
-			loadFiles(prefix .. file .. "/", NFS.getDirectoryItems(full_path .. prefix .. file))
-		else 
-			local joker = assert(assert(SMODS.load_file(prefix .. file))(), "Trying to load joker file " .. prefix .. file .. " failed! Returned false value, did you forget to return the config?")
+	for _, file in ipairs(files) do
+		local path = full_path .. prefix .. file
+		local info = NFS.getInfo(path)
+		if info and info.type == 'directory' then
+			loadFiles(prefix .. file .. "/", NFS.getDirectoryItems(path))
+		elseif info then
+			local content = NFS.read(path)
 
-			table.insert(joker_data, 1, joker)
+			if content then
+				-- Remove UTF-8 BOM if present
+				content = content:gsub("^\239\187\191", "")
+
+				-- Skip only if the first non-whitespace chars are EXACTLY "----"
+				-- %s*   -> allow leading spaces/tabs/newlines
+				-- %-%-%-%- -> four literal dashes
+				-- %f[^-] -> frontier: next char is NOT another dash (prevents matching "-----")
+				if content:find("^%s*%-%-%-%-%f[^-]") then
+					print("Skipping commented-out file: " .. prefix .. file)
+				else
+					local chunk = assert(SMODS.load_file(prefix .. file))
+					local joker = assert(chunk(), "Trying to load joker file " .. prefix .. file .. " failed! Returned false value, did you forget to return the config?")
+					table.insert(joker_data, 1, joker)
+				end
+			end
 		end
 	end
 end
+
+
 
 local files = NFS.getDirectoryItems(full_path .. "lua_files/jokers")
 loadFiles("lua_files/jokers/", files)
